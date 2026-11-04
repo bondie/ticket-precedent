@@ -1,0 +1,39 @@
+# Copy to ~/.config/ticket-precedent/config.yaml (outside the repository).
+# ${VARIABLES} are resolved from the environment, from a .env file next to the config,
+# and from the files listed in env_files (lowest precedence).
+
+# index_path: ~/.local/share/ticket-precedent/index.db
+
+env_files:
+  - ~/secrets/trackers.env
+
+# When set, the MCP server syncs sources older than this many hours in a background thread
+# on start-up, so no scheduler is needed. It needs the tracker credentials in its environment.
+auto_sync_hours: 12
+
+embedding:
+  model: bge-m3                  # any Ollama embedding model
+  url: http://localhost:11434
+
+search:
+  rrf_k: 10                      # Reciprocal Rank Fusion constant
+  lexical_weight: 0.25           # weight of the BM25 ranking relative to the vector ranking
+
+sources:
+  - name: acme-jira
+    type: jira                   # JIRA Server / Data Center, REST API v2
+    url: https://jira.example.com
+    jql: project in (SHOP, ERP)
+    username: ${JIRA_USERNAME}   # or `token: ${JIRA_PAT}` for a personal access token
+    password: ${JIRA_PASSWORD}
+    chunking:
+      skip_comment_authors: [Jenkins, GitLab]
+
+  - name: acme-helpdesk
+    type: mantis                 # MantisBT REST API
+    url: https://helpdesk.example.com
+    token: ${MANTIS_API_TOKEN}
+    project_ids: [12, 15]
+    include_private_notes: true
+    chunking:
+      max_comment_chunks: 30
