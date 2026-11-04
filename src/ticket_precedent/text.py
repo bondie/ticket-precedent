@@ -1,7 +1,15 @@
 from __future__ import annotations
 
+import html
 import re
 import unicodedata
+
+_HTML_TAG_NAMES = (
+    "p|br|div|span|ul|ol|li|strong|b|i|em|u|s|a|h[1-6]|table|thead|tbody|tr|td|th|"
+    "pre|code|blockquote|img|hr|font|sup|sub"
+)
+_HTML_BLOCK = re.compile(r"</?(p|br|div|li|tr|h[1-6]|pre|blockquote|hr)\b[^>]*>", re.IGNORECASE)
+_HTML_TAG = re.compile(rf"</?({_HTML_TAG_NAMES})\b[^>]*>", re.IGNORECASE)
 
 _JIRA_MARKUP: list[tuple[re.Pattern[str], str]] = [
     (re.compile(r"\{(code|noformat|quote|panel|color)(:[^}]*)?\}"), " "),
@@ -19,10 +27,17 @@ _WORD = re.compile(r"\w+", re.UNICODE)
 def clean(text: str | None) -> str:
     if not text:
         return ""
+    text = _strip_html(text)
     for pattern, replacement in _JIRA_MARKUP:
         text = pattern.sub(replacement, text)
     lines = (_SPACES.sub(" ", line).strip() for line in text.split("\n"))
     return _BLANK_LINES.sub("\n\n", "\n".join(lines)).strip()
+
+
+def _strip_html(text: str) -> str:
+    """Drop known HTML tags only, so code such as `List<String>` survives."""
+    text = _HTML_BLOCK.sub("\n", text)
+    return html.unescape(_HTML_TAG.sub("", text))
 
 
 def windows(text: str, max_chars: int, overlap: int) -> list[str]:

@@ -13,6 +13,11 @@ def test_clean_strips_jira_markup():
     assert clean(raw) == "Steps\n\nfoo();\n\nSee the docs and @alice"
 
 
+def test_clean_strips_html_but_keeps_generics_in_code():
+    raw = "<p>ahoj Palo,</p><p>pro&scaron;li jsme <strong>feedy</strong></p>Map<String, List<X>> m"
+    assert clean(raw) == "ahoj Palo,\n\nprošli jsme feedy\nMap<String, List<X>> m"
+
+
 def test_windows_cover_text_with_overlap():
     text = " ".join(f"word{i}" for i in range(400))
     parts = windows(text, max_chars=500, overlap=100)
