@@ -6,7 +6,15 @@ import pytest
 from ticket_precedent.chunking import ChunkingConfig
 from ticket_precedent.ingest import sync
 from ticket_precedent.models import Ticket
-from ticket_precedent.search import Filters, Hit, Searcher, describe
+from ticket_precedent.search import (
+    Filters,
+    Hit,
+    Searcher,
+    TicketNotFoundError,
+    describe,
+    find_precedents,
+    resolve_ticket,
+)
 from ticket_precedent.store import IndexMismatchError, Store
 
 from .conftest import make_ticket
@@ -115,3 +123,61 @@ def test_long_queries_keep_the_rarest_known_terms(indexed, embedder):
     filler = " ".join(f"filler{i}" for i in range(50))
     hits = searcher.search(f"{filler} the shop invoice comparator", mode="bm25")
     assert keys(indexed, hits)[0] == "D-1"
+
+
+PRICES = "The order header has the wholesale price list but the items carry retail prices."
+
+
+@pytest.fixture
+def two_trackers(store, embedder):
+    jira = [
+        make_ticket("P-1", "Order items priced from the retail list", PRICES, created="2023-02-01"),
+        make_ticket("P-2", "[R:200359] Wrong prices on orders", PRICES, created="2024-05-02"),
+        make_ticket("P-3", "Wrong prices on orders again", PRICES, created="2025-01-01"),
+        make_ticket("P-4", "Blurry product images", "Upscaled thumbnails.", created="2023-06-01"),
+    ]
+    helpdesk = [
+        make_ticket("200359", "Wrong prices on orders", PRICES, created="2024-05-01", source="hd")
+    ]
+    sync(store, embedder, ListConnector(jira), "demo", ChunkingConfig())
+    sync(store, embedder, ListConnector(helpdesk), "hd", ChunkingConfig())
+    return store
+
+
+def precedents(store: Store, embedder, key: str) -> list[str]:
+    ticket = resolve_ticket(store, key)
+    return keys(store, find_precedents(Searcher(store, embedder), ticket, limit=10).hits)
+
+
+def test_precedents_are_older_tickets_other_than_the_query(two_trackers, embedder):
+    found = precedents(two_trackers, embedder, "200359")
+    assert found[0] == "P-1"
+    assert {"200359", "P-2", "P-3"}.isdisjoint(found)
+
+
+def test_precedents_skip_tickets_named_in_the_title(two_trackers, embedder):
+    found = precedents(two_trackers, embedder, "P-2")
+    assert found[0] == "P-1"
+    assert "200359" not in found
+
+
+def test_resolve_ticket_needs_a_source_only_for_ambiguous_keys(two_trackers):
+    assert resolve_ticket(two_trackers, "200359")["source"] == "hd"
+    assert resolve_ticket(two_trackers, "P-1", "demo")["key"] == "P-1"
+    other = make_ticket("P-1", "Same key elsewhere", source="hd")
+    two_trackers.replace_ticket(other, [], {})
+    with pytest.raises(TicketNotFoundError, match="demo, hd"):
+        resolve_ticket(two_trackers, "P-1")
+    with pytest.raises(TicketNotFoundError, match="not indexed"):
+        resolve_ticket(two_trackers, "NOPE")
+    with pytest.raises(TicketNotFoundError, match="source 'hd'"):
+        resolve_ticket(two_trackers, "P-4", "hd")
+
+
+def test_title_only_match_shows_a_preview_instead_of_an_empty_snippet(store, embedder):
+    ticket = make_ticket("E-1", "Comgate hotfix", comments=["Gateway returned PAID twice " * 3])
+    sync(store, embedder, ListConnector([ticket]), "demo", ChunkingConfig())
+    body = store.db.execute("SELECT id, ticket_id FROM chunks WHERE kind = 'body'").fetchone()
+    (result,) = describe(store, [Hit(body["ticket_id"], body["id"], 1.0)])
+    assert result["matched_in"] == "title"
+    assert result["snippet"].startswith("Gateway returned PAID twice")

@@ -15,6 +15,153 @@ comments** from JIRA and MantisBT into a single SQLite file and ranks them with 
 vector search fused by Reciprocal Rank Fusion. Embeddings are computed locally with Ollama,
 so ticket content never leaves your machine.
 
+In Claude Code (or any MCP client) you ask *"find precedents for helpdesk 18342"*, and the
+agent gets the earlier tickets that look like it. The command line gives the same results
+(illustrative output):
+
+```text
+$ uv run tp precedents 18342
+precedents for [acme-helpdesk] 18342 Invoice missing in the shop
+1. [acme-jira] SHOP-412 ERP comparator drops payload as unchanged
+   Done Fixed · 3.5 h · https://jira.example.com/browse/SHOP-412
+   Root cause: the comparator hashed the payload without the PDF, so the re-sent invoice …
+2. [acme-helpdesk] 17105 Credit note not visible in the customer account
+   closed fixed · https://helpdesk.example.com/view.php?id=17105
+   The ERP export finished but the shop kept the old document list. Resetting the …
+```
+
+## Getting started
+
+You need [uv](https://docs.astral.sh/uv/) and [Ollama](https://ollama.com).
+
+**1. Start Ollama and download the embedding model.** On macOS:
+
+```bash
+brew install ollama && brew services start ollama   # starts now and at every login
+ollama pull bge-m3                                   # ~1.2 GB, multilingual
+```
+
+On Linux the [official installer](https://ollama.com/download) sets up a systemd service.
+
+**2. Install ticket-precedent.**
+
+```bash
+git clone https://github.com/bondie/ticket-precedent && cd ticket-precedent
+uv sync
+```
+
+**3. Describe your trackers.** The configuration lives outside the repository:
+
+```bash
+mkdir -p ~/.config/ticket-precedent
+cp config.example.yaml ~/.config/ticket-precedent/config.yaml
+```
+
+Edit the `sources` list, with one entry per JIRA query or MantisBT project set. Keep the
+secrets out of the file: `${VARIABLES}` are resolved from the environment, from a `.env` next
+to the config, or from the files listed in `env_files`. See
+[`config.example.yaml`](config.example.yaml) for every option.
+
+**4. Build the index.**
+
+```bash
+uv run tp sync
+uv run tp stats            # tickets and chunks per source, last sync time
+```
+
+The first sync fetches everything and embeds about 15 chunks per second on an Apple M1 Pro.
+A project with 3,600 tickets and their comments (17,000 chunks) takes about 20 minutes.
+Later syncs fetch only tickets updated since the previous one and embed only changed text.
+The index is a single file in `~/.local/share/ticket-precedent/`.
+
+**5. Connect it to Claude Code.** Run this in the repository directory:
+
+```bash
+claude mcp add ticket-precedent -s user -- uv --directory "$PWD" run tp serve
+```
+
+`-s user` makes the tools available in every project. New Claude Code sessions pick them
+up, and `claude mcp list` shows whether the server connects. Other MCP clients (Claude
+Desktop, Cursor, …) start the same stdio server:
+
+```json
+{
+  "mcpServers": {
+    "ticket-precedent": {
+      "command": "uv",
+      "args": ["--directory", "/path/to/ticket-precedent", "run", "tp", "serve"]
+    }
+  }
+}
+```
+
+## Everyday use
+
+### Ask your agent
+
+Describe the problem in your own words and let the agent pick the tool:
+
+| You ask | The agent calls |
+|---|---|
+| *Find precedents for helpdesk 18342.* | `precedents_for("18342")` |
+| *Have we seen "invoice PDF missing although ERP exported it" before?* | `similar_tickets(text)` |
+| *Open SHOP-412 and tell me how it was fixed.* | `get_ticket("acme-jira", "SHOP-412")` |
+| *How long did similar fixes take? Only look in JIRA.* | `precedents_for(..., only_source="acme-jira")` and reads `time_spent_hours` |
+
+| Tool | What it does |
+|---|---|
+| `precedents_for(key, source?, only_source?, limit?)` | Precedents for a ticket that is already indexed |
+| `similar_tickets(text, source?, project?, limit?)` | Precedents for any text: a symptom, an error message, a ticket that is not indexed yet |
+| `get_ticket(source, key)` | Full indexed description, comments and links of one ticket |
+| `list_sources()` | Indexed sources, counts and last sync time |
+
+`precedents_for` queries with the ticket's title and description, exactly like the
+[benchmark](#results). It returns only tickets created before that ticket and leaves out the
+ticket itself. It also leaves out tickets named in the ticket's title: a JIRA issue titled
+*"[R:18342] Wrong prices"* was opened from helpdesk thread 18342, so that thread is the same
+problem, not a precedent. The key alone is enough. `source` is needed only when two sources
+share a key.
+
+Every result carries the key, title, URL, status, resolution, creation date, time spent and
+a snippet of the best-matching text. `matched_in` says whether that text is the description,
+a comment or only the title. `score` is the fusion score: it orders the results and is not a
+probability. All tools are read-only and read only the local index.
+
+### Use the command line
+
+| Command | What it does |
+|---|---|
+| `tp precedents KEY [--only-source S] [--limit N] [--json]` | Earlier tickets that look like an indexed ticket |
+| `tp search TEXT [--source S] [--project P] [--mode hybrid\|vector\|bm25] [--json]` | Search by free text |
+| `tp show SOURCE KEY` | Print one indexed ticket as JSON |
+| `tp sync [--source S] [--full]` | Fetch new and updated tickets; `--full` re-reads everything |
+| `tp stats` | Indexed sources and sync times |
+| `tp serve` | MCP server on stdio (MCP clients start it for you) |
+| `tp eval PROJECT` | Benchmark on a public Apache JIRA project |
+
+Run them as `uv run tp …` from the repository directory. `tp --config PATH …` uses another
+configuration file.
+
+### Keep the index fresh
+
+- **Automatically.** With `auto_sync_hours` set, every new MCP session checks the sources
+  when it starts. Any source older than that limit is refreshed in a background thread, so
+  no scheduler is needed. A file lock keeps concurrent syncs (CLI, several open sessions) from
+  colliding.
+- **On demand.** `tp sync`, or a cron job.
+- **After changing chunking settings**, for example raising `min_comment_chars` to drop short
+  "deployed, please check" comments, run `tp sync --full`. Unchanged chunks keep their
+  embeddings, so this costs mostly API calls.
+
+### What has to be running
+
+- **The MCP server** is started by the client (Claude Code, Cursor, …) for each session and
+  stops with it. There is no daemon to manage.
+- **Ollama** embeds the query. An idle Ollama server uses about 70 MB of RAM. The model is
+  loaded on the first query (a few seconds) and unloaded after five idle minutes. If Ollama
+  is not reachable, search degrades to BM25 and says so in a `warning` field instead of
+  failing.
+
 ## Results
 
 The benchmark asks the tool to find duplicates on public Apache JIRA projects (see the
@@ -63,11 +210,12 @@ What the numbers say:
   does not isolate that case.
 - **Latency.** At p50, searching the local index takes 15 to 50 ms without comments. With
   comments it takes up to 212 ms (hybrid over Derby's 61k chunks). Embedding the query
-  adds about 0.2 s (1,000 characters, model already loaded). Indexing embeds about 15
-  chunks per second, so the first sync of Derby with comments takes a little over an hour.
-  Later syncs embed only changed chunks.
+  adds about 0.2 s (1,000 characters, model already loaded).
+
+Reproduce a run, or the fusion parameter grid, with:
 
 ```bash
+uv run tp eval ZOOKEEPER --no-comments       # ~5k tickets, about 10 minutes
 uv run tp eval DERBY --out results/derby-comments-bge-m3.json
 uv run python scripts/tune_fusion.py ~/.local/share/ticket-precedent/eval/apache-derby-comments-bge-m3.db
 ```
@@ -88,8 +236,8 @@ flowchart LR
     Q --> V
     F --> R[Ticket-level<br/>RRF fusion]
     V --> R
-    R --> MCP[MCP server<br/>similar_tickets · get_ticket]
-    R --> CLI[tp search]
+    R --> MCP[MCP server<br/>precedents_for · similar_tickets]
+    R --> CLI[tp precedents · tp search]
 ```
 
 - **One file, no services.** FTS5 and [sqlite-vec](https://github.com/asg017/sqlite-vec)
@@ -106,61 +254,6 @@ flowchart LR
   64 rarest terms that exist in the index, using FTS5 vocabulary statistics.
 - **Multilingual.** bge-m3 handles mixed Czech and English. BM25 folds diacritics, so
   *objednávka* and *objednavka* match.
-
-## Quick start
-
-Requirements: [uv](https://docs.astral.sh/uv/) and [Ollama](https://ollama.com).
-
-```bash
-ollama pull bge-m3
-git clone https://github.com/bondie/ticket-precedent && cd ticket-precedent
-uv sync
-
-# Reproduce the benchmark on public Apache JIRA data (~5k tickets).
-uv run tp eval ZOOKEEPER --no-comments
-```
-
-### Index your own trackers
-
-```bash
-mkdir -p ~/.config/ticket-precedent
-cp config.example.yaml ~/.config/ticket-precedent/config.yaml   # edit sources and secrets
-uv run tp sync                     # first run fetches everything, later runs only changes
-uv run tp search "invoice is not visible in the shop although ERP sent it"
-uv run tp show acme-helpdesk 18342
-```
-
-Configuration lives outside the repository (`~/.config/ticket-precedent/`), and the index
-lives in `~/.local/share/ticket-precedent/`. `${VARIABLES}` in the config are resolved from
-the environment, from a `.env` next to the config, or from the files listed in `env_files`.
-See [`config.example.yaml`](config.example.yaml).
-
-### Use it from Claude Code or any MCP client
-
-```bash
-claude mcp add ticket-precedent -s user -- uv --directory "$PWD" run tp serve
-```
-
-| Tool | What it does |
-|---|---|
-| `similar_tickets(text, source?, project?, limit?)` | Ranked precedents with status, resolution, time spent and the matching snippet |
-| `get_ticket(source, key)` | Full indexed description, comments and links of one ticket |
-| `list_sources()` | Indexed sources, counts and last sync time |
-
-All tools are annotated read-only. Searching reads only the local index, so the server needs
-no tracker credentials for it.
-
-### What has to be running
-
-- **The MCP server** is started by the client (Claude Code, Cursor, …) for each session and
-  stops with it. There is no daemon to manage.
-- **Ollama** embeds the query. An idle Ollama server uses about 70 MB of RAM; the model
-  is loaded on the first query (a few seconds) and unloaded after five idle minutes. If
-  Ollama is not reachable, search degrades to BM25 and says so in a `warning` field
-  instead of failing.
-- **Sync** runs on demand (`tp sync`), from a scheduler, or automatically: with
-  `auto_sync_hours` set, the MCP server refreshes stale sources in a background thread at
-  start-up. A file lock keeps concurrent syncs (CLI, several open sessions) from colliding.
 
 ## Evaluation methodology
 
@@ -195,6 +288,7 @@ CI runs lint, type checks, tests on Python 3.11–3.13 and a gitleaks secret sca
 
 ## Roadmap
 
+- Collapse clones and sub-tasks that share a title into one result
 - Cross-encoder reranking of the top candidates (`bge-reranker-v2-m3`)
 - Embedding model comparison (`qwen3-embedding`, `multilingual-e5`, `snowflake-arctic-embed2`)
 - GitLab and GitHub Issues connectors, JIRA Cloud (`/rest/api/3/search/jql`)

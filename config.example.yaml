@@ -37,3 +37,4 @@ sources:
     include_private_notes: true
     chunking:
       max_comment_chunks: 30
+      min_comment_chars: 80      # default 40; helpdesk threads have a lot of "deployed, please check"

@@ -27,7 +27,18 @@ from .evaluation.dataset import duplicate_queries
 from .evaluation.metrics import markdown_table
 from .evaluation.runner import evaluate
 from .ingest import SyncStats, sync
-from .search import MODES, Filters, Searcher, describe, search_or_degrade, ticket_details
+from .search import (
+    MODES,
+    Filters,
+    Outcome,
+    Searcher,
+    TicketNotFoundError,
+    describe,
+    find_precedents,
+    resolve_ticket,
+    search_or_degrade,
+    ticket_details,
+)
 from .store import IndexMismatchError, Store
 
 APACHE_JIRA = "https://issues.apache.org/jira"
@@ -48,7 +59,7 @@ def main(argv: list[str] | None = None) -> int:
     handler: Callable[[argparse.Namespace], int] = args.handler
     try:
         return handler(args)
-    except (ConfigError, EmbeddingError, IndexMismatchError) as error:
+    except (ConfigError, EmbeddingError, IndexMismatchError, TicketNotFoundError) as error:
         print(f"error: {error}", file=sys.stderr)
         return 1
 
@@ -71,6 +82,14 @@ def _parser() -> argparse.ArgumentParser:
     cmd.add_argument("--mode", choices=MODES, default="hybrid")
     cmd.add_argument("--json", action="store_true")
     cmd.set_defaults(handler=_search)
+
+    cmd = commands.add_parser("precedents", help="earlier tickets that look like an indexed one")
+    cmd.add_argument("key", help="ticket key, e.g. PROJ-42 or a helpdesk number")
+    cmd.add_argument("--source", help="source of the ticket when the key is ambiguous")
+    cmd.add_argument("--only-source", help="only return tickets from this source")
+    cmd.add_argument("--limit", type=int, default=5)
+    cmd.add_argument("--json", action="store_true")
+    cmd.set_defaults(handler=_precedents)
 
     cmd = commands.add_parser("show", help="print one indexed ticket")
     cmd.add_argument("source")
@@ -138,10 +157,23 @@ def _search(args: argparse.Namespace) -> int:
     outcome = search_or_degrade(
         searcher, args.text, args.mode, args.limit, Filters(args.source, args.project)
     )
+    return _print_outcome(store, outcome, as_json=args.json)
+
+
+def _precedents(args: argparse.Namespace) -> int:
+    config = load_config(args.config)
+    store = Store(config.index_path)
+    ticket = resolve_ticket(store, args.key, args.source)
+    print(f"precedents for [{ticket['source']}] {ticket['key']} {ticket['title']}", file=sys.stderr)
+    outcome = find_precedents(build_searcher(config, store), ticket, args.limit, args.only_source)
+    return _print_outcome(store, outcome, as_json=args.json)
+
+
+def _print_outcome(store: Store, outcome: Outcome, as_json: bool) -> int:
     if outcome.warning:
         print(f"warning: {outcome.warning}", file=sys.stderr)
     results = describe(store, outcome.hits)
-    if args.json:
+    if as_json:
         print(json.dumps(results, ensure_ascii=False, indent=2))
         return 0
     for position, result in enumerate(results, start=1):

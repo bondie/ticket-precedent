@@ -263,6 +263,15 @@ class Store:
         ).fetchone()
         return row
 
+    def tickets_by_key(self, keys: Iterable[str]) -> list[sqlite3.Row]:
+        keys = list(dict.fromkeys(keys))
+        if not keys:
+            return []
+        placeholders = ",".join("?" * len(keys))
+        return self.db.execute(
+            f"SELECT * FROM tickets WHERE key IN ({placeholders}) ORDER BY source", keys
+        ).fetchall()
+
     def tickets(self, source: str) -> list[sqlite3.Row]:
         return self.db.execute(
             "SELECT * FROM tickets WHERE source = ? ORDER BY created", (source,)

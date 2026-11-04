@@ -4,6 +4,7 @@ import json
 from collections import defaultdict
 from dataclasses import dataclass
 
+from ..search import QUERY_CHARS, ticket_query
 from ..store import Store
 
 
@@ -36,7 +37,7 @@ def duplicate_queries(
     source: str,
     link_type: str = "Duplicate",
     resolution: str = "Duplicate",
-    max_chars: int = 2000,
+    max_chars: int = QUERY_CHARS,
 ) -> list[Query]:
     """Each ticket closed as a duplicate becomes a query.
 
@@ -65,6 +66,6 @@ def duplicate_queries(
         )
         if not relevant:
             continue
-        text = f"{row['title']}\n\n{row['description']}".strip()[:max_chars]
+        text = ticket_query(row["title"], row["description"], max_chars)
         queries.append(Query(row["id"], row["key"], text, row["created"], relevant))
     return queries
