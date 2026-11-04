@@ -1,6 +1,11 @@
 from ticket_precedent.chunking import ChunkingConfig
 from ticket_precedent.evaluation.dataset import duplicate_queries
-from ticket_precedent.evaluation.metrics import first_relevant_rank, summarize
+from ticket_precedent.evaluation.metrics import (
+    bootstrap_interval,
+    first_relevant_rank,
+    markdown_table,
+    summarize,
+)
 from ticket_precedent.evaluation.runner import evaluate
 from ticket_precedent.ingest import sync
 from ticket_precedent.search import Searcher
@@ -70,3 +75,17 @@ def test_evaluate_never_returns_the_query_or_later_tickets(store, embedder):
     assert [s.mode for s in summaries] == ["bm25", "hybrid"]
     assert all(s.hit_at_5 == 1.0 for s in summaries)
     assert {d.key for d in details} == {"A-2", "A-3"}
+
+
+def test_bootstrap_interval_brackets_the_mean_and_is_reproducible():
+    values = [1.0, 0.5, 0.0, 0.0, 1.0, 0.25, 0.0, 1.0]
+    low, high = bootstrap_interval(values)
+    assert low < sum(values) / len(values) < high
+    assert bootstrap_interval(values) == (low, high)
+    assert bootstrap_interval([]) == (0.0, 0.0)
+
+
+def test_markdown_table_shows_the_interval():
+    table = markdown_table([summarize("hybrid", [1, 2, None], [5.0])])
+    assert "| hybrid | 3 |" in table
+    assert "0.500 (" in table

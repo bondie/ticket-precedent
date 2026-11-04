@@ -1,0 +1,2338 @@
+{
+  "project": "DERBY",
+  "since": null,
+  "variant": "comments",
+  "model": "bge-m3",
+  "summaries": [
+    {
+      "mode": "bm25",
+      "queries": 153,
+      "hit_at_1": 0.42483660130718953,
+      "hit_at_5": 0.6666666666666666,
+      "hit_at_10": 0.7320261437908496,
+      "mrr_at_10": 0.5316448801742919,
+      "mrr_ci_low": 0.46065722585330426,
+      "mrr_ci_high": 0.5971314451706609,
+      "latency_ms_p50": 98.7596248742193
+    },
+    {
+      "mode": "vector",
+      "queries": 153,
+      "hit_at_1": 0.5555555555555556,
+      "hit_at_5": 0.7516339869281046,
+      "hit_at_10": 0.7908496732026143,
+      "mrr_at_10": 0.6360358958398175,
+      "mrr_ci_low": 0.5670894283639382,
+      "mrr_ci_high": 0.7020878721859114,
+      "latency_ms_p50": 115.53508299402893
+    },
+    {
+      "mode": "hybrid",
+      "queries": 153,
+      "hit_at_1": 0.5620915032679739,
+      "hit_at_5": 0.7516339869281046,
+      "hit_at_10": 0.7973856209150327,
+      "mrr_at_10": 0.6473467164643635,
+      "mrr_ci_low": 0.5768285091814503,
+      "mrr_ci_high": 0.7143946467475879,
+      "latency_ms_p50": 212.35579205676913
+    }
+  ],
+  "queries": [
+    {
+      "mode": "bm25",
+      "key": "DERBY-29",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-93",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-329",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-346",
+      "rank": 8
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-1226",
+      "rank": null
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-1237",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-1754",
+      "rank": null
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-1771",
+      "rank": 10
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-1778",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-1902",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-1978",
+      "rank": 4
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-2015",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-2127",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-2232",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-2401",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-2445",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-2563",
+      "rank": 2
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-2589",
+      "rank": null
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-2665",
+      "rank": 9
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-2677",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-2756",
+      "rank": 5
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-2808",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-2866",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-2899",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-2965",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-3015",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-3052",
+      "rank": null
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-3053",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-3059",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-3065",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-3066",
+      "rank": 2
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-3067",
+      "rank": 3
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-3114",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-3120",
+      "rank": 10
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-3143",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-3177",
+      "rank": 4
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-3239",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-3277",
+      "rank": 2
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-3283",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-3284",
+      "rank": 2
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-3292",
+      "rank": null
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-3332",
+      "rank": null
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-3344",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-3381",
+      "rank": 6
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-3407",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-3411",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-3436",
+      "rank": 3
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-3464",
+      "rank": null
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-3485",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-3530",
+      "rank": 2
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-3591",
+      "rank": null
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-3606",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-3675",
+      "rank": null
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-3744",
+      "rank": 2
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-3749",
+      "rank": null
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-3835",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-3860",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-3916",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-3951",
+      "rank": null
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-3961",
+      "rank": 5
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-3968",
+      "rank": 3
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-3987",
+      "rank": 3
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-4043",
+      "rank": null
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-4056",
+      "rank": null
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-4075",
+      "rank": null
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-4178",
+      "rank": null
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-4180",
+      "rank": null
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-4231",
+      "rank": 3
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-4247",
+      "rank": null
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-4254",
+      "rank": 2
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-4265",
+      "rank": 2
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-4298",
+      "rank": 2
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-4333",
+      "rank": null
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-4337",
+      "rank": null
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-4362",
+      "rank": 2
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-4385",
+      "rank": 2
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-4433",
+      "rank": null
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-4440",
+      "rank": 10
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-4453",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-4456",
+      "rank": null
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-4464",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-4498",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-4526",
+      "rank": null
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-4541",
+      "rank": 2
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-4581",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-4643",
+      "rank": null
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-4644",
+      "rank": null
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-4683",
+      "rank": null
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-4749",
+      "rank": 9
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-4780",
+      "rank": 2
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-4813",
+      "rank": null
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-4817",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-4844",
+      "rank": 2
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-4887",
+      "rank": null
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-4914",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-4954",
+      "rank": null
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-4969",
+      "rank": 2
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-4976",
+      "rank": 2
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-5031",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-5048",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-5059",
+      "rank": null
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-5072",
+      "rank": null
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-5073",
+      "rank": null
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-5169",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-5178",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-5188",
+      "rank": 3
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-5194",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-5199",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-5237",
+      "rank": null
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-5285",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-5298",
+      "rank": 4
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-5351",
+      "rank": 4
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-5366",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-5435",
+      "rank": 3
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-5518",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-5520",
+      "rank": 2
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-5537",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-5588",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-5618",
+      "rank": 2
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-5621",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-5669",
+      "rank": null
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-5672",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-5703",
+      "rank": 6
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-5735",
+      "rank": null
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-5773",
+      "rank": 3
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-5800",
+      "rank": 3
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-5867",
+      "rank": 4
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-5953",
+      "rank": 2
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-5981",
+      "rank": null
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-5997",
+      "rank": null
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-6031",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-6142",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-6170",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-6191",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-6249",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-6344",
+      "rank": null
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-6360",
+      "rank": 2
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-6364",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-6365",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-6366",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-6381",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-6406",
+      "rank": 9
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-6409",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-6435",
+      "rank": 2
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-6450",
+      "rank": null
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-6556",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-6681",
+      "rank": 10
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-6695",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-6740",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-6817",
+      "rank": null
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-6994",
+      "rank": null
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-7106",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "DERBY-7132",
+      "rank": null
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-29",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-93",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-329",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-346",
+      "rank": 2
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-1226",
+      "rank": null
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-1237",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-1754",
+      "rank": 4
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-1771",
+      "rank": 2
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-1778",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-1902",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-1978",
+      "rank": 2
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-2015",
+      "rank": 2
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-2127",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-2232",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-2401",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-2445",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-2563",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-2589",
+      "rank": null
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-2665",
+      "rank": 8
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-2677",
+      "rank": 3
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-2756",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-2808",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-2866",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-2899",
+      "rank": 5
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-2965",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-3015",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-3052",
+      "rank": null
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-3053",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-3059",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-3065",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-3066",
+      "rank": 3
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-3067",
+      "rank": 5
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-3114",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-3120",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-3143",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-3177",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-3239",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-3277",
+      "rank": 3
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-3283",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-3284",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-3292",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-3332",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-3344",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-3381",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-3407",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-3411",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-3436",
+      "rank": 2
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-3464",
+      "rank": 5
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-3485",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-3530",
+      "rank": 4
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-3591",
+      "rank": null
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-3606",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-3675",
+      "rank": 7
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-3744",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-3749",
+      "rank": null
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-3835",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-3860",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-3916",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-3951",
+      "rank": null
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-3961",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-3968",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-3987",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-4043",
+      "rank": null
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-4056",
+      "rank": 2
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-4075",
+      "rank": null
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-4178",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-4180",
+      "rank": null
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-4231",
+      "rank": 2
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-4247",
+      "rank": null
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-4254",
+      "rank": 2
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-4265",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-4298",
+      "rank": 9
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-4333",
+      "rank": null
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-4337",
+      "rank": null
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-4362",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-4385",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-4433",
+      "rank": null
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-4440",
+      "rank": null
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-4453",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-4456",
+      "rank": null
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-4464",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-4498",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-4526",
+      "rank": null
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-4541",
+      "rank": 4
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-4581",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-4643",
+      "rank": 4
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-4644",
+      "rank": null
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-4683",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-4749",
+      "rank": null
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-4780",
+      "rank": null
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-4813",
+      "rank": null
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-4817",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-4844",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-4887",
+      "rank": 2
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-4914",
+      "rank": 3
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-4954",
+      "rank": null
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-4969",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-4976",
+      "rank": 2
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-5031",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-5048",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-5059",
+      "rank": 6
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-5072",
+      "rank": null
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-5073",
+      "rank": 7
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-5169",
+      "rank": 2
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-5178",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-5188",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-5194",
+      "rank": 3
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-5199",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-5237",
+      "rank": 5
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-5285",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-5298",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-5351",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-5366",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-5435",
+      "rank": null
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-5518",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-5520",
+      "rank": 3
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-5537",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-5588",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-5618",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-5621",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-5669",
+      "rank": null
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-5672",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-5703",
+      "rank": null
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-5735",
+      "rank": null
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-5773",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-5800",
+      "rank": 2
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-5867",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-5953",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-5981",
+      "rank": null
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-5997",
+      "rank": null
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-6031",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-6142",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-6170",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-6191",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-6249",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-6344",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-6360",
+      "rank": 2
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-6364",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-6365",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-6366",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-6381",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-6406",
+      "rank": null
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-6409",
+      "rank": 2
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-6435",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-6450",
+      "rank": null
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-6556",
+      "rank": 2
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-6681",
+      "rank": null
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-6695",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-6740",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-6817",
+      "rank": 8
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-6994",
+      "rank": 5
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-7106",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "DERBY-7132",
+      "rank": null
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-29",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-93",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-329",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-346",
+      "rank": 2
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-1226",
+      "rank": null
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-1237",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-1754",
+      "rank": 3
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-1771",
+      "rank": 3
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-1778",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-1902",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-1978",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-2015",
+      "rank": 2
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-2127",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-2232",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-2401",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-2445",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-2563",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-2589",
+      "rank": null
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-2665",
+      "rank": 7
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-2677",
+      "rank": 2
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-2756",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-2808",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-2866",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-2899",
+      "rank": 4
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-2965",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-3015",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-3052",
+      "rank": null
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-3053",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-3059",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-3065",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-3066",
+      "rank": 3
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-3067",
+      "rank": 2
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-3114",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-3120",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-3143",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-3177",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-3239",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-3277",
+      "rank": 3
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-3283",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-3284",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-3292",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-3332",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-3344",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-3381",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-3407",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-3411",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-3436",
+      "rank": 2
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-3464",
+      "rank": 5
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-3485",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-3530",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-3591",
+      "rank": null
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-3606",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-3675",
+      "rank": 8
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-3744",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-3749",
+      "rank": null
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-3835",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-3860",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-3916",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-3951",
+      "rank": null
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-3961",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-3968",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-3987",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-4043",
+      "rank": null
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-4056",
+      "rank": 2
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-4075",
+      "rank": null
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-4178",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-4180",
+      "rank": null
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-4231",
+      "rank": 2
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-4247",
+      "rank": null
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-4254",
+      "rank": 2
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-4265",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-4298",
+      "rank": 6
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-4333",
+      "rank": null
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-4337",
+      "rank": null
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-4362",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-4385",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-4433",
+      "rank": null
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-4440",
+      "rank": null
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-4453",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-4456",
+      "rank": null
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-4464",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-4498",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-4526",
+      "rank": null
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-4541",
+      "rank": 2
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-4581",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-4643",
+      "rank": 5
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-4644",
+      "rank": null
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-4683",
+      "rank": 2
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-4749",
+      "rank": null
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-4780",
+      "rank": null
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-4813",
+      "rank": null
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-4817",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-4844",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-4887",
+      "rank": 3
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-4914",
+      "rank": 2
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-4954",
+      "rank": null
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-4969",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-4976",
+      "rank": 2
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-5031",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-5048",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-5059",
+      "rank": 8
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-5072",
+      "rank": null
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-5073",
+      "rank": 8
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-5169",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-5178",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-5188",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-5194",
+      "rank": 2
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-5199",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-5237",
+      "rank": 5
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-5285",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-5298",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-5351",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-5366",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-5435",
+      "rank": 7
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-5518",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-5520",
+      "rank": 2
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-5537",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-5588",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-5618",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-5621",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-5669",
+      "rank": null
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-5672",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-5703",
+      "rank": null
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-5735",
+      "rank": null
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-5773",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-5800",
+      "rank": 2
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-5867",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-5953",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-5981",
+      "rank": null
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-5997",
+      "rank": null
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-6031",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-6142",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-6170",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-6191",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-6249",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-6344",
+      "rank": 3
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-6360",
+      "rank": 2
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-6364",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-6365",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-6366",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-6381",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-6406",
+      "rank": null
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-6409",
+      "rank": 2
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-6435",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-6450",
+      "rank": null
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-6556",
+      "rank": 2
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-6681",
+      "rank": null
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-6695",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-6740",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-6817",
+      "rank": 5
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-6994",
+      "rank": 6
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-7106",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "DERBY-7132",
+      "rank": null
+    }
+  ]
+}

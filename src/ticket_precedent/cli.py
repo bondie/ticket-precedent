@@ -227,6 +227,7 @@ def _eval(args: argparse.Namespace) -> int:
                 },
                 indent=2,
             )
+            + "\n"
         )
     return 0
 

@@ -1,0 +1,1618 @@
+{
+  "project": "ZOOKEEPER",
+  "since": null,
+  "variant": "comments",
+  "model": "bge-m3",
+  "summaries": [
+    {
+      "mode": "bm25",
+      "queries": 105,
+      "hit_at_1": 0.5619047619047619,
+      "hit_at_5": 0.7238095238095238,
+      "hit_at_10": 0.780952380952381,
+      "mrr_at_10": 0.6383597883597883,
+      "mrr_ci_low": 0.5506084656084657,
+      "mrr_ci_high": 0.7218783068783068,
+      "latency_ms_p50": 44.229666935279965
+    },
+    {
+      "mode": "vector",
+      "queries": 105,
+      "hit_at_1": 0.6095238095238096,
+      "hit_at_5": 0.8285714285714286,
+      "hit_at_10": 0.8380952380952381,
+      "mrr_at_10": 0.6945238095238095,
+      "mrr_ci_low": 0.6153968253968254,
+      "mrr_ci_high": 0.7700793650793651,
+      "latency_ms_p50": 67.75629217736423
+    },
+    {
+      "mode": "hybrid",
+      "queries": 105,
+      "hit_at_1": 0.6476190476190476,
+      "hit_at_5": 0.8380952380952381,
+      "hit_at_10": 0.8571428571428571,
+      "mrr_at_10": 0.7194708994708995,
+      "mrr_ci_low": 0.6377777777777778,
+      "mrr_ci_high": 0.7971428571428572,
+      "latency_ms_p50": 111.94645916111767
+    }
+  ],
+  "queries": [
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-149",
+      "rank": null
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-652",
+      "rank": 8
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-752",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-813",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-1003",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-1078",
+      "rank": 4
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-1186",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-1242",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-1349",
+      "rank": null
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-1461",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-1472",
+      "rank": null
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-1565",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-1570",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-1571",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-1616",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-1682",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-1694",
+      "rank": 2
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-1711",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-1763",
+      "rank": 8
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-1813",
+      "rank": null
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-1845",
+      "rank": 5
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-1846",
+      "rank": 2
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-1996",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-2004",
+      "rank": null
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-2009",
+      "rank": 2
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-2042",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-2046",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-2078",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-2085",
+      "rank": null
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-2151",
+      "rank": 9
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-2242",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-2278",
+      "rank": 2
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-2287",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-2292",
+      "rank": null
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-2318",
+      "rank": null
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-2331",
+      "rank": null
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-2337",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-2341",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-2351",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-2367",
+      "rank": 2
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-2376",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-2381",
+      "rank": null
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-2390",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-2446",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-2451",
+      "rank": 2
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-2483",
+      "rank": null
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-2496",
+      "rank": null
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-2509",
+      "rank": 3
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-2527",
+      "rank": null
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-2530",
+      "rank": 2
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-2537",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-2587",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-2618",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-2660",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-2698",
+      "rank": 5
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-2705",
+      "rank": null
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-2881",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-3149",
+      "rank": 2
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-3214",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-3280",
+      "rank": null
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-3290",
+      "rank": 6
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-3458",
+      "rank": null
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-3493",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-3645",
+      "rank": null
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-3725",
+      "rank": null
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-3752",
+      "rank": null
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-3753",
+      "rank": 2
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-3776",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-3778",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-3830",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-3842",
+      "rank": 6
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-3990",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-4244",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-4245",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-4254",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-4255",
+      "rank": 2
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-4256",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-4271",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-4274",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-4304",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-4305",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-4347",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-4383",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-4440",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-4450",
+      "rank": null
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-4451",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-4525",
+      "rank": 10
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-4555",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-4626",
+      "rank": null
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-4631",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-4667",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-4680",
+      "rank": null
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-4692",
+      "rank": null
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-4701",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-4731",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-4797",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-4813",
+      "rank": 2
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-4887",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-4894",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-4911",
+      "rank": 4
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-4927",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-4948",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-5006",
+      "rank": 1
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-5007",
+      "rank": 2
+    },
+    {
+      "mode": "bm25",
+      "key": "ZOOKEEPER-5078",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-149",
+      "rank": null
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-652",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-752",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-813",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-1003",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-1078",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-1186",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-1242",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-1349",
+      "rank": 3
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-1461",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-1472",
+      "rank": 3
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-1565",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-1570",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-1571",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-1616",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-1682",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-1694",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-1711",
+      "rank": 2
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-1763",
+      "rank": 2
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-1813",
+      "rank": null
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-1845",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-1846",
+      "rank": null
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-1996",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-2004",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-2009",
+      "rank": 2
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-2042",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-2046",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-2078",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-2085",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-2151",
+      "rank": null
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-2242",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-2278",
+      "rank": 2
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-2287",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-2292",
+      "rank": null
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-2318",
+      "rank": null
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-2331",
+      "rank": 4
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-2337",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-2341",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-2351",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-2367",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-2376",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-2381",
+      "rank": null
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-2390",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-2446",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-2451",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-2483",
+      "rank": null
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-2496",
+      "rank": null
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-2509",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-2527",
+      "rank": null
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-2530",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-2537",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-2587",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-2618",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-2660",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-2698",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-2705",
+      "rank": null
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-2881",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-3149",
+      "rank": 2
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-3214",
+      "rank": 2
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-3280",
+      "rank": 3
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-3290",
+      "rank": 3
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-3458",
+      "rank": null
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-3493",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-3645",
+      "rank": 5
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-3725",
+      "rank": 5
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-3752",
+      "rank": 4
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-3753",
+      "rank": 5
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-3776",
+      "rank": 2
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-3778",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-3830",
+      "rank": 2
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-3842",
+      "rank": 2
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-3990",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-4244",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-4245",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-4254",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-4255",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-4256",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-4271",
+      "rank": 2
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-4274",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-4304",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-4305",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-4347",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-4383",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-4440",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-4450",
+      "rank": null
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-4451",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-4525",
+      "rank": null
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-4555",
+      "rank": 5
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-4626",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-4631",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-4667",
+      "rank": null
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-4680",
+      "rank": null
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-4692",
+      "rank": null
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-4701",
+      "rank": 2
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-4731",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-4797",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-4813",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-4887",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-4894",
+      "rank": 3
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-4911",
+      "rank": 3
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-4927",
+      "rank": 8
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-4948",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-5006",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-5007",
+      "rank": 1
+    },
+    {
+      "mode": "vector",
+      "key": "ZOOKEEPER-5078",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-149",
+      "rank": null
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-652",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-752",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-813",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-1003",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-1078",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-1186",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-1242",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-1349",
+      "rank": 4
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-1461",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-1472",
+      "rank": 4
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-1565",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-1570",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-1571",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-1616",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-1682",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-1694",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-1711",
+      "rank": 2
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-1763",
+      "rank": 2
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-1813",
+      "rank": null
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-1845",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-1846",
+      "rank": 6
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-1996",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-2004",
+      "rank": 2
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-2009",
+      "rank": 2
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-2042",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-2046",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-2078",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-2085",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-2151",
+      "rank": null
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-2242",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-2278",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-2287",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-2292",
+      "rank": null
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-2318",
+      "rank": null
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-2331",
+      "rank": 4
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-2337",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-2341",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-2351",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-2367",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-2376",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-2381",
+      "rank": null
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-2390",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-2446",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-2451",
+      "rank": 2
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-2483",
+      "rank": null
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-2496",
+      "rank": null
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-2509",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-2527",
+      "rank": null
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-2530",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-2537",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-2587",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-2618",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-2660",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-2698",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-2705",
+      "rank": null
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-2881",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-3149",
+      "rank": 2
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-3214",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-3280",
+      "rank": 4
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-3290",
+      "rank": 3
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-3458",
+      "rank": null
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-3493",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-3645",
+      "rank": 5
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-3725",
+      "rank": 4
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-3752",
+      "rank": 4
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-3753",
+      "rank": 5
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-3776",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-3778",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-3830",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-3842",
+      "rank": 2
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-3990",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-4244",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-4245",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-4254",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-4255",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-4256",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-4271",
+      "rank": 2
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-4274",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-4304",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-4305",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-4347",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-4383",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-4440",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-4450",
+      "rank": null
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-4451",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-4525",
+      "rank": 9
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-4555",
+      "rank": 3
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-4626",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-4631",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-4667",
+      "rank": null
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-4680",
+      "rank": null
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-4692",
+      "rank": null
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-4701",
+      "rank": 2
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-4731",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-4797",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-4813",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-4887",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-4894",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-4911",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-4927",
+      "rank": 5
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-4948",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-5006",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-5007",
+      "rank": 1
+    },
+    {
+      "mode": "hybrid",
+      "key": "ZOOKEEPER-5078",
+      "rank": 1
+    }
+  ]
+}
