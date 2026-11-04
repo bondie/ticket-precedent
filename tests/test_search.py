@@ -132,12 +132,12 @@ PRICES = "The order header has the wholesale price list but the items carry reta
 def two_trackers(store, embedder):
     jira = [
         make_ticket("P-1", "Order items priced from the retail list", PRICES, created="2023-02-01"),
-        make_ticket("P-2", "[R:200359] Wrong prices on orders", PRICES, created="2024-05-02"),
+        make_ticket("P-2", "[R:18342] Wrong prices on orders", PRICES, created="2024-05-02"),
         make_ticket("P-3", "Wrong prices on orders again", PRICES, created="2025-01-01"),
         make_ticket("P-4", "Blurry product images", "Upscaled thumbnails.", created="2023-06-01"),
     ]
     helpdesk = [
-        make_ticket("200359", "Wrong prices on orders", PRICES, created="2024-05-01", source="hd")
+        make_ticket("18342", "Wrong prices on orders", PRICES, created="2024-05-01", source="hd")
     ]
     sync(store, embedder, ListConnector(jira), "demo", ChunkingConfig())
     sync(store, embedder, ListConnector(helpdesk), "hd", ChunkingConfig())
@@ -150,19 +150,19 @@ def precedents(store: Store, embedder, key: str) -> list[str]:
 
 
 def test_precedents_are_older_tickets_other_than_the_query(two_trackers, embedder):
-    found = precedents(two_trackers, embedder, "200359")
+    found = precedents(two_trackers, embedder, "18342")
     assert found[0] == "P-1"
-    assert {"200359", "P-2", "P-3"}.isdisjoint(found)
+    assert {"18342", "P-2", "P-3"}.isdisjoint(found)
 
 
 def test_precedents_skip_tickets_named_in_the_title(two_trackers, embedder):
     found = precedents(two_trackers, embedder, "P-2")
     assert found[0] == "P-1"
-    assert "200359" not in found
+    assert "18342" not in found
 
 
 def test_resolve_ticket_needs_a_source_only_for_ambiguous_keys(two_trackers):
-    assert resolve_ticket(two_trackers, "200359")["source"] == "hd"
+    assert resolve_ticket(two_trackers, "18342")["source"] == "hd"
     assert resolve_ticket(two_trackers, "P-1", "demo")["key"] == "P-1"
     other = make_ticket("P-1", "Same key elsewhere", source="hd")
     two_trackers.replace_ticket(other, [], {})
@@ -175,7 +175,9 @@ def test_resolve_ticket_needs_a_source_only_for_ambiguous_keys(two_trackers):
 
 
 def test_title_only_match_shows_a_preview_instead_of_an_empty_snippet(store, embedder):
-    ticket = make_ticket("E-1", "Comgate hotfix", comments=["Gateway returned PAID twice " * 3])
+    ticket = make_ticket(
+        "E-1", "Payment gateway hotfix", comments=["Gateway returned PAID twice " * 3]
+    )
     sync(store, embedder, ListConnector([ticket]), "demo", ChunkingConfig())
     body = store.db.execute("SELECT id, ticket_id FROM chunks WHERE kind = 'body'").fetchone()
     (result,) = describe(store, [Hit(body["ticket_id"], body["id"], 1.0)])
