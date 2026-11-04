@@ -63,7 +63,7 @@ def create_server(config: Config) -> MCPServer:
     def precedents_for(
         key: str, source: str | None = None, only_source: str | None = None, limit: int = 5
     ) -> dict[str, Any]:
-        """Earlier tickets resembling an indexed ticket, e.g. helpdesk thread 200359 or PROJ-42.
+        """Earlier tickets resembling an indexed ticket, e.g. helpdesk thread 18342 or PROJ-42.
 
         Prefer this to similar_tickets whenever the user names a ticket. The ticket's title and
         description are the query, and only tickets created before it are returned, without

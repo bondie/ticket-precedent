@@ -206,8 +206,8 @@ def find_precedents(
 ) -> Outcome:
     """Tickets created before `ticket` that look like it.
 
-    Tickets named in its title are left out: a JIRA issue titled "[R:200359] ..." was created
-    from helpdesk thread 200359, so that thread is the same problem, not a precedent.
+    Tickets named in its title are left out: a JIRA issue titled "[R:18342] ..." was created
+    from helpdesk thread 18342, so that thread is the same problem, not a precedent.
     """
     named = searcher.store.tickets_by_key(KEY_MENTION.findall(ticket["title"]))
     filters = Filters(
