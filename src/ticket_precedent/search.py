@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import json
+import re
+import sqlite3
 from collections.abc import Iterable, Sequence
 from dataclasses import dataclass, field
 from typing import Any
@@ -9,9 +11,11 @@ import sqlite_vec
 
 from .embeddings import Embedder, EmbeddingError
 from .store import Store
-from .text import tokens
+from .text import clean, tokens
 
 MODES = ("bm25", "vector", "hybrid")
+QUERY_CHARS = 2000
+KEY_MENTION = re.compile(r"\b[A-Z][A-Z0-9_]+-\d+\b|\b\d{4,}\b")
 
 
 @dataclass(frozen=True)
@@ -172,6 +176,49 @@ def search_or_degrade(
         return Outcome(hits, f"Semantic search unavailable, keyword matches only. {error}")
 
 
+class TicketNotFoundError(LookupError):
+    pass
+
+
+def resolve_ticket(store: Store, key: str, source: str | None = None) -> sqlite3.Row:
+    """Find an indexed ticket by key, in `source` or in the only source that has the key."""
+    if source is not None:
+        row = store.ticket(source, key)
+        if row is None:
+            raise TicketNotFoundError(f"Ticket {key!r} is not indexed in source {source!r}")
+        return row
+    rows = store.tickets_by_key([key])
+    if not rows:
+        raise TicketNotFoundError(f"Ticket {key!r} is not indexed")
+    if len(rows) > 1:
+        sources = ", ".join(row["source"] for row in rows)
+        raise TicketNotFoundError(f"Ticket {key!r} exists in {sources}; pass the source")
+    return rows[0]
+
+
+def ticket_query(title: str, description: str | None, max_chars: int = QUERY_CHARS) -> str:
+    """What the reporter wrote before anyone answered; the benchmark queries the same way."""
+    return f"{title}\n\n{description or ''}".strip()[:max_chars]
+
+
+def find_precedents(
+    searcher: Searcher, ticket: sqlite3.Row, limit: int, source: str | None = None
+) -> Outcome:
+    """Tickets created before `ticket` that look like it.
+
+    Tickets named in its title are left out: a JIRA issue titled "[R:200359] ..." was created
+    from helpdesk thread 200359, so that thread is the same problem, not a precedent.
+    """
+    named = searcher.store.tickets_by_key(KEY_MENTION.findall(ticket["title"]))
+    filters = Filters(
+        source=source,
+        created_before=ticket["created"],
+        exclude_ticket_ids=frozenset({ticket["id"], *(row["id"] for row in named)}),
+    )
+    text = ticket_query(ticket["title"], ticket["description"])
+    return search_or_degrade(searcher, text, "hybrid", limit, filters)
+
+
 def _best_per_ticket(hits: Iterable[Hit], exclude: frozenset[int]) -> list[Hit]:
     seen: dict[int, Hit] = {}
     for hit in hits:
@@ -189,6 +236,10 @@ def describe(store: Store, hits: Sequence[Hit], snippet_chars: int = 300) -> lis
         ticket = tickets[hit.ticket_id]
         chunk = chunks[hit.chunk_id]
         snippet = chunk["text"].removeprefix(ticket["title"]).strip()
+        matched_in = chunk["kind"]
+        if not snippet:
+            matched_in = "title"
+            snippet = _preview(ticket)
         results.append(
             {
                 "source": ticket["source"],
@@ -201,7 +252,7 @@ def describe(store: Store, hits: Sequence[Hit], snippet_chars: int = 300) -> lis
                 "created": (ticket["created"] or "")[:10],
                 "time_spent_hours": _hours(ticket["time_spent_seconds"]),
                 "score": round(hit.score, 4),
-                "matched_in": chunk["kind"],
+                "matched_in": matched_in,
                 "snippet": _truncate(snippet, snippet_chars),
             }
         )
@@ -227,6 +278,16 @@ def ticket_details(store: Store, source: str, key: str) -> dict[str, Any] | None
         "comments": json.loads(ticket["comments_json"]),
         "links": json.loads(ticket["links_json"]),
     }
+
+
+def _preview(ticket: sqlite3.Row) -> str:
+    description = clean(ticket["description"] or "")
+    if description:
+        return description
+    comments = json.loads(ticket["comments_json"])
+    if not comments:
+        return ""
+    return clean(comments[0]["body"])
 
 
 def _hours(seconds: int | None) -> float | None:

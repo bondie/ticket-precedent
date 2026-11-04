@@ -8,17 +8,29 @@ from mcp.types import ToolAnnotations
 from . import __version__
 from .autosync import start_background_sync
 from .config import Config, build_searcher
-from .search import Filters, describe, search_or_degrade, ticket_details
+from .search import (
+    Filters,
+    Outcome,
+    TicketNotFoundError,
+    describe,
+    find_precedents,
+    resolve_ticket,
+    search_or_degrade,
+    ticket_details,
+)
 from .store import Store
 
 INSTRUCTIONS = """\
 Search an index of past tickets (issue tracker issues and helpdesk threads) for precedents.
-Call similar_tickets with a symptom, an error message or a whole new ticket, then open the
-most promising hits with get_ticket to read the discussion and how they were resolved.
-Results combine keyword (BM25) and semantic (embedding) relevance, so paraphrases match too.
+When the user names a ticket (a helpdesk number or an issue key), call precedents_for with
+its key. For a symptom, an error message or a ticket that is not indexed yet, call
+similar_tickets with the text. Then open the most promising hits with get_ticket to read the
+discussion and how they were resolved. Results combine keyword (BM25) and semantic
+(embedding) relevance, so paraphrases match too.
 """
 
 READ_ONLY = ToolAnnotations(read_only_hint=True, open_world_hint=False)
+MAX_LIMIT = 20
 
 
 def create_server(config: Config) -> MCPServer:
@@ -27,6 +39,12 @@ def create_server(config: Config) -> MCPServer:
     server: MCPServer = MCPServer(
         "ticket-precedent", instructions=INSTRUCTIONS, version=__version__
     )
+
+    def respond(outcome: Outcome, **extra: Any) -> dict[str, Any]:
+        response: dict[str, Any] = {**extra, "results": describe(store, outcome.hits)}
+        if outcome.warning:
+            response["warning"] = outcome.warning
+        return response
 
     @server.tool(annotations=READ_ONLY)
     def similar_tickets(
@@ -38,13 +56,27 @@ def create_server(config: Config) -> MCPServer:
         Returns `results` with key, title, url, status, resolution, time spent and the best
         matching snippet, plus a `warning` when only keyword search was available.
         """
-        outcome = search_or_degrade(
-            searcher, text, "hybrid", max(1, min(limit, 20)), Filters(source, project)
-        )
-        response: dict[str, Any] = {"results": describe(store, outcome.hits)}
-        if outcome.warning:
-            response["warning"] = outcome.warning
-        return response
+        limit = max(1, min(limit, MAX_LIMIT))
+        return respond(search_or_degrade(searcher, text, "hybrid", limit, Filters(source, project)))
+
+    @server.tool(annotations=READ_ONLY)
+    def precedents_for(
+        key: str, source: str | None = None, only_source: str | None = None, limit: int = 5
+    ) -> dict[str, Any]:
+        """Earlier tickets resembling an indexed ticket, e.g. helpdesk thread 200359 or PROJ-42.
+
+        Prefer this to similar_tickets whenever the user names a ticket. The ticket's title and
+        description are the query, and only tickets created before it are returned, without
+        the ticket itself and tickets its title names. Pass `source` only when the key exists
+        in several sources; `only_source` restricts the results to one source.
+        """
+        try:
+            ticket = resolve_ticket(store, key, source)
+        except TicketNotFoundError as error:
+            return {"error": f"{error}. Read it from the tracker and use similar_tickets."}
+        outcome = find_precedents(searcher, ticket, max(1, min(limit, MAX_LIMIT)), only_source)
+        query = {name: ticket[name] for name in ("source", "key", "title", "created")}
+        return respond(outcome, ticket=query)
 
     @server.tool(annotations=READ_ONLY)
     def get_ticket(source: str, key: str) -> dict[str, Any]:

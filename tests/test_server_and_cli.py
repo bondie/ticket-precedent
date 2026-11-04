@@ -61,6 +61,14 @@ def test_cli_sync_search_show_and_stats(config_file: Path, capsys: pytest.Captur
 
     assert cli.main(["--config", str(config_file), "show", "demo", "NOPE"]) == 1
 
+    assert cli.main(["--config", str(config_file), "precedents", "D-2", "--json"]) == 0
+    captured = capsys.readouterr()
+    assert "precedents for [demo] D-2" in captured.err
+    assert [result["key"] for result in json.loads(captured.out)] == ["D-1"]
+
+    assert cli.main(["--config", str(config_file), "precedents", "NOPE"]) == 1
+    assert "'NOPE' is not indexed" in capsys.readouterr().err
+
     assert cli.main(["--config", str(config_file), "stats"]) == 0
     assert "demo: 3 tickets" in capsys.readouterr().out
 
@@ -83,13 +91,18 @@ def test_mcp_tools(config_file: Path):
     mcp = server.create_server(load_config(config_file))
 
     tools = {tool.name: tool for tool in asyncio.run(mcp.list_tools())}
-    assert set(tools) == {"similar_tickets", "get_ticket", "list_sources"}
+    assert set(tools) == {"similar_tickets", "precedents_for", "get_ticket", "list_sources"}
     assert all(tool.annotations and tool.annotations.read_only_hint for tool in tools.values())
 
     response = call(mcp, "similar_tickets", text="payment gateway timeout", limit=2)
     assert response["results"][0]["key"] == "D-2"
     assert len(response["results"]) <= 2
     assert "warning" not in response
+
+    response = call(mcp, "precedents_for", key="D-3", limit=5)
+    assert response["ticket"]["key"] == "D-3"
+    assert {result["key"] for result in response["results"]} <= {"D-1", "D-2"}
+    assert "not indexed" in call(mcp, "precedents_for", key="D-9")["error"]
 
     assert call(mcp, "get_ticket", source="demo", key="D-2")["title"].startswith("Checkout")
     assert "error" in call(mcp, "get_ticket", source="demo", key="X")
