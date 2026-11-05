@@ -30,6 +30,9 @@ class Ticket:
     created: datetime | None = None
     updated: datetime | None = None
     time_spent_seconds: int | None = None
+    issue_type: str = ""
+    initial_estimate_seconds: int | None = None
+    last_logged: datetime | None = None
     comments: list[Comment] = field(default_factory=list)
     links: list[Link] = field(default_factory=list)
 

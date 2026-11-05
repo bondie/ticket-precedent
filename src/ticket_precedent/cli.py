@@ -22,6 +22,7 @@ from .config import (
     load_config,
 )
 from .connectors.jira import JiraConnector
+from .effort import reference_for_ticket
 from .embeddings import EmbeddingError
 from .evaluation.dataset import duplicate_queries
 from .evaluation.metrics import markdown_table
@@ -90,6 +91,14 @@ def _parser() -> argparse.ArgumentParser:
     cmd.add_argument("--limit", type=int, default=5)
     cmd.add_argument("--json", action="store_true")
     cmd.set_defaults(handler=_precedents)
+
+    cmd = commands.add_parser("effort", help="logged hours of similar tickets finished earlier")
+    cmd.add_argument("key", help="ticket key, e.g. PROJ-42")
+    cmd.add_argument("--source", help="source of the ticket when the key is ambiguous")
+    cmd.add_argument("--since", help="only tickets created on or after YYYY-MM-DD")
+    cmd.add_argument("--limit", type=int, default=10)
+    cmd.add_argument("--json", action="store_true")
+    cmd.set_defaults(handler=_effort)
 
     cmd = commands.add_parser("show", help="print one indexed ticket")
     cmd.add_argument("source")
@@ -169,6 +178,21 @@ def _precedents(args: argparse.Namespace) -> int:
     return _print_outcome(store, outcome, as_json=args.json)
 
 
+def _effort(args: argparse.Namespace) -> int:
+    config = load_config(args.config)
+    store = Store(config.index_path)
+    ticket = resolve_ticket(store, args.key, args.source)
+    found = reference_for_ticket(build_searcher(config, store), ticket, args.limit, args.since)
+    summary = found.summary()
+    print(
+        f"[{ticket['source']}] {ticket['key']} {ticket['title']}: {summary['tickets']} tickets "
+        f"finished before {found.as_of[:10]}, median {summary['median_hours']} h, "
+        f"P25-P75 {summary['p25_hours']}-{summary['p75_hours']} h",
+        file=sys.stderr,
+    )
+    return _print_outcome(store, Outcome(found.hits, found.warning), as_json=args.json)
+
+
 def _print_outcome(store: Store, outcome: Outcome, as_json: bool) -> int:
     if outcome.warning:
         print(f"warning: {outcome.warning}", file=sys.stderr)
@@ -233,7 +257,7 @@ def _eval(args: argparse.Namespace) -> int:
         sync(
             store,
             embedder,
-            JiraConnector(source, APACHE_JIRA, jql),
+            JiraConnector(source, APACHE_JIRA, jql, page_size=100, changelog=False),
             source,
             ChunkingConfig(index_comments=not args.no_comments, skip_comment_authors=APACHE_BOTS),
             progress=_progress(source),

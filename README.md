@@ -106,12 +106,14 @@ Describe the problem in your own words and let the agent pick the tool:
 | *Find precedents for helpdesk 18342.* | `precedents_for("18342")` |
 | *Have we seen "invoice PDF missing although ERP exported it" before?* | `similar_tickets(text)` |
 | *Open SHOP-412 and tell me how it was fixed.* | `get_ticket("acme-jira", "SHOP-412")` |
-| *How long did similar fixes take? Only look in JIRA.* | `precedents_for(..., only_source="acme-jira")` and reads `time_spent_hours` |
+| *How long will SHOP-431 take?* | `effort_reference(key="SHOP-431")` |
+| *How long did similar fixes take since we changed the process in January?* | `effort_reference(text, since="2026-01-01")` |
 
 | Tool | What it does |
 |---|---|
 | `precedents_for(key, source?, only_source?, limit?)` | Precedents for a ticket that is already indexed |
 | `similar_tickets(text, source?, project?, limit?)` | Precedents for any text: a symptom, an error message, a ticket that is not indexed yet |
+| `effort_reference(key? \| text?, source?, since?, limit?)` | Similar finished tickets with logged hours, plus their median and P25–P75 |
 | `get_ticket(source, key)` | Full indexed description, comments and links of one ticket |
 | `list_sources()` | Indexed sources, counts and last sync time |
 
@@ -122,9 +124,14 @@ ticket itself. It also leaves out tickets named in the ticket's title: a JIRA is
 problem, not a precedent. The key alone is enough. `source` is needed only when two sources
 share a key.
 
-Every result carries the key, title, URL, status, resolution, creation date, time spent and
-a snippet of the best-matching text. `matched_in` says whether that text is the description,
-a comment or only the title. `score` is the fusion score: it orders the results and is not a
+`effort_reference` is the retrieval half of
+[reference class forecasting](https://en.wikipedia.org/wiki/Reference_class_forecasting): an
+estimate starts from how long similar work actually took. See
+[Effort reference](#effort-reference).
+
+Every result carries the key, title, URL, status, resolution, issue type, creation date,
+time spent and a snippet of the best-matching text. `matched_in` says whether that text is
+the description, a comment or only the title. `score` is the fusion score: it orders the results and is not a
 probability. All tools are read-only and read only the local index.
 
 ### Use the command line
@@ -133,6 +140,7 @@ probability. All tools are read-only and read only the local index.
 |---|---|
 | `tp precedents KEY [--only-source S] [--limit N] [--json]` | Earlier tickets that look like an indexed ticket |
 | `tp search TEXT [--source S] [--project P] [--mode hybrid\|vector\|bm25] [--json]` | Search by free text |
+| `tp effort KEY [--since YYYY-MM-DD] [--limit N] [--json]` | Logged hours of similar tickets finished before KEY was created |
 | `tp show SOURCE KEY` | Print one indexed ticket as JSON |
 | `tp sync [--source S] [--full]` | Fetch new and updated tickets; `--full` re-reads everything |
 | `tp stats` | Indexed sources and sync times |
@@ -236,8 +244,8 @@ flowchart LR
     Q --> V
     F --> R[Ticket-level<br/>RRF fusion]
     V --> R
-    R --> MCP[MCP server<br/>precedents_for · similar_tickets]
-    R --> CLI[tp precedents · tp search]
+    R --> MCP[MCP server<br/>precedents_for · similar_tickets<br/>effort_reference]
+    R --> CLI[tp precedents · tp search · tp effort]
 ```
 
 - **One file, no services.** FTS5 and [sqlite-vec](https://github.com/asg017/sqlite-vec)
@@ -254,6 +262,33 @@ flowchart LR
   64 rarest terms that exist in the index, using FTS5 vocabulary statistics.
 - **Multilingual.** bge-m3 handles mixed Czech and English. BM25 folds diacritics, so
   *objednávka* and *objednavka* match.
+
+## Effort reference
+
+`effort_reference` answers "how long did work like this take?" with the logged time of the
+most similar tickets, never with a model's guess. It is meant as the input of an estimating
+agent, which adjusts the range and cites the tickets.
+
+- **Only finished work counts.** A ticket joins the reference class once its time was all
+  logged, so a ticket still in progress cannot pull the median down. For an indexed ticket
+  the cut-off is the moment it was created: the answer is what could have been known when it
+  was estimated. That makes the tool usable for backtests without leaking the future.
+- **When was the time final?** The JIRA connector reads each issue's changelog and keeps
+  the moment time was last logged. When sub-tasks carry part of the time, their worklogs
+  are not in the parent's changelog, so the last update stands in for it.
+- **What did people forecast?** The index also keeps the original estimate as it stood when
+  the first time was logged. Trackers often raise the estimate to match the time spent once
+  the work is done, so the current value is a record of the effort, not a forecast. The tool
+  never returns it: it is there to compare an agent's estimate with the human one.
+- **Process changes.** `since` keeps only tickets created after a date. When a team changes
+  how it works, for example by implementing with AI agents, older tickets overstate the
+  effort and a recent reference class is the better guide.
+- **Quartiles, not a mean.** Logged time is skewed: a few tickets take ten times the usual.
+  The median and the P25–P75 range ignore the outliers that a mean would chase.
+
+The changelog makes JIRA pages slower, so sources sync 50 issues per request. Set
+`changelog: false` on a source that does not need effort data. After upgrading from an
+index without these fields, run `tp sync --full` once.
 
 ## Evaluation methodology
 

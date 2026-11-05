@@ -16,6 +16,15 @@ from .text import clean, tokens
 MODES = ("bm25", "vector", "hybrid")
 QUERY_CHARS = 2000
 KEY_MENTION = re.compile(r"\b[A-Z][A-Z0-9_]+-\d+\b|\b\d{4,}\b")
+TICKET_CONDITIONS = """
+    (:source IS NULL OR t.source = :source)
+    AND (:project IS NULL OR t.project = :project)
+    AND (:before IS NULL OR t.created < :before)
+    AND (:after IS NULL OR t.created >= :after)
+    AND (:logged_before IS NULL OR (
+        t.time_spent_seconds > 0 AND COALESCE(t.last_logged, t.updated) < :logged_before
+    ))
+"""
 
 
 @dataclass(frozen=True)
@@ -23,6 +32,9 @@ class Filters:
     source: str | None = None
     project: str | None = None
     created_before: str | None = None
+    created_after: str | None = None
+    logged_before: str | None = None
+    """Only tickets with logged time whose last worklog came before this moment."""
     exclude_ticket_ids: frozenset[int] = field(default_factory=frozenset)
 
 
@@ -66,21 +78,28 @@ class Searcher:
         self._query_vectors.update(zip(missing, vectors, strict=True))
 
     def search(
-        self, text: str, mode: str = "hybrid", limit: int = 5, filters: Filters | None = None
+        self,
+        text: str,
+        mode: str = "hybrid",
+        limit: int = 5,
+        filters: Filters | None = None,
+        pool: int | None = None,
     ) -> list[Hit]:
+        """`pool` widens the candidate chunks for filters that discard most of them."""
         filters = filters or Filters()
+        pool = pool or self.candidate_chunks
         if mode == "bm25":
-            return self.lexical(text, filters)[:limit]
+            return self.lexical(text, filters, pool)[:limit]
         if mode == "vector":
-            return self.semantic(text, filters)[:limit]
+            return self.semantic(text, filters, pool)[:limit]
         if mode == "hybrid":
-            return self.hybrid(text, filters)[:limit]
+            return self.hybrid(text, filters, pool)[:limit]
         raise ValueError(f"Unknown mode {mode!r}, expected one of {MODES}")
 
-    def hybrid(self, text: str, filters: Filters) -> list[Hit]:
+    def hybrid(self, text: str, filters: Filters, pool: int | None = None) -> list[Hit]:
         rankings = [
-            (1.0, self.semantic(text, filters)),
-            (self.lexical_weight, self.lexical(text, filters)),
+            (1.0, self.semantic(text, filters, pool)),
+            (self.lexical_weight, self.lexical(text, filters, pool)),
         ]
         scores: dict[int, float] = {}
         best_chunk: dict[int, int] = {}
@@ -92,29 +111,24 @@ class Searcher:
         ordered = sorted(scores, key=scores.__getitem__, reverse=True)
         return [Hit(tid, best_chunk[tid], scores[tid]) for tid in ordered]
 
-    def lexical(self, text: str, filters: Filters) -> list[Hit]:
+    def lexical(self, text: str, filters: Filters, pool: int | None = None) -> list[Hit]:
         terms = self._query_terms(text)
         if not terms:
             return []
         rows = self.store.db.execute(
-            """
+            f"""
             SELECT c.id AS chunk_id, c.ticket_id, bm25(chunks_fts) AS score
             FROM chunks_fts
             JOIN chunks c ON c.id = chunks_fts.rowid
             JOIN tickets t ON t.id = c.ticket_id
-            WHERE chunks_fts MATCH :query
-              AND (:source IS NULL OR t.source = :source)
-              AND (:project IS NULL OR t.project = :project)
-              AND (:before IS NULL OR t.created < :before)
+            WHERE chunks_fts MATCH :query AND {TICKET_CONDITIONS}
             ORDER BY score
             LIMIT :limit
             """,
             {
+                **_ticket_parameters(filters),
                 "query": " OR ".join(f'"{term}"' for term in terms),
-                "source": filters.source,
-                "project": filters.project,
-                "before": filters.created_before,
-                "limit": self.candidate_chunks,
+                "limit": pool or self.candidate_chunks,
             },
         )
         return _best_per_ticket(
@@ -122,7 +136,7 @@ class Searcher:
             filters.exclude_ticket_ids,
         )
 
-    def semantic(self, text: str, filters: Filters) -> list[Hit]:
+    def semantic(self, text: str, filters: Filters, pool: int | None = None) -> list[Hit]:
         if not self.store.has_vectors:
             return []
         vector = self._query_vectors.get(text) or self.embedder.embed_query(text)
@@ -140,15 +154,13 @@ class Searcher:
             FROM knn
             JOIN chunks c ON c.id = knn.rowid
             JOIN tickets t ON t.id = c.ticket_id
-            WHERE :before IS NULL OR t.created < :before
+            WHERE {TICKET_CONDITIONS}
             ORDER BY knn.distance
             """,
             {
+                **_ticket_parameters(filters),
                 "vector": sqlite_vec.serialize_float32(vector),
-                "k": self.candidate_chunks,
-                "source": filters.source,
-                "project": filters.project,
-                "before": filters.created_before,
+                "k": pool or self.candidate_chunks,
             },
         )
         return _best_per_ticket(
@@ -165,14 +177,29 @@ class Searcher:
         return sorted(known, key=frequencies.__getitem__)[: self.max_query_terms]
 
 
+def _ticket_parameters(filters: Filters) -> dict[str, str | None]:
+    return {
+        "source": filters.source,
+        "project": filters.project,
+        "before": filters.created_before,
+        "after": filters.created_after,
+        "logged_before": filters.logged_before,
+    }
+
+
 def search_or_degrade(
-    searcher: Searcher, text: str, mode: str, limit: int, filters: Filters
+    searcher: Searcher,
+    text: str,
+    mode: str,
+    limit: int,
+    filters: Filters,
+    pool: int | None = None,
 ) -> Outcome:
     """Fall back to keyword search when the embedding service is down instead of failing."""
     try:
-        return Outcome(searcher.search(text, mode=mode, limit=limit, filters=filters))
+        return Outcome(searcher.search(text, mode=mode, limit=limit, filters=filters, pool=pool))
     except EmbeddingError as error:
-        hits = searcher.search(text, mode="bm25", limit=limit, filters=filters)
+        hits = searcher.search(text, mode="bm25", limit=limit, filters=filters, pool=pool)
         return Outcome(hits, f"Semantic search unavailable, keyword matches only. {error}")
 
 
@@ -209,14 +236,19 @@ def find_precedents(
     Tickets named in its title are left out: a JIRA issue titled "[R:18342] ..." was created
     from helpdesk thread 18342, so that thread is the same problem, not a precedent.
     """
-    named = searcher.store.tickets_by_key(KEY_MENTION.findall(ticket["title"]))
     filters = Filters(
         source=source,
         created_before=ticket["created"],
-        exclude_ticket_ids=frozenset({ticket["id"], *(row["id"] for row in named)}),
+        exclude_ticket_ids=same_problem(searcher.store, ticket),
     )
     text = ticket_query(ticket["title"], ticket["description"])
     return search_or_degrade(searcher, text, "hybrid", limit, filters)
+
+
+def same_problem(store: Store, ticket: sqlite3.Row) -> frozenset[int]:
+    """The ticket itself and the tickets its title names."""
+    named = store.tickets_by_key(KEY_MENTION.findall(ticket["title"]))
+    return frozenset({ticket["id"], *(row["id"] for row in named)})
 
 
 def _best_per_ticket(hits: Iterable[Hit], exclude: frozenset[int]) -> list[Hit]:
@@ -250,7 +282,8 @@ def describe(store: Store, hits: Sequence[Hit], snippet_chars: int = 300) -> lis
                 "status": ticket["status"],
                 "resolution": ticket["resolution"],
                 "created": (ticket["created"] or "")[:10],
-                "time_spent_hours": _hours(ticket["time_spent_seconds"]),
+                "issue_type": ticket["issue_type"],
+                "time_spent_hours": hours(ticket["time_spent_seconds"]),
                 "score": round(hit.score, 4),
                 "matched_in": matched_in,
                 "snippet": _truncate(snippet, snippet_chars),
@@ -273,7 +306,7 @@ def ticket_details(store: Store, source: str, key: str) -> dict[str, Any] | None
         "resolution": ticket["resolution"],
         "created": ticket["created"],
         "updated": ticket["updated"],
-        "time_spent_hours": _hours(ticket["time_spent_seconds"]),
+        "time_spent_hours": hours(ticket["time_spent_seconds"]),
         "description": ticket["description"],
         "comments": json.loads(ticket["comments_json"]),
         "links": json.loads(ticket["links_json"]),
@@ -290,7 +323,7 @@ def _preview(ticket: sqlite3.Row) -> str:
     return clean(comments[0]["body"])
 
 
-def _hours(seconds: int | None) -> float | None:
+def hours(seconds: int | None) -> float | None:
     if not seconds:
         return None
     return round(seconds / 3600, 2)
