@@ -1,11 +1,12 @@
 from datetime import UTC, datetime
+from typing import Any
 
 import httpx
 
 from ticket_precedent.connectors.jira import JiraConnector, issue_to_ticket
 from ticket_precedent.connectors.mantis import MantisConnector
 from ticket_precedent.connectors.mantis import issue_to_ticket as mantis_ticket
-from ticket_precedent.models import Link
+from ticket_precedent.models import Link, Ticket
 
 
 def jira_issue(key: str, updated: str = "2024-05-02T08:00:00.000+0000", comments_total=None):
@@ -153,3 +154,116 @@ def test_mantis_stops_paging_once_issues_are_older_than_since():
 
     assert [t.key for t in tickets] == ["3", "2"]
     assert requested == [1, 2]
+
+
+def history(at: str, field: str, before: str | None, after: str | None) -> dict[str, Any]:
+    return {
+        "created": f"{at}.000+0000",
+        "items": [{"field": field, "from": before, "to": after}],
+    }
+
+
+def estimated_issue(
+    histories: list[dict[str, Any]],
+    estimate: int | None = None,
+    spent: int = 3600,
+    aggregate: int | None = None,
+    total: int | None = None,
+) -> dict[str, Any]:
+    issue: dict[str, Any] = jira_issue("ACME-5")
+    issue["fields"].update(
+        timeoriginalestimate=estimate,
+        timespent=spent,
+        aggregatetimespent=aggregate or spent,
+        issuetype={"name": "Bug"},
+    )
+    count = len(histories) if total is None else total
+    issue["changelog"] = {"total": count, "histories": histories}
+    return issue
+
+
+def ticket_of(issue: dict[str, Any]) -> Ticket:
+    return issue_to_ticket(issue, "jira", "https://jira.example")
+
+
+def test_estimate_entered_with_the_ticket_and_never_changed():
+    ticket = ticket_of(
+        estimated_issue([history("2024-05-02T10:00:00", "timespent", None, "3600")], 1800)
+    )
+    assert ticket.initial_estimate_seconds == 1800
+    assert ticket.issue_type == "Bug"
+    assert ticket.last_logged == datetime(2024, 5, 2, 10, tzinfo=UTC)
+
+
+def test_estimate_raised_after_work_started_keeps_the_forecast():
+    issue = estimated_issue(
+        [
+            history("2024-05-01T10:00:00", "timeoriginalestimate", None, "1800"),
+            history("2024-05-01T12:00:00", "timeoriginalestimate", "1800", "2700"),
+            history("2024-05-02T10:00:00", "timespent", None, "3600"),
+            history("2024-05-03T10:00:00", "timeoriginalestimate", "2700", "3600"),
+        ],
+        estimate=3600,
+    )
+    assert ticket_of(issue).initial_estimate_seconds == 2700
+
+
+def test_estimate_entered_at_creation_and_changed_later_keeps_the_first_value():
+    issue = estimated_issue(
+        [
+            history("2024-05-02T10:00:00", "timespent", None, "3600"),
+            history("2024-05-02T11:00:00", "timeoriginalestimate", "1800", "3600"),
+        ],
+        estimate=3600,
+    )
+    assert ticket_of(issue).initial_estimate_seconds == 1800
+
+
+def test_estimate_first_entered_after_work_started_is_no_forecast():
+    issue = estimated_issue(
+        [
+            history("2024-05-02T10:00:00", "timespent", None, "3600"),
+            history("2024-05-02T11:00:00", "timeoriginalestimate", None, "3600"),
+        ],
+        estimate=3600,
+    )
+    assert ticket_of(issue).initial_estimate_seconds is None
+
+
+def test_incomplete_changelog_gives_no_estimate_or_log_time():
+    histories = [history("2024-05-02T10:00:00", "timespent", None, "3600")]
+    ticket = ticket_of(estimated_issue(histories, 1800, total=120))
+    assert ticket.initial_estimate_seconds is None
+    assert ticket.last_logged is None
+
+
+def test_time_logged_on_subtasks_leaves_the_log_time_unknown():
+    histories = [history("2024-05-02T10:00:00", "timespent", None, "3600")]
+    ticket = ticket_of(estimated_issue(histories, 1800, spent=3600, aggregate=7200))
+    assert ticket.time_spent_seconds == 7200
+    assert ticket.last_logged is None
+
+
+def test_last_logged_is_the_latest_worklog():
+    histories = [
+        history("2024-05-03T10:00:00", "timespent", "3600", "5400"),
+        history("2024-05-02T10:00:00", "timespent", None, "3600"),
+    ]
+    assert ticket_of(estimated_issue(histories)).last_logged == datetime(2024, 5, 3, 10, tzinfo=UTC)
+
+
+def test_changelog_is_requested_unless_disabled():
+    requested = []
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        requested.append(request.url.params.get("expand"))
+        return httpx.Response(200, json={"issues": [], "total": 0})
+
+    for changelog in (True, False):
+        connector = JiraConnector("jira", "https://jira.example", "x", changelog=changelog)
+        connector._client = httpx.Client(
+            base_url="https://jira.example", transport=httpx.MockTransport(handler)
+        )
+        list(connector.iter_tickets())
+
+    assert requested == ["changelog", None]

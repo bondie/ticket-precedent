@@ -8,6 +8,7 @@ from mcp.types import ToolAnnotations
 from . import __version__
 from .autosync import start_background_sync
 from .config import Config, build_searcher
+from .effort import ReferenceClass, reference_class, reference_for_ticket
 from .search import (
     Filters,
     Outcome,
@@ -24,7 +25,9 @@ INSTRUCTIONS = """\
 Search an index of past tickets (issue tracker issues and helpdesk threads) for precedents.
 When the user names a ticket (a helpdesk number or an issue key), call precedents_for with
 its key. For a symptom, an error message or a ticket that is not indexed yet, call
-similar_tickets with the text. Then open the most promising hits with get_ticket to read the
+similar_tickets with the text. To estimate effort, call effort_reference: it returns
+similar finished tickets with their logged hours and the median and P25-P75 of those hours.
+Then open the most promising hits with get_ticket to read the
 discussion and how they were resolved. Results combine keyword (BM25) and semantic
 (embedding) relevance, so paraphrases match too.
 """
@@ -77,6 +80,42 @@ def create_server(config: Config) -> MCPServer:
         outcome = find_precedents(searcher, ticket, max(1, min(limit, MAX_LIMIT)), only_source)
         query = {name: ticket[name] for name in ("source", "key", "title", "created")}
         return respond(outcome, ticket=query)
+
+    @server.tool(annotations=READ_ONLY)
+    def effort_reference(
+        key: str | None = None,
+        text: str | None = None,
+        source: str | None = None,
+        since: str | None = None,
+        limit: int = 10,
+    ) -> dict[str, Any]:
+        """Similar finished tickets with logged hours, and the median and P25-P75 of the hours.
+
+        Pass `key` for an indexed ticket: only tickets whose time was all logged before it was
+        created count, so the answer is what could have been known when it was estimated.
+        Pass `text` for a new ticket. `since` (YYYY-MM-DD) keeps only tickets created on or
+        after that date, e.g. after a process change made older tickets slower. The ticket's
+        own estimate and time spent are never returned.
+        """
+        if (key is None) == (text is None):
+            return {"error": "Pass either key or text."}
+        limit = max(1, min(limit, MAX_LIMIT))
+        if text is not None:
+            return reference(reference_class(searcher, text, limit=limit, since=since))
+        try:
+            ticket = resolve_ticket(store, key or "", source)
+        except TicketNotFoundError as error:
+            return {"error": f"{error}. Read it from the tracker and pass its text instead."}
+        found = reference_for_ticket(searcher, ticket, limit, since)
+        return reference(found, ticket={name: ticket[name] for name in ("source", "key", "title")})
+
+    def reference(found: ReferenceClass, **extra: Any) -> dict[str, Any]:
+        return respond(
+            Outcome(found.hits, found.warning),
+            **extra,
+            as_of=found.as_of,
+            reference_class=found.summary(),
+        )
 
     @server.tool(annotations=READ_ONLY)
     def get_ticket(source: str, key: str) -> dict[str, Any]:

@@ -32,6 +32,9 @@ CREATE TABLE IF NOT EXISTS tickets (
     created TEXT,
     updated TEXT,
     time_spent_seconds INTEGER,
+    issue_type TEXT NOT NULL DEFAULT '',
+    initial_estimate_seconds INTEGER,
+    last_logged TEXT,
     comments_json TEXT NOT NULL,
     links_json TEXT NOT NULL,
     UNIQUE (source, key)
@@ -56,6 +59,11 @@ CREATE TABLE IF NOT EXISTS sync_state (
     synced_at TEXT NOT NULL
 );
 """
+ADDED_COLUMNS = {
+    "issue_type": "TEXT NOT NULL DEFAULT ''",
+    "initial_estimate_seconds": "INTEGER",
+    "last_logged": "TEXT",
+}
 
 
 class IndexMismatchError(RuntimeError):
@@ -85,6 +93,13 @@ class Store:
         self.db.execute("PRAGMA busy_timeout = 30000")
         self.db.execute("PRAGMA journal_mode = WAL")
         self.db.executescript(SCHEMA)
+        self._add_missing_columns()
+
+    def _add_missing_columns(self) -> None:
+        existing = {row["name"] for row in self.db.execute("PRAGMA table_info(tickets)")}
+        for name, definition in ADDED_COLUMNS.items():
+            if name not in existing:
+                self.db.execute(f"ALTER TABLE tickets ADD COLUMN {name} {definition}")
 
     def close(self) -> None:
         self.db.close()
@@ -163,14 +178,18 @@ class Store:
         row = self.db.execute(
             """
             INSERT INTO tickets (source, key, project, title, description, url, status,
-                resolution, created, updated, time_spent_seconds, comments_json, links_json)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                resolution, created, updated, time_spent_seconds, issue_type,
+                initial_estimate_seconds, last_logged, comments_json, links_json)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ON CONFLICT (source, key) DO UPDATE SET
                 project = excluded.project, title = excluded.title,
                 description = excluded.description, url = excluded.url,
                 status = excluded.status, resolution = excluded.resolution,
                 created = excluded.created, updated = excluded.updated,
                 time_spent_seconds = excluded.time_spent_seconds,
+                issue_type = excluded.issue_type,
+                initial_estimate_seconds = excluded.initial_estimate_seconds,
+                last_logged = excluded.last_logged,
                 comments_json = excluded.comments_json, links_json = excluded.links_json
             RETURNING id
             """,
@@ -186,6 +205,9 @@ class Store:
                 iso(ticket.created),
                 iso(ticket.updated),
                 ticket.time_spent_seconds,
+                ticket.issue_type,
+                ticket.initial_estimate_seconds,
+                iso(ticket.last_logged),
                 json.dumps(
                     [
                         {"author": c.author, "created": iso(c.created), "body": clean(c.body)}

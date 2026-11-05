@@ -91,7 +91,13 @@ def test_mcp_tools(config_file: Path):
     mcp = server.create_server(load_config(config_file))
 
     tools = {tool.name: tool for tool in asyncio.run(mcp.list_tools())}
-    assert set(tools) == {"similar_tickets", "precedents_for", "get_ticket", "list_sources"}
+    assert set(tools) == {
+        "similar_tickets",
+        "precedents_for",
+        "effort_reference",
+        "get_ticket",
+        "list_sources",
+    }
     assert all(tool.annotations and tool.annotations.read_only_hint for tool in tools.values())
 
     response = call(mcp, "similar_tickets", text="payment gateway timeout", limit=2)

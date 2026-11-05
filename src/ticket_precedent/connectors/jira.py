@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from collections.abc import Iterator
+from collections.abc import Iterator, Sequence
 from datetime import datetime
-from typing import Any
+from typing import Any, NamedTuple
 
 import httpx
 
@@ -11,8 +11,16 @@ from .http import get_json
 
 FIELDS = (
     "summary,description,comment,status,resolution,created,updated,"
-    "issuelinks,timespent,aggregatetimespent,project"
+    "issuelinks,timespent,aggregatetimespent,project,issuetype,timeoriginalestimate"
 )
+TRACKED_CHANGES = frozenset({"timeoriginalestimate", "timespent"})
+
+
+class Change(NamedTuple):
+    at: datetime
+    field: str
+    before: str | None
+    after: str | None
 
 
 class JiraConnector:
@@ -26,13 +34,15 @@ class JiraConnector:
         username: str | None = None,
         password: str | None = None,
         token: str | None = None,
-        page_size: int = 100,
-        timeout: float = 60.0,
+        page_size: int = 50,
+        timeout: float = 120.0,
+        changelog: bool = True,
     ) -> None:
         self.source = source
         self.base_url = url.rstrip("/")
         self.jql = jql
         self.page_size = page_size
+        self.changelog = changelog
         headers = {"Accept": "application/json"}
         if token:
             headers["Authorization"] = f"Bearer {token}"
@@ -46,13 +56,12 @@ class JiraConnector:
         if since is not None:
             jql += f' AND updated >= "{since.strftime("%Y/%m/%d %H:%M")}"'
         jql += " ORDER BY updated ASC"
+        params: dict[str, Any] = {"jql": jql, "maxResults": self.page_size, "fields": FIELDS}
+        if self.changelog:
+            params["expand"] = "changelog"
         start_at = 0
         while True:
-            data = get_json(
-                self._client,
-                "/rest/api/2/search",
-                {"jql": jql, "startAt": start_at, "maxResults": self.page_size, "fields": FIELDS},
-            )
+            data = get_json(self._client, "/rest/api/2/search", {**params, "startAt": start_at})
             issues = data.get("issues", [])
             for issue in issues:
                 yield self._ticket(issue)
@@ -85,6 +94,9 @@ class JiraConnector:
 def issue_to_ticket(issue: dict[str, Any], source: str, base_url: str) -> Ticket:
     fields = issue["fields"]
     key = issue["key"]
+    changes = tracked_changes(issue)
+    own_time = fields.get("timespent")
+    total_time = fields.get("aggregatetimespent") or own_time
     return Ticket(
         source=source,
         key=key,
@@ -96,10 +108,59 @@ def issue_to_ticket(issue: dict[str, Any], source: str, base_url: str) -> Ticket
         resolution=(fields.get("resolution") or {}).get("name", ""),
         created=parse_time(fields.get("created")),
         updated=parse_time(fields.get("updated")),
-        time_spent_seconds=fields.get("aggregatetimespent") or fields.get("timespent"),
+        time_spent_seconds=total_time,
+        issue_type=(fields.get("issuetype") or {}).get("name", ""),
+        initial_estimate_seconds=initial_estimate(fields.get("timeoriginalestimate"), changes),
+        # Sub-task worklogs are not in the parent's changelog, so its last entry may be too early.
+        last_logged=last_logged(changes) if total_time == own_time else None,
         comments=[_comment(c) for c in (fields.get("comment") or {}).get("comments", [])],
         links=list(_links(fields.get("issuelinks") or [])),
     )
+
+
+def tracked_changes(issue: dict[str, Any]) -> list[Change] | None:
+    """Estimate and time-spent changes in time order, or None without a complete changelog."""
+    changelog = issue.get("changelog")
+    if changelog is None:
+        return None
+    histories = changelog.get("histories", [])
+    if changelog.get("total", 0) > len(histories):
+        return None
+    changes = [
+        Change(at, item["field"], item.get("from"), item.get("to"))
+        for history in histories
+        if (at := parse_time(history.get("created"))) is not None
+        for item in history.get("items", [])
+        if item.get("field") in TRACKED_CHANGES
+    ]
+    return sorted(changes, key=lambda change: change.at)
+
+
+def initial_estimate(current: int | None, changes: Sequence[Change] | None) -> int | None:
+    """The original estimate as it stood when the first time was logged.
+
+    Trackers often raise the estimate to match the time spent once the work is done, so the
+    current value is a record of the effort rather than a forecast of it.
+    """
+    if changes is None:
+        return None
+    estimates = [change for change in changes if change.field == "timeoriginalestimate"]
+    if not estimates:
+        return current or None
+    first_logged = next((c.at for c in changes if c.field == "timespent"), None)
+    value = estimates[0].before
+    for change in estimates:
+        if first_logged is not None and change.at >= first_logged:
+            break
+        value = change.after
+    return int(value) if value else None
+
+
+def last_logged(changes: Sequence[Change] | None) -> datetime | None:
+    """When time was last logged: from then on the ticket's total effort was known."""
+    if changes is None:
+        return None
+    return next((c.at for c in reversed(changes) if c.field == "timespent"), None)
 
 
 def _comment(comment: dict[str, Any]) -> Comment:
