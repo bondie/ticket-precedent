@@ -138,9 +138,9 @@ probability. All tools are read-only and read only the local index.
 
 | Command | What it does |
 |---|---|
-| `tp precedents KEY [--only-source S] [--limit N] [--json]` | Earlier tickets that look like an indexed ticket |
-| `tp search TEXT [--source S] [--project P] [--mode hybrid\|vector\|bm25] [--json]` | Search by free text |
-| `tp effort KEY [--since YYYY-MM-DD] [--limit N] [--json]` | Logged hours of similar tickets finished before KEY was created |
+| `tp precedents KEY [--only-source S] [--platform P] [--limit N] [--json]` | Earlier tickets that look like an indexed ticket |
+| `tp search TEXT [--source S] [--project P] [--platform P] [--mode hybrid\|vector\|bm25] [--json]` | Search by free text |
+| `tp effort KEY [--since YYYY-MM-DD] [--platform P] [--limit N] [--json]` | Logged hours of similar tickets finished before KEY was created |
 | `tp show SOURCE KEY` | Print one indexed ticket as JSON |
 | `tp sync [--source S] [--full]` | Fetch new and updated tickets; `--full` re-reads everything |
 | `tp stats` | Indexed sources and sync times |
@@ -149,6 +149,20 @@ probability. All tools are read-only and read only the local index.
 
 Run them as `uv run tp …` from the repository directory. `tp --config PATH …` uses another
 configuration file.
+
+### Keep products apart
+
+One index can hold the trackers of products that should not be compared, for example a
+legacy shop platform and its successor: the same kind of ticket takes a very different
+effort on each. Give every source a `platform` and the searches stay within one:
+
+- `precedents_for` and `effort_reference` with a key keep to the platform of that ticket.
+- `similar_tickets` and `effort_reference` with text use the `platform` argument, or
+  `default_platform` from the configuration when it is omitted.
+- `platform: "all"` searches every source; `list_sources` shows the platform of each.
+
+Sources without a platform, and configurations without `default_platform`, search
+everything as before.
 
 ### Keep the index fresh
 
