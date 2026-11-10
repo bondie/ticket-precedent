@@ -58,6 +58,7 @@ def reference_class(
     project: str | None = None,
     exclude: frozenset[int] = frozenset(),
     mode: str = "hybrid",
+    sources: frozenset[str] | None = None,
 ) -> ReferenceClass:
     """The `limit` tickets most similar to `text` whose logged time was final before `as_of`.
 
@@ -68,6 +69,7 @@ def reference_class(
     filters = Filters(
         source=source,
         project=project,
+        sources=sources,
         created_after=since,
         logged_before=as_of,
         exclude_ticket_ids=exclude,
@@ -90,6 +92,7 @@ def reference_for_ticket(
     since: str | None = None,
     source: str | None = None,
     mode: str = "hybrid",
+    sources: frozenset[str] | None = None,
 ) -> ReferenceClass:
     """What was knowable when `ticket` was created: the backtest view of an indexed ticket."""
     return reference_class(
@@ -101,4 +104,5 @@ def reference_for_ticket(
         source=source,
         exclude=same_problem(searcher.store, ticket),
         mode=mode,
+        sources=sources,
     )

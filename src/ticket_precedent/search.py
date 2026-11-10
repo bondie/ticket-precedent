@@ -18,6 +18,7 @@ QUERY_CHARS = 2000
 KEY_MENTION = re.compile(r"\b[A-Z][A-Z0-9_]+-\d+\b|\b\d{4,}\b")
 TICKET_CONDITIONS = """
     (:source IS NULL OR t.source = :source)
+    AND (:sources IS NULL OR t.source IN (SELECT value FROM json_each(:sources)))
     AND (:project IS NULL OR t.project = :project)
     AND (:before IS NULL OR t.created < :before)
     AND (:after IS NULL OR t.created >= :after)
@@ -31,6 +32,8 @@ TICKET_CONDITIONS = """
 class Filters:
     source: str | None = None
     project: str | None = None
+    sources: frozenset[str] | None = None
+    """Only tickets from these sources, e.g. the sources of one platform."""
     created_before: str | None = None
     created_after: str | None = None
     logged_before: str | None = None
@@ -143,6 +146,8 @@ class Searcher:
         conditions = ["embedding MATCH :vector", "k = :k"]
         if filters.source is not None:
             conditions.append("source = :source")
+        elif filters.sources is not None and len(filters.sources) == 1:
+            conditions.append("source = :only_source")
         if filters.project is not None:
             conditions.append("project = :project")
         rows = self.store.db.execute(
@@ -159,6 +164,7 @@ class Searcher:
             """,
             {
                 **_ticket_parameters(filters),
+                "only_source": next(iter(filters.sources)) if filters.sources else None,
                 "vector": sqlite_vec.serialize_float32(vector),
                 "k": pool or self.candidate_chunks,
             },
@@ -180,6 +186,7 @@ class Searcher:
 def _ticket_parameters(filters: Filters) -> dict[str, str | None]:
     return {
         "source": filters.source,
+        "sources": None if filters.sources is None else json.dumps(sorted(filters.sources)),
         "project": filters.project,
         "before": filters.created_before,
         "after": filters.created_after,
@@ -229,7 +236,11 @@ def ticket_query(title: str, description: str | None, max_chars: int = QUERY_CHA
 
 
 def find_precedents(
-    searcher: Searcher, ticket: sqlite3.Row, limit: int, source: str | None = None
+    searcher: Searcher,
+    ticket: sqlite3.Row,
+    limit: int,
+    source: str | None = None,
+    sources: frozenset[str] | None = None,
 ) -> Outcome:
     """Tickets created before `ticket` that look like it.
 
@@ -238,6 +249,7 @@ def find_precedents(
     """
     filters = Filters(
         source=source,
+        sources=sources,
         created_before=ticket["created"],
         exclude_ticket_ids=same_problem(searcher.store, ticket),
     )

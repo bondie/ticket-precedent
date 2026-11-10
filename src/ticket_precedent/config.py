@@ -17,6 +17,7 @@ from .search import Searcher
 from .store import Store
 
 APP = "ticket-precedent"
+ALL_PLATFORMS = "all"
 _VARIABLE = re.compile(r"\$\{(\w+)\}")
 
 
@@ -47,6 +48,7 @@ class SourceConfig:
     options: dict[str, Any]
     chunking: ChunkingConfig = field(default_factory=ChunkingConfig)
     env: dict[str, str] = field(default_factory=dict, repr=False)
+    platform: str | None = None
 
     def resolved_options(self) -> dict[str, Any]:
         """Secrets are resolved only when a connector is built, so search works without them."""
@@ -61,12 +63,39 @@ class Config:
     sources: list[SourceConfig]
     search: SearchConfig = field(default_factory=SearchConfig)
     auto_sync_hours: float | None = None
+    default_platform: str | None = None
 
     def source(self, name: str) -> SourceConfig:
         for source in self.sources:
             if source.name == name:
                 return source
         raise ConfigError(f"Unknown source {name!r}; configured: {[s.name for s in self.sources]}")
+
+    def platform_of(self, source: str) -> str | None:
+        for item in self.sources:
+            if item.name == source:
+                return item.platform
+        return None
+
+    def scope(
+        self, platform: str | None = None, ticket_source: str | None = None
+    ) -> tuple[str | None, frozenset[str] | None]:
+        """The platform a query stays in and its sources; `(None, None)` searches everything.
+
+        An explicit `platform` wins, then the platform of the ticket being looked up, then
+        `default_platform`. Tickets of different products are not mixed unless asked for.
+        """
+        if platform == ALL_PLATFORMS:
+            return None, None
+        from_ticket = self.platform_of(ticket_source) if ticket_source else None
+        chosen = platform or from_ticket or self.default_platform
+        if chosen is None:
+            return None, None
+        sources = frozenset(item.name for item in self.sources if item.platform == chosen)
+        if not sources:
+            known = sorted({item.platform for item in self.sources if item.platform})
+            raise ConfigError(f"Unknown platform {chosen!r}; configured: {known}")
+        return chosen, sources
 
 
 def config_dir() -> Path:
@@ -100,6 +129,7 @@ def load_config(path: Path | None = None) -> Config:
         sources=[_source(item, env) for item in sources],
         search=_build(SearchConfig, raw.get("search") or {}, "search"),
         auto_sync_hours=raw.get("auto_sync_hours"),
+        default_platform=raw.get("default_platform"),
     )
 
 
@@ -148,8 +178,11 @@ def _source(raw: dict[str, Any], env: dict[str, str]) -> SourceConfig:
     options = dict(raw)
     name = options.pop("name", None)
     kind = options.pop("type", None)
+    platform = options.pop("platform", None)
     if not name or not kind:
         raise ConfigError(f"Every source needs `name` and `type`: {raw}")
+    if platform == ALL_PLATFORMS:
+        raise ConfigError(f"Source {name!r}: platform {ALL_PLATFORMS!r} is reserved")
     chunking = dict(options.pop("chunking", None) or {})
     if "skip_comment_authors" in chunking:
         chunking["skip_comment_authors"] = frozenset(chunking["skip_comment_authors"])
@@ -159,6 +192,7 @@ def _source(raw: dict[str, Any], env: dict[str, str]) -> SourceConfig:
         options=options,
         chunking=_build(ChunkingConfig, chunking, f"sources.{name}.chunking"),
         env=env,
+        platform=platform,
     )
 
 

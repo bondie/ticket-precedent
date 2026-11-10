@@ -79,6 +79,7 @@ def _parser() -> argparse.ArgumentParser:
     cmd.add_argument("text")
     cmd.add_argument("--source")
     cmd.add_argument("--project")
+    cmd.add_argument("--platform", help='only this platform, "all" for every source')
     cmd.add_argument("--limit", type=int, default=5)
     cmd.add_argument("--mode", choices=MODES, default="hybrid")
     cmd.add_argument("--json", action="store_true")
@@ -88,6 +89,7 @@ def _parser() -> argparse.ArgumentParser:
     cmd.add_argument("key", help="ticket key, e.g. PROJ-42 or a helpdesk number")
     cmd.add_argument("--source", help="source of the ticket when the key is ambiguous")
     cmd.add_argument("--only-source", help="only return tickets from this source")
+    cmd.add_argument("--platform", help="platform of the results (default: the ticket's own)")
     cmd.add_argument("--limit", type=int, default=5)
     cmd.add_argument("--json", action="store_true")
     cmd.set_defaults(handler=_precedents)
@@ -96,6 +98,7 @@ def _parser() -> argparse.ArgumentParser:
     cmd.add_argument("key", help="ticket key, e.g. PROJ-42")
     cmd.add_argument("--source", help="source of the ticket when the key is ambiguous")
     cmd.add_argument("--since", help="only tickets created on or after YYYY-MM-DD")
+    cmd.add_argument("--platform", help="platform of the results (default: the ticket's own)")
     cmd.add_argument("--limit", type=int, default=10)
     cmd.add_argument("--json", action="store_true")
     cmd.set_defaults(handler=_effort)
@@ -163,9 +166,9 @@ def _search(args: argparse.Namespace) -> int:
     config = load_config(args.config)
     store = Store(config.index_path)
     searcher = build_searcher(config, store)
-    outcome = search_or_degrade(
-        searcher, args.text, args.mode, args.limit, Filters(args.source, args.project)
-    )
+    _, sources = (None, None) if args.source else config.scope(args.platform)
+    filters = Filters(args.source, args.project, sources=sources)
+    outcome = search_or_degrade(searcher, args.text, args.mode, args.limit, filters)
     return _print_outcome(store, outcome, as_json=args.json)
 
 
@@ -174,7 +177,9 @@ def _precedents(args: argparse.Namespace) -> int:
     store = Store(config.index_path)
     ticket = resolve_ticket(store, args.key, args.source)
     print(f"precedents for [{ticket['source']}] {ticket['key']} {ticket['title']}", file=sys.stderr)
-    outcome = find_precedents(build_searcher(config, store), ticket, args.limit, args.only_source)
+    _, sources = (None, None) if args.only_source else config.scope(args.platform, ticket["source"])
+    searcher = build_searcher(config, store)
+    outcome = find_precedents(searcher, ticket, args.limit, args.only_source, sources)
     return _print_outcome(store, outcome, as_json=args.json)
 
 
@@ -182,7 +187,9 @@ def _effort(args: argparse.Namespace) -> int:
     config = load_config(args.config)
     store = Store(config.index_path)
     ticket = resolve_ticket(store, args.key, args.source)
-    found = reference_for_ticket(build_searcher(config, store), ticket, args.limit, args.since)
+    _, sources = config.scope(args.platform, ticket["source"])
+    searcher = build_searcher(config, store)
+    found = reference_for_ticket(searcher, ticket, args.limit, args.since, sources=sources)
     summary = found.summary()
     print(
         f"[{ticket['source']}] {ticket['key']} {ticket['title']}: {summary['tickets']} tickets "
@@ -222,8 +229,10 @@ def _stats(args: argparse.Namespace) -> int:
     config = load_config(args.config)
     print(f"index: {config.index_path}")
     for row in Store(config.index_path).stats():
+        platform = config.platform_of(row["source"])
+        label = f"{row['source']} [{platform}]" if platform else row["source"]
         print(
-            f"{row['source']}: {row['tickets']} tickets, {row['chunks']} chunks, "
+            f"{label}: {row['tickets']} tickets, {row['chunks']} chunks, "
             f"updated up to {row['last_updated']}, synced {row['synced_at']}"
         )
     return 0
