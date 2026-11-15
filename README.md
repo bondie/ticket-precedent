@@ -234,6 +234,53 @@ What the numbers say:
   comments it takes up to 212 ms (hybrid over Derby's 61k chunks). Embedding the query
   adds about 0.2 s (1,000 characters, model already loaded).
 
+### Reranking: tried, not adopted
+
+A cross-encoder that reads the query and each candidate together is the usual next step after
+hybrid retrieval, so `bge-reranker-v2-m3` was measured on top of the hybrid results (with
+comments). The settings were chosen on ZooKeeper and Derby was run once, unchanged. The
+differences are paired: each query's reciprocal rank with the reranker minus without it,
+bootstrapped over the queries.
+
+| Run | Method | Hit@1 | Hit@10 | MRR@10 | ΔMRR@10 (95% CI) | Better / worse |
+|---|---|---:|---:|---:|---:|---:|
+| ZooKeeper | hybrid | 0.648 | 0.857 | 0.719 | | |
+| ZooKeeper | reranker on the top 10 | 0.495 | 0.857 | 0.613 | −0.106 (−0.179 to −0.033) | 13 / 32 |
+| ZooKeeper | reranker on the top 50 | 0.390 | 0.762 | 0.506 | −0.213 (−0.292 to −0.133) | 12 / 44 |
+| ZooKeeper | hybrid + reranker (RRF) | 0.648 | 0.857 | 0.723 | +0.004 (+0.000 to +0.009) | 5 / 2 |
+| Derby | hybrid | 0.562 | 0.797 | 0.647 | | |
+| Derby | reranker on the top 10 | 0.340 | 0.797 | 0.470 | −0.177 (−0.239 to −0.119) | 15 / 59 |
+| Derby | reranker on the top 20 | 0.301 | 0.739 | 0.415 | −0.233 (−0.301 to −0.165) | 16 / 69 |
+| Derby | hybrid + reranker (RRF) | 0.562 | 0.797 | 0.649 | +0.002 (−0.007 to +0.011) | 5 / 3 |
+
+- **Reordering by the reranker hurts, and the wider the pool, the more.** On both projects
+  the whole interval is below zero. Giving it the candidate's title and description instead
+  of the matched chunk did not change that (ZooKeeper top 10 at 1,024 tokens: −0.129 with
+  title and description, −0.119 with the chunk), nor did 1,024 tokens instead of 512.
+- **As an extra signal it adds nothing.** Fusing the reranker's order into the hybrid order
+  (pool 10, `rrf_k` 10, weight 0.25, the best of a 16-point grid on ZooKeeper) moves MRR by
+  +0.004 and +0.002, within noise.
+- **It is slow.** On an Apple M1 Pro (MPS) the reranker takes 2.7 s per query for 20
+  candidates (Derby) and 5.6 s for 50 (ZooKeeper), against 0.1 to 0.2 s for the hybrid
+  search itself.
+- **A likely reason, not proven here:** a reranker scores how well a passage answers a
+  query, so it promotes tickets on the same topic. For a NULL dereference in the C client
+  it put first a ticket about compiling the C client with an old gcc, and the real
+  duplicate fell from 1st to 9th (ZooKeeper, top 50, 1,024 tokens). Finding a duplicate is
+  a different question: whether two descriptions report the same fault.
+
+What was not measured: the queries here are a full title and description (up to 2,000
+characters), while an agent often searches with a short phrase, which is closer to the
+question-and-passage setting rerankers are built for. Other rerankers were not tried
+either. Search stays without a reranker; the script and the per-query ranks are kept so
+the result can be checked or rerun with another model or with shorter queries:
+
+```bash
+uv run --with sentence-transformers python scripts/eval_rerank.py \
+    ~/.local/share/ticket-precedent/eval/apache-zookeeper-comments-bge-m3.db \
+    --candidate chunk --max-length 512 --top 50 --grid --out results/rerank-zookeeper-chunk-512.json
+```
+
 Reproduce a run, or the fusion parameter grid, with:
 
 ```bash
@@ -338,7 +385,8 @@ CI runs lint, type checks, tests on Python 3.11–3.13 and a gitleaks secret sca
 ## Roadmap
 
 - Collapse clones and sub-tasks that share a title into one result
-- Cross-encoder reranking of the top candidates (`bge-reranker-v2-m3`)
+- A reranker trained on duplicate pairs, or an LLM judging the top 5; a general-purpose
+  cross-encoder made results worse (see [Reranking](#reranking-tried-not-adopted))
 - Embedding model comparison (`qwen3-embedding`, `multilingual-e5`, `snowflake-arctic-embed2`)
 - GitLab and GitHub Issues connectors, JIRA Cloud (`/rest/api/3/search/jql`)
 - Periodic re-sync while a server session stays open (today auto-sync runs only at start-up)

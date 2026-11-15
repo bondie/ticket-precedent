@@ -46,6 +46,21 @@ def bootstrap_interval(
     return means[int(tail * resamples)], means[int((1 - tail) * resamples) - 1]
 
 
+def paired_difference(
+    baseline: Sequence[float], candidate: Sequence[float], seed: int = 0
+) -> tuple[float, float, float]:
+    """Mean per-query difference `candidate - baseline` and its 95% bootstrap interval.
+
+    Resampling the differences keeps each query paired with itself, which is far tighter than
+    comparing two independent intervals over the same queries.
+    """
+    differences = [new - old for old, new in zip(baseline, candidate, strict=True)]
+    if not differences:
+        return 0.0, 0.0, 0.0
+    low, high = bootstrap_interval(differences, seed=seed)
+    return statistics.fmean(differences), low, high
+
+
 def summarize(mode: str, ranks: Sequence[int | None], latencies_ms: Sequence[float]) -> Summary:
     total = len(ranks) or 1
 
