@@ -1,0 +1,907 @@
+{
+  "source": "apache-zookeeper",
+  "reranker": "BAAI/bge-reranker-v2-m3",
+  "candidate": "chunk",
+  "max_length": 512,
+  "top": 50,
+  "fusion": {
+    "pool": 10,
+    "rrf_k": 10,
+    "weight": 0.25
+  },
+  "rerank_ms_p50": 5641.239167001913,
+  "summaries": [
+    {
+      "mode": "hybrid",
+      "queries": 105,
+      "hit_at_1": 0.6476190476190476,
+      "hit_at_5": 0.8380952380952381,
+      "hit_at_10": 0.8571428571428571,
+      "mrr_at_10": 0.7194708994708995,
+      "mrr_ci_low": 0.6377777777777778,
+      "mrr_ci_high": 0.7971428571428572
+    },
+    {
+      "mode": "rerank top 10",
+      "queries": 105,
+      "hit_at_1": 0.49523809523809526,
+      "hit_at_5": 0.780952380952381,
+      "hit_at_10": 0.8571428571428571,
+      "mrr_at_10": 0.6134504913076342,
+      "mrr_ci_low": 0.5271806500377929,
+      "mrr_ci_high": 0.6899206349206349
+    },
+    {
+      "mode": "rerank top 20",
+      "queries": 105,
+      "hit_at_1": 0.47619047619047616,
+      "hit_at_5": 0.7333333333333333,
+      "hit_at_10": 0.819047619047619,
+      "mrr_at_10": 0.5783975812547242,
+      "mrr_ci_low": 0.4936507936507937,
+      "mrr_ci_high": 0.6582539682539682
+    },
+    {
+      "mode": "rerank top 50",
+      "queries": 105,
+      "hit_at_1": 0.3904761904761905,
+      "hit_at_5": 0.6761904761904762,
+      "hit_at_10": 0.7619047619047619,
+      "mrr_at_10": 0.5061866969009826,
+      "mrr_ci_low": 0.42239984882842024,
+      "mrr_ci_high": 0.5852721088435374
+    },
+    {
+      "mode": "hybrid + rerank (RRF)",
+      "queries": 105,
+      "hit_at_1": 0.6476190476190476,
+      "hit_at_5": 0.8380952380952381,
+      "hit_at_10": 0.8571428571428571,
+      "mrr_at_10": 0.7233333333333334,
+      "mrr_ci_low": 0.6431746031746032,
+      "mrr_ci_high": 0.7993650793650794
+    }
+  ],
+  "queries": [
+    {
+      "key": "ZOOKEEPER-149",
+      "hybrid": 21,
+      "rerank top 10": 21,
+      "rerank top 20": 21,
+      "rerank top 50": 29,
+      "hybrid + rerank (RRF)": 21
+    },
+    {
+      "key": "ZOOKEEPER-652",
+      "hybrid": 1,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "rerank top 50": 1,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "ZOOKEEPER-752",
+      "hybrid": 1,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "rerank top 50": 1,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "ZOOKEEPER-813",
+      "hybrid": 1,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "rerank top 50": 1,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "ZOOKEEPER-1003",
+      "hybrid": 1,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "rerank top 50": 1,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "ZOOKEEPER-1078",
+      "hybrid": 1,
+      "rerank top 10": 8,
+      "rerank top 20": 12,
+      "rerank top 50": 22,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "ZOOKEEPER-1186",
+      "hybrid": 1,
+      "rerank top 10": 6,
+      "rerank top 20": 11,
+      "rerank top 50": 16,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "ZOOKEEPER-1242",
+      "hybrid": 1,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "rerank top 50": 1,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "ZOOKEEPER-1349",
+      "hybrid": 4,
+      "rerank top 10": 2,
+      "rerank top 20": 7,
+      "rerank top 50": 10,
+      "hybrid + rerank (RRF)": 3
+    },
+    {
+      "key": "ZOOKEEPER-1461",
+      "hybrid": 1,
+      "rerank top 10": 5,
+      "rerank top 20": 6,
+      "rerank top 50": 9,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "ZOOKEEPER-1472",
+      "hybrid": 4,
+      "rerank top 10": 1,
+      "rerank top 20": 3,
+      "rerank top 50": 3,
+      "hybrid + rerank (RRF)": 3
+    },
+    {
+      "key": "ZOOKEEPER-1565",
+      "hybrid": 1,
+      "rerank top 10": 2,
+      "rerank top 20": 2,
+      "rerank top 50": 2,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "ZOOKEEPER-1570",
+      "hybrid": 1,
+      "rerank top 10": 2,
+      "rerank top 20": 2,
+      "rerank top 50": 2,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "ZOOKEEPER-1571",
+      "hybrid": 1,
+      "rerank top 10": 2,
+      "rerank top 20": 2,
+      "rerank top 50": 2,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "ZOOKEEPER-1616",
+      "hybrid": 1,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "rerank top 50": 1,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "ZOOKEEPER-1682",
+      "hybrid": 1,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "rerank top 50": 1,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "ZOOKEEPER-1694",
+      "hybrid": 1,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "rerank top 50": 1,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "ZOOKEEPER-1711",
+      "hybrid": 2,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "rerank top 50": 1,
+      "hybrid + rerank (RRF)": 2
+    },
+    {
+      "key": "ZOOKEEPER-1763",
+      "hybrid": 2,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "rerank top 50": 1,
+      "hybrid + rerank (RRF)": 2
+    },
+    {
+      "key": "ZOOKEEPER-1813",
+      "hybrid": null,
+      "rerank top 10": null,
+      "rerank top 20": null,
+      "rerank top 50": null,
+      "hybrid + rerank (RRF)": null
+    },
+    {
+      "key": "ZOOKEEPER-1845",
+      "hybrid": 1,
+      "rerank top 10": 3,
+      "rerank top 20": 3,
+      "rerank top 50": 3,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "ZOOKEEPER-1846",
+      "hybrid": 6,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "rerank top 50": 2,
+      "hybrid + rerank (RRF)": 6
+    },
+    {
+      "key": "ZOOKEEPER-1996",
+      "hybrid": 1,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "rerank top 50": 1,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "ZOOKEEPER-2004",
+      "hybrid": 2,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "rerank top 50": 1,
+      "hybrid + rerank (RRF)": 2
+    },
+    {
+      "key": "ZOOKEEPER-2009",
+      "hybrid": 2,
+      "rerank top 10": 3,
+      "rerank top 20": 5,
+      "rerank top 50": 11,
+      "hybrid + rerank (RRF)": 2
+    },
+    {
+      "key": "ZOOKEEPER-2042",
+      "hybrid": 1,
+      "rerank top 10": 1,
+      "rerank top 20": 4,
+      "rerank top 50": 5,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "ZOOKEEPER-2046",
+      "hybrid": 1,
+      "rerank top 10": 2,
+      "rerank top 20": 3,
+      "rerank top 50": 7,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "ZOOKEEPER-2078",
+      "hybrid": 1,
+      "rerank top 10": 2,
+      "rerank top 20": 4,
+      "rerank top 50": 5,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "ZOOKEEPER-2085",
+      "hybrid": 1,
+      "rerank top 10": 4,
+      "rerank top 20": 6,
+      "rerank top 50": 8,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "ZOOKEEPER-2151",
+      "hybrid": 16,
+      "rerank top 10": 16,
+      "rerank top 20": 1,
+      "rerank top 50": 1,
+      "hybrid + rerank (RRF)": 16
+    },
+    {
+      "key": "ZOOKEEPER-2242",
+      "hybrid": 1,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "rerank top 50": 1,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "ZOOKEEPER-2278",
+      "hybrid": 1,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "rerank top 50": 1,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "ZOOKEEPER-2287",
+      "hybrid": 1,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "rerank top 50": 1,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "ZOOKEEPER-2292",
+      "hybrid": null,
+      "rerank top 10": null,
+      "rerank top 20": null,
+      "rerank top 50": null,
+      "hybrid + rerank (RRF)": null
+    },
+    {
+      "key": "ZOOKEEPER-2318",
+      "hybrid": null,
+      "rerank top 10": null,
+      "rerank top 20": null,
+      "rerank top 50": null,
+      "hybrid + rerank (RRF)": null
+    },
+    {
+      "key": "ZOOKEEPER-2331",
+      "hybrid": 4,
+      "rerank top 10": 3,
+      "rerank top 20": 3,
+      "rerank top 50": 3,
+      "hybrid + rerank (RRF)": 3
+    },
+    {
+      "key": "ZOOKEEPER-2337",
+      "hybrid": 1,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "rerank top 50": 1,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "ZOOKEEPER-2341",
+      "hybrid": 1,
+      "rerank top 10": 2,
+      "rerank top 20": 3,
+      "rerank top 50": 4,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "ZOOKEEPER-2351",
+      "hybrid": 1,
+      "rerank top 10": 2,
+      "rerank top 20": 2,
+      "rerank top 50": 3,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "ZOOKEEPER-2367",
+      "hybrid": 1,
+      "rerank top 10": 2,
+      "rerank top 20": 3,
+      "rerank top 50": 4,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "ZOOKEEPER-2376",
+      "hybrid": 1,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "rerank top 50": 2,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "ZOOKEEPER-2381",
+      "hybrid": 13,
+      "rerank top 10": 13,
+      "rerank top 20": 2,
+      "rerank top 50": 3,
+      "hybrid + rerank (RRF)": 13
+    },
+    {
+      "key": "ZOOKEEPER-2390",
+      "hybrid": 1,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "rerank top 50": 1,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "ZOOKEEPER-2446",
+      "hybrid": 1,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "rerank top 50": 1,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "ZOOKEEPER-2451",
+      "hybrid": 2,
+      "rerank top 10": 2,
+      "rerank top 20": 2,
+      "rerank top 50": 4,
+      "hybrid + rerank (RRF)": 2
+    },
+    {
+      "key": "ZOOKEEPER-2483",
+      "hybrid": null,
+      "rerank top 10": null,
+      "rerank top 20": null,
+      "rerank top 50": null,
+      "hybrid + rerank (RRF)": null
+    },
+    {
+      "key": "ZOOKEEPER-2496",
+      "hybrid": null,
+      "rerank top 10": null,
+      "rerank top 20": null,
+      "rerank top 50": null,
+      "hybrid + rerank (RRF)": null
+    },
+    {
+      "key": "ZOOKEEPER-2509",
+      "hybrid": 1,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "rerank top 50": 1,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "ZOOKEEPER-2527",
+      "hybrid": null,
+      "rerank top 10": null,
+      "rerank top 20": null,
+      "rerank top 50": null,
+      "hybrid + rerank (RRF)": null
+    },
+    {
+      "key": "ZOOKEEPER-2530",
+      "hybrid": 1,
+      "rerank top 10": 4,
+      "rerank top 20": 9,
+      "rerank top 50": 23,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "ZOOKEEPER-2537",
+      "hybrid": 1,
+      "rerank top 10": 4,
+      "rerank top 20": 4,
+      "rerank top 50": 12,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "ZOOKEEPER-2587",
+      "hybrid": 1,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "rerank top 50": 1,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "ZOOKEEPER-2618",
+      "hybrid": 1,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "rerank top 50": 1,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "ZOOKEEPER-2660",
+      "hybrid": 1,
+      "rerank top 10": 4,
+      "rerank top 20": 6,
+      "rerank top 50": 8,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "ZOOKEEPER-2698",
+      "hybrid": 1,
+      "rerank top 10": 5,
+      "rerank top 20": 5,
+      "rerank top 50": 6,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "ZOOKEEPER-2705",
+      "hybrid": null,
+      "rerank top 10": null,
+      "rerank top 20": null,
+      "rerank top 50": null,
+      "hybrid + rerank (RRF)": null
+    },
+    {
+      "key": "ZOOKEEPER-2881",
+      "hybrid": 1,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "rerank top 50": 1,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "ZOOKEEPER-3149",
+      "hybrid": 2,
+      "rerank top 10": 2,
+      "rerank top 20": 4,
+      "rerank top 50": 5,
+      "hybrid + rerank (RRF)": 2
+    },
+    {
+      "key": "ZOOKEEPER-3214",
+      "hybrid": 1,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "rerank top 50": 3,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "ZOOKEEPER-3280",
+      "hybrid": 4,
+      "rerank top 10": 8,
+      "rerank top 20": 13,
+      "rerank top 50": 33,
+      "hybrid + rerank (RRF)": 5
+    },
+    {
+      "key": "ZOOKEEPER-3290",
+      "hybrid": 3,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "rerank top 50": 1,
+      "hybrid + rerank (RRF)": 3
+    },
+    {
+      "key": "ZOOKEEPER-3458",
+      "hybrid": 46,
+      "rerank top 10": 46,
+      "rerank top 20": 46,
+      "rerank top 50": 38,
+      "hybrid + rerank (RRF)": 46
+    },
+    {
+      "key": "ZOOKEEPER-3493",
+      "hybrid": 1,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "rerank top 50": 1,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "ZOOKEEPER-3645",
+      "hybrid": 5,
+      "rerank top 10": 1,
+      "rerank top 20": 2,
+      "rerank top 50": 2,
+      "hybrid + rerank (RRF)": 4
+    },
+    {
+      "key": "ZOOKEEPER-3725",
+      "hybrid": 4,
+      "rerank top 10": 2,
+      "rerank top 20": 4,
+      "rerank top 50": 9,
+      "hybrid + rerank (RRF)": 4
+    },
+    {
+      "key": "ZOOKEEPER-3752",
+      "hybrid": 4,
+      "rerank top 10": 3,
+      "rerank top 20": 3,
+      "rerank top 50": 3,
+      "hybrid + rerank (RRF)": 4
+    },
+    {
+      "key": "ZOOKEEPER-3753",
+      "hybrid": 5,
+      "rerank top 10": 7,
+      "rerank top 20": 10,
+      "rerank top 50": 20,
+      "hybrid + rerank (RRF)": 5
+    },
+    {
+      "key": "ZOOKEEPER-3776",
+      "hybrid": 1,
+      "rerank top 10": 6,
+      "rerank top 20": 12,
+      "rerank top 50": 23,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "ZOOKEEPER-3778",
+      "hybrid": 1,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "rerank top 50": 1,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "ZOOKEEPER-3830",
+      "hybrid": 1,
+      "rerank top 10": 9,
+      "rerank top 20": 18,
+      "rerank top 50": 38,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "ZOOKEEPER-3842",
+      "hybrid": 2,
+      "rerank top 10": 4,
+      "rerank top 20": 6,
+      "rerank top 50": 3,
+      "hybrid + rerank (RRF)": 2
+    },
+    {
+      "key": "ZOOKEEPER-3990",
+      "hybrid": 1,
+      "rerank top 10": 8,
+      "rerank top 20": 9,
+      "rerank top 50": 16,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "ZOOKEEPER-4244",
+      "hybrid": 1,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "rerank top 50": 2,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "ZOOKEEPER-4245",
+      "hybrid": 1,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "rerank top 50": 2,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "ZOOKEEPER-4254",
+      "hybrid": 1,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "rerank top 50": 1,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "ZOOKEEPER-4255",
+      "hybrid": 1,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "rerank top 50": 1,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "ZOOKEEPER-4256",
+      "hybrid": 1,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "rerank top 50": 1,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "ZOOKEEPER-4271",
+      "hybrid": 2,
+      "rerank top 10": 4,
+      "rerank top 20": 4,
+      "rerank top 50": 8,
+      "hybrid + rerank (RRF)": 2
+    },
+    {
+      "key": "ZOOKEEPER-4274",
+      "hybrid": 1,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "rerank top 50": 2,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "ZOOKEEPER-4304",
+      "hybrid": 1,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "rerank top 50": 1,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "ZOOKEEPER-4305",
+      "hybrid": 1,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "rerank top 50": 1,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "ZOOKEEPER-4347",
+      "hybrid": 1,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "rerank top 50": 2,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "ZOOKEEPER-4383",
+      "hybrid": 1,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "rerank top 50": 1,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "ZOOKEEPER-4440",
+      "hybrid": 1,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "rerank top 50": 1,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "ZOOKEEPER-4450",
+      "hybrid": 24,
+      "rerank top 10": 24,
+      "rerank top 20": 24,
+      "rerank top 50": 11,
+      "hybrid + rerank (RRF)": 24
+    },
+    {
+      "key": "ZOOKEEPER-4451",
+      "hybrid": 1,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "rerank top 50": 1,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "ZOOKEEPER-4525",
+      "hybrid": 9,
+      "rerank top 10": 10,
+      "rerank top 20": 15,
+      "rerank top 50": 24,
+      "hybrid + rerank (RRF)": 10
+    },
+    {
+      "key": "ZOOKEEPER-4555",
+      "hybrid": 3,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "rerank top 50": 1,
+      "hybrid + rerank (RRF)": 2
+    },
+    {
+      "key": "ZOOKEEPER-4626",
+      "hybrid": 1,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "rerank top 50": 1,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "ZOOKEEPER-4631",
+      "hybrid": 1,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "rerank top 50": 1,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "ZOOKEEPER-4667",
+      "hybrid": 14,
+      "rerank top 10": 14,
+      "rerank top 20": 14,
+      "rerank top 50": 28,
+      "hybrid + rerank (RRF)": 14
+    },
+    {
+      "key": "ZOOKEEPER-4680",
+      "hybrid": null,
+      "rerank top 10": null,
+      "rerank top 20": null,
+      "rerank top 50": null,
+      "hybrid + rerank (RRF)": null
+    },
+    {
+      "key": "ZOOKEEPER-4692",
+      "hybrid": 31,
+      "rerank top 10": 31,
+      "rerank top 20": 31,
+      "rerank top 50": 19,
+      "hybrid + rerank (RRF)": 31
+    },
+    {
+      "key": "ZOOKEEPER-4701",
+      "hybrid": 2,
+      "rerank top 10": 3,
+      "rerank top 20": 4,
+      "rerank top 50": 7,
+      "hybrid + rerank (RRF)": 2
+    },
+    {
+      "key": "ZOOKEEPER-4731",
+      "hybrid": 1,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "rerank top 50": 1,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "ZOOKEEPER-4797",
+      "hybrid": 1,
+      "rerank top 10": 4,
+      "rerank top 20": 5,
+      "rerank top 50": 5,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "ZOOKEEPER-4813",
+      "hybrid": 1,
+      "rerank top 10": 5,
+      "rerank top 20": 6,
+      "rerank top 50": 12,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "ZOOKEEPER-4887",
+      "hybrid": 1,
+      "rerank top 10": 2,
+      "rerank top 20": 2,
+      "rerank top 50": 2,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "ZOOKEEPER-4894",
+      "hybrid": 1,
+      "rerank top 10": 3,
+      "rerank top 20": 4,
+      "rerank top 50": 4,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "ZOOKEEPER-4911",
+      "hybrid": 1,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "rerank top 50": 2,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "ZOOKEEPER-4927",
+      "hybrid": 5,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "rerank top 50": 5,
+      "hybrid + rerank (RRF)": 5
+    },
+    {
+      "key": "ZOOKEEPER-4948",
+      "hybrid": 1,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "rerank top 50": 1,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "ZOOKEEPER-5006",
+      "hybrid": 1,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "rerank top 50": 1,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "ZOOKEEPER-5007",
+      "hybrid": 1,
+      "rerank top 10": 2,
+      "rerank top 20": 2,
+      "rerank top 50": 3,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "ZOOKEEPER-5078",
+      "hybrid": 1,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "rerank top 50": 1,
+      "hybrid + rerank (RRF)": 1
+    }
+  ]
+}

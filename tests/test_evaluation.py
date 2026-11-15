@@ -4,6 +4,7 @@ from ticket_precedent.evaluation.metrics import (
     bootstrap_interval,
     first_relevant_rank,
     markdown_table,
+    paired_difference,
     summarize,
 )
 from ticket_precedent.evaluation.runner import evaluate
@@ -83,6 +84,16 @@ def test_bootstrap_interval_brackets_the_mean_and_is_reproducible():
     assert low < sum(values) / len(values) < high
     assert bootstrap_interval(values) == (low, high)
     assert bootstrap_interval([]) == (0.0, 0.0)
+
+
+def test_paired_difference_keeps_queries_paired():
+    baseline = [1.0, 0.5, 0.0, 0.25, 1.0, 0.0]
+    assert paired_difference(baseline, baseline) == (0.0, 0.0, 0.0)
+    worse = [value / 2 for value in baseline]
+    mean, low, high = paired_difference(baseline, worse)
+    assert low <= mean < 0
+    assert high <= 0
+    assert paired_difference([], []) == (0.0, 0.0, 0.0)
 
 
 def test_markdown_table_shows_the_interval():

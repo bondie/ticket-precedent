@@ -1,0 +1,1128 @@
+{
+  "source": "apache-derby",
+  "reranker": "BAAI/bge-reranker-v2-m3",
+  "candidate": "chunk",
+  "max_length": 512,
+  "top": 20,
+  "fusion": {
+    "pool": 10,
+    "rrf_k": 10,
+    "weight": 0.25
+  },
+  "rerank_ms_p50": 2662.202792002063,
+  "summaries": [
+    {
+      "mode": "hybrid",
+      "queries": 153,
+      "hit_at_1": 0.5620915032679739,
+      "hit_at_5": 0.7516339869281046,
+      "hit_at_10": 0.7973856209150327,
+      "mrr_at_10": 0.6473467164643635,
+      "mrr_ci_low": 0.5768285091814503,
+      "mrr_ci_high": 0.7143946467475879
+    },
+    {
+      "mode": "rerank top 10",
+      "queries": 153,
+      "hit_at_1": 0.33986928104575165,
+      "hit_at_5": 0.6535947712418301,
+      "hit_at_10": 0.7973856209150327,
+      "mrr_at_10": 0.47016806722689075,
+      "mrr_ci_low": 0.40398122211847703,
+      "mrr_ci_high": 0.5343681917211329
+    },
+    {
+      "mode": "rerank top 20",
+      "queries": 153,
+      "hit_at_1": 0.3006535947712418,
+      "hit_at_5": 0.5686274509803921,
+      "hit_at_10": 0.738562091503268,
+      "mrr_at_10": 0.4147032887228966,
+      "mrr_ci_low": 0.35089739599543524,
+      "mrr_ci_high": 0.47635906214337587
+    },
+    {
+      "mode": "hybrid + rerank (RRF)",
+      "queries": 153,
+      "hit_at_1": 0.5620915032679739,
+      "hit_at_5": 0.7581699346405228,
+      "hit_at_10": 0.7973856209150327,
+      "mrr_at_10": 0.6491259466749663,
+      "mrr_ci_low": 0.5790901545803506,
+      "mrr_ci_high": 0.7145372964000415
+    }
+  ],
+  "queries": [
+    {
+      "key": "DERBY-29",
+      "hybrid": 1,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "DERBY-93",
+      "hybrid": 1,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "DERBY-329",
+      "hybrid": 1,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "DERBY-346",
+      "hybrid": 2,
+      "rerank top 10": 9,
+      "rerank top 20": 19,
+      "hybrid + rerank (RRF)": 2
+    },
+    {
+      "key": "DERBY-1226",
+      "hybrid": 20,
+      "rerank top 10": 20,
+      "rerank top 20": 20,
+      "hybrid + rerank (RRF)": 20
+    },
+    {
+      "key": "DERBY-1237",
+      "hybrid": 1,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "DERBY-1754",
+      "hybrid": 3,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "hybrid + rerank (RRF)": 3
+    },
+    {
+      "key": "DERBY-1771",
+      "hybrid": 3,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "hybrid + rerank (RRF)": 3
+    },
+    {
+      "key": "DERBY-1778",
+      "hybrid": 1,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "DERBY-1902",
+      "hybrid": 1,
+      "rerank top 10": 8,
+      "rerank top 20": 15,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "DERBY-1978",
+      "hybrid": 1,
+      "rerank top 10": 4,
+      "rerank top 20": 7,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "DERBY-2015",
+      "hybrid": 2,
+      "rerank top 10": 7,
+      "rerank top 20": 9,
+      "hybrid + rerank (RRF)": 2
+    },
+    {
+      "key": "DERBY-2127",
+      "hybrid": 1,
+      "rerank top 10": 2,
+      "rerank top 20": 2,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "DERBY-2232",
+      "hybrid": 1,
+      "rerank top 10": 3,
+      "rerank top 20": 4,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "DERBY-2401",
+      "hybrid": 1,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "DERBY-2445",
+      "hybrid": 1,
+      "rerank top 10": 2,
+      "rerank top 20": 2,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "DERBY-2563",
+      "hybrid": 1,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "DERBY-2589",
+      "hybrid": null,
+      "rerank top 10": null,
+      "rerank top 20": null,
+      "hybrid + rerank (RRF)": null
+    },
+    {
+      "key": "DERBY-2665",
+      "hybrid": 7,
+      "rerank top 10": 4,
+      "rerank top 20": 5,
+      "hybrid + rerank (RRF)": 7
+    },
+    {
+      "key": "DERBY-2677",
+      "hybrid": 2,
+      "rerank top 10": 3,
+      "rerank top 20": 7,
+      "hybrid + rerank (RRF)": 2
+    },
+    {
+      "key": "DERBY-2756",
+      "hybrid": 1,
+      "rerank top 10": 1,
+      "rerank top 20": 2,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "DERBY-2808",
+      "hybrid": 1,
+      "rerank top 10": 2,
+      "rerank top 20": 2,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "DERBY-2866",
+      "hybrid": 1,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "DERBY-2899",
+      "hybrid": 4,
+      "rerank top 10": 3,
+      "rerank top 20": 4,
+      "hybrid + rerank (RRF)": 4
+    },
+    {
+      "key": "DERBY-2965",
+      "hybrid": 1,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "DERBY-3015",
+      "hybrid": 1,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "DERBY-3052",
+      "hybrid": null,
+      "rerank top 10": null,
+      "rerank top 20": null,
+      "hybrid + rerank (RRF)": null
+    },
+    {
+      "key": "DERBY-3053",
+      "hybrid": 1,
+      "rerank top 10": 2,
+      "rerank top 20": 2,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "DERBY-3059",
+      "hybrid": 1,
+      "rerank top 10": 2,
+      "rerank top 20": 2,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "DERBY-3065",
+      "hybrid": 1,
+      "rerank top 10": 2,
+      "rerank top 20": 3,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "DERBY-3066",
+      "hybrid": 3,
+      "rerank top 10": 7,
+      "rerank top 20": 13,
+      "hybrid + rerank (RRF)": 3
+    },
+    {
+      "key": "DERBY-3067",
+      "hybrid": 2,
+      "rerank top 10": 4,
+      "rerank top 20": 6,
+      "hybrid + rerank (RRF)": 2
+    },
+    {
+      "key": "DERBY-3114",
+      "hybrid": 1,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "DERBY-3120",
+      "hybrid": 1,
+      "rerank top 10": 8,
+      "rerank top 20": 12,
+      "hybrid + rerank (RRF)": 2
+    },
+    {
+      "key": "DERBY-3143",
+      "hybrid": 1,
+      "rerank top 10": 7,
+      "rerank top 20": 12,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "DERBY-3177",
+      "hybrid": 1,
+      "rerank top 10": 2,
+      "rerank top 20": 3,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "DERBY-3239",
+      "hybrid": 1,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "DERBY-3277",
+      "hybrid": 3,
+      "rerank top 10": 7,
+      "rerank top 20": 14,
+      "hybrid + rerank (RRF)": 3
+    },
+    {
+      "key": "DERBY-3283",
+      "hybrid": 1,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "DERBY-3284",
+      "hybrid": 1,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "DERBY-3292",
+      "hybrid": 1,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "DERBY-3332",
+      "hybrid": 1,
+      "rerank top 10": 2,
+      "rerank top 20": 3,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "DERBY-3344",
+      "hybrid": 1,
+      "rerank top 10": 3,
+      "rerank top 20": 7,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "DERBY-3381",
+      "hybrid": 1,
+      "rerank top 10": 3,
+      "rerank top 20": 5,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "DERBY-3407",
+      "hybrid": 1,
+      "rerank top 10": 5,
+      "rerank top 20": 8,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "DERBY-3411",
+      "hybrid": 1,
+      "rerank top 10": 3,
+      "rerank top 20": 6,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "DERBY-3436",
+      "hybrid": 2,
+      "rerank top 10": 7,
+      "rerank top 20": 9,
+      "hybrid + rerank (RRF)": 2
+    },
+    {
+      "key": "DERBY-3464",
+      "hybrid": 5,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "hybrid + rerank (RRF)": 4
+    },
+    {
+      "key": "DERBY-3485",
+      "hybrid": 1,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "DERBY-3530",
+      "hybrid": 1,
+      "rerank top 10": 1,
+      "rerank top 20": 2,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "DERBY-3591",
+      "hybrid": null,
+      "rerank top 10": null,
+      "rerank top 20": null,
+      "hybrid + rerank (RRF)": null
+    },
+    {
+      "key": "DERBY-3606",
+      "hybrid": 1,
+      "rerank top 10": 3,
+      "rerank top 20": 4,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "DERBY-3675",
+      "hybrid": 8,
+      "rerank top 10": 6,
+      "rerank top 20": 9,
+      "hybrid + rerank (RRF)": 9
+    },
+    {
+      "key": "DERBY-3744",
+      "hybrid": 1,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "DERBY-3749",
+      "hybrid": 13,
+      "rerank top 10": 13,
+      "rerank top 20": 18,
+      "hybrid + rerank (RRF)": 13
+    },
+    {
+      "key": "DERBY-3835",
+      "hybrid": 1,
+      "rerank top 10": 2,
+      "rerank top 20": 3,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "DERBY-3860",
+      "hybrid": 1,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "DERBY-3916",
+      "hybrid": 1,
+      "rerank top 10": 6,
+      "rerank top 20": 13,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "DERBY-3951",
+      "hybrid": 12,
+      "rerank top 10": 12,
+      "rerank top 20": 2,
+      "hybrid + rerank (RRF)": 12
+    },
+    {
+      "key": "DERBY-3961",
+      "hybrid": 1,
+      "rerank top 10": 7,
+      "rerank top 20": 7,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "DERBY-3968",
+      "hybrid": 1,
+      "rerank top 10": 6,
+      "rerank top 20": 9,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "DERBY-3987",
+      "hybrid": 1,
+      "rerank top 10": 2,
+      "rerank top 20": 4,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "DERBY-4043",
+      "hybrid": null,
+      "rerank top 10": null,
+      "rerank top 20": null,
+      "hybrid + rerank (RRF)": null
+    },
+    {
+      "key": "DERBY-4056",
+      "hybrid": 2,
+      "rerank top 10": 2,
+      "rerank top 20": 4,
+      "hybrid + rerank (RRF)": 2
+    },
+    {
+      "key": "DERBY-4075",
+      "hybrid": null,
+      "rerank top 10": null,
+      "rerank top 20": null,
+      "hybrid + rerank (RRF)": null
+    },
+    {
+      "key": "DERBY-4178",
+      "hybrid": 1,
+      "rerank top 10": 3,
+      "rerank top 20": 4,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "DERBY-4180",
+      "hybrid": null,
+      "rerank top 10": null,
+      "rerank top 20": null,
+      "hybrid + rerank (RRF)": null
+    },
+    {
+      "key": "DERBY-4231",
+      "hybrid": 2,
+      "rerank top 10": 4,
+      "rerank top 20": 5,
+      "hybrid + rerank (RRF)": 2
+    },
+    {
+      "key": "DERBY-4247",
+      "hybrid": null,
+      "rerank top 10": null,
+      "rerank top 20": null,
+      "hybrid + rerank (RRF)": null
+    },
+    {
+      "key": "DERBY-4254",
+      "hybrid": 2,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "hybrid + rerank (RRF)": 2
+    },
+    {
+      "key": "DERBY-4265",
+      "hybrid": 1,
+      "rerank top 10": 1,
+      "rerank top 20": 3,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "DERBY-4298",
+      "hybrid": 6,
+      "rerank top 10": 3,
+      "rerank top 20": 3,
+      "hybrid + rerank (RRF)": 5
+    },
+    {
+      "key": "DERBY-4333",
+      "hybrid": null,
+      "rerank top 10": null,
+      "rerank top 20": null,
+      "hybrid + rerank (RRF)": null
+    },
+    {
+      "key": "DERBY-4337",
+      "hybrid": null,
+      "rerank top 10": null,
+      "rerank top 20": null,
+      "hybrid + rerank (RRF)": null
+    },
+    {
+      "key": "DERBY-4362",
+      "hybrid": 1,
+      "rerank top 10": 4,
+      "rerank top 20": 4,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "DERBY-4385",
+      "hybrid": 1,
+      "rerank top 10": 2,
+      "rerank top 20": 3,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "DERBY-4433",
+      "hybrid": null,
+      "rerank top 10": null,
+      "rerank top 20": null,
+      "hybrid + rerank (RRF)": null
+    },
+    {
+      "key": "DERBY-4440",
+      "hybrid": 15,
+      "rerank top 10": 15,
+      "rerank top 20": 3,
+      "hybrid + rerank (RRF)": 15
+    },
+    {
+      "key": "DERBY-4453",
+      "hybrid": 1,
+      "rerank top 10": 5,
+      "rerank top 20": 7,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "DERBY-4456",
+      "hybrid": null,
+      "rerank top 10": null,
+      "rerank top 20": null,
+      "hybrid + rerank (RRF)": null
+    },
+    {
+      "key": "DERBY-4464",
+      "hybrid": 1,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "DERBY-4498",
+      "hybrid": 1,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "DERBY-4526",
+      "hybrid": null,
+      "rerank top 10": null,
+      "rerank top 20": null,
+      "hybrid + rerank (RRF)": null
+    },
+    {
+      "key": "DERBY-4541",
+      "hybrid": 2,
+      "rerank top 10": 2,
+      "rerank top 20": 3,
+      "hybrid + rerank (RRF)": 2
+    },
+    {
+      "key": "DERBY-4581",
+      "hybrid": 1,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "DERBY-4643",
+      "hybrid": 5,
+      "rerank top 10": 6,
+      "rerank top 20": 10,
+      "hybrid + rerank (RRF)": 5
+    },
+    {
+      "key": "DERBY-4644",
+      "hybrid": null,
+      "rerank top 10": null,
+      "rerank top 20": null,
+      "hybrid + rerank (RRF)": null
+    },
+    {
+      "key": "DERBY-4683",
+      "hybrid": 2,
+      "rerank top 10": 9,
+      "rerank top 20": 11,
+      "hybrid + rerank (RRF)": 2
+    },
+    {
+      "key": "DERBY-4749",
+      "hybrid": null,
+      "rerank top 10": null,
+      "rerank top 20": null,
+      "hybrid + rerank (RRF)": null
+    },
+    {
+      "key": "DERBY-4780",
+      "hybrid": null,
+      "rerank top 10": null,
+      "rerank top 20": null,
+      "hybrid + rerank (RRF)": null
+    },
+    {
+      "key": "DERBY-4813",
+      "hybrid": null,
+      "rerank top 10": null,
+      "rerank top 20": null,
+      "hybrid + rerank (RRF)": null
+    },
+    {
+      "key": "DERBY-4817",
+      "hybrid": 1,
+      "rerank top 10": 7,
+      "rerank top 20": 10,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "DERBY-4844",
+      "hybrid": 1,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "DERBY-4887",
+      "hybrid": 3,
+      "rerank top 10": 5,
+      "rerank top 20": 7,
+      "hybrid + rerank (RRF)": 3
+    },
+    {
+      "key": "DERBY-4914",
+      "hybrid": 2,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "DERBY-4954",
+      "hybrid": null,
+      "rerank top 10": null,
+      "rerank top 20": null,
+      "hybrid + rerank (RRF)": null
+    },
+    {
+      "key": "DERBY-4969",
+      "hybrid": 1,
+      "rerank top 10": 4,
+      "rerank top 20": 4,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "DERBY-4976",
+      "hybrid": 2,
+      "rerank top 10": 7,
+      "rerank top 20": 15,
+      "hybrid + rerank (RRF)": 2
+    },
+    {
+      "key": "DERBY-5031",
+      "hybrid": 1,
+      "rerank top 10": 9,
+      "rerank top 20": 17,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "DERBY-5048",
+      "hybrid": 1,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "DERBY-5059",
+      "hybrid": 8,
+      "rerank top 10": 5,
+      "rerank top 20": 7,
+      "hybrid + rerank (RRF)": 8
+    },
+    {
+      "key": "DERBY-5072",
+      "hybrid": null,
+      "rerank top 10": null,
+      "rerank top 20": null,
+      "hybrid + rerank (RRF)": null
+    },
+    {
+      "key": "DERBY-5073",
+      "hybrid": 8,
+      "rerank top 10": 10,
+      "rerank top 20": 14,
+      "hybrid + rerank (RRF)": 9
+    },
+    {
+      "key": "DERBY-5169",
+      "hybrid": 1,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "DERBY-5178",
+      "hybrid": 1,
+      "rerank top 10": 6,
+      "rerank top 20": 10,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "DERBY-5188",
+      "hybrid": 1,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "DERBY-5194",
+      "hybrid": 2,
+      "rerank top 10": 2,
+      "rerank top 20": 3,
+      "hybrid + rerank (RRF)": 2
+    },
+    {
+      "key": "DERBY-5199",
+      "hybrid": 1,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "DERBY-5237",
+      "hybrid": 5,
+      "rerank top 10": 3,
+      "rerank top 20": 3,
+      "hybrid + rerank (RRF)": 4
+    },
+    {
+      "key": "DERBY-5285",
+      "hybrid": 1,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "DERBY-5298",
+      "hybrid": 1,
+      "rerank top 10": 2,
+      "rerank top 20": 2,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "DERBY-5351",
+      "hybrid": 1,
+      "rerank top 10": 4,
+      "rerank top 20": 6,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "DERBY-5366",
+      "hybrid": 1,
+      "rerank top 10": 4,
+      "rerank top 20": 4,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "DERBY-5435",
+      "hybrid": 7,
+      "rerank top 10": 4,
+      "rerank top 20": 5,
+      "hybrid + rerank (RRF)": 7
+    },
+    {
+      "key": "DERBY-5518",
+      "hybrid": 1,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "DERBY-5520",
+      "hybrid": 2,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "hybrid + rerank (RRF)": 2
+    },
+    {
+      "key": "DERBY-5537",
+      "hybrid": 1,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "DERBY-5588",
+      "hybrid": 1,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "DERBY-5618",
+      "hybrid": 1,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "DERBY-5621",
+      "hybrid": 1,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "DERBY-5669",
+      "hybrid": null,
+      "rerank top 10": null,
+      "rerank top 20": null,
+      "hybrid + rerank (RRF)": null
+    },
+    {
+      "key": "DERBY-5672",
+      "hybrid": 1,
+      "rerank top 10": 1,
+      "rerank top 20": 2,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "DERBY-5703",
+      "hybrid": 13,
+      "rerank top 10": 13,
+      "rerank top 20": 6,
+      "hybrid + rerank (RRF)": 13
+    },
+    {
+      "key": "DERBY-5735",
+      "hybrid": 11,
+      "rerank top 10": 11,
+      "rerank top 20": 11,
+      "hybrid + rerank (RRF)": 11
+    },
+    {
+      "key": "DERBY-5773",
+      "hybrid": 1,
+      "rerank top 10": 3,
+      "rerank top 20": 3,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "DERBY-5800",
+      "hybrid": 2,
+      "rerank top 10": 4,
+      "rerank top 20": 6,
+      "hybrid + rerank (RRF)": 2
+    },
+    {
+      "key": "DERBY-5867",
+      "hybrid": 1,
+      "rerank top 10": 4,
+      "rerank top 20": 5,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "DERBY-5953",
+      "hybrid": 1,
+      "rerank top 10": 3,
+      "rerank top 20": 7,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "DERBY-5981",
+      "hybrid": null,
+      "rerank top 10": null,
+      "rerank top 20": null,
+      "hybrid + rerank (RRF)": null
+    },
+    {
+      "key": "DERBY-5997",
+      "hybrid": null,
+      "rerank top 10": null,
+      "rerank top 20": null,
+      "hybrid + rerank (RRF)": null
+    },
+    {
+      "key": "DERBY-6031",
+      "hybrid": 1,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "DERBY-6142",
+      "hybrid": 1,
+      "rerank top 10": 5,
+      "rerank top 20": 7,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "DERBY-6170",
+      "hybrid": 1,
+      "rerank top 10": 1,
+      "rerank top 20": 2,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "DERBY-6191",
+      "hybrid": 1,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "DERBY-6249",
+      "hybrid": 1,
+      "rerank top 10": 7,
+      "rerank top 20": 10,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "DERBY-6344",
+      "hybrid": 3,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "hybrid + rerank (RRF)": 2
+    },
+    {
+      "key": "DERBY-6360",
+      "hybrid": 2,
+      "rerank top 10": 2,
+      "rerank top 20": 2,
+      "hybrid + rerank (RRF)": 2
+    },
+    {
+      "key": "DERBY-6364",
+      "hybrid": 1,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "DERBY-6365",
+      "hybrid": 1,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "DERBY-6366",
+      "hybrid": 1,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "DERBY-6381",
+      "hybrid": 1,
+      "rerank top 10": 3,
+      "rerank top 20": 4,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "DERBY-6406",
+      "hybrid": null,
+      "rerank top 10": null,
+      "rerank top 20": null,
+      "hybrid + rerank (RRF)": null
+    },
+    {
+      "key": "DERBY-6409",
+      "hybrid": 2,
+      "rerank top 10": 5,
+      "rerank top 20": 8,
+      "hybrid + rerank (RRF)": 2
+    },
+    {
+      "key": "DERBY-6435",
+      "hybrid": 1,
+      "rerank top 10": 1,
+      "rerank top 20": 4,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "DERBY-6450",
+      "hybrid": null,
+      "rerank top 10": null,
+      "rerank top 20": null,
+      "hybrid + rerank (RRF)": null
+    },
+    {
+      "key": "DERBY-6556",
+      "hybrid": 2,
+      "rerank top 10": 4,
+      "rerank top 20": 8,
+      "hybrid + rerank (RRF)": 2
+    },
+    {
+      "key": "DERBY-6681",
+      "hybrid": 11,
+      "rerank top 10": 11,
+      "rerank top 20": 18,
+      "hybrid + rerank (RRF)": 11
+    },
+    {
+      "key": "DERBY-6695",
+      "hybrid": 1,
+      "rerank top 10": 3,
+      "rerank top 20": 4,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "DERBY-6740",
+      "hybrid": 1,
+      "rerank top 10": 6,
+      "rerank top 20": 9,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "DERBY-6817",
+      "hybrid": 5,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "hybrid + rerank (RRF)": 5
+    },
+    {
+      "key": "DERBY-6994",
+      "hybrid": 6,
+      "rerank top 10": 10,
+      "rerank top 20": 18,
+      "hybrid + rerank (RRF)": 6
+    },
+    {
+      "key": "DERBY-7106",
+      "hybrid": 1,
+      "rerank top 10": 1,
+      "rerank top 20": 1,
+      "hybrid + rerank (RRF)": 1
+    },
+    {
+      "key": "DERBY-7132",
+      "hybrid": null,
+      "rerank top 10": null,
+      "rerank top 20": null,
+      "hybrid + rerank (RRF)": null
+    }
+  ]
+}
