@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Callable, Iterable, Iterator
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from datetime import datetime, timedelta
 from itertools import islice
 from typing import TypeVar
@@ -38,17 +38,34 @@ def sync(
     newest = previous
     stats = SyncStats()
     for page in _batched(connector.iter_tickets(since), page_size):
-        planned = [(ticket, _unique(chunk_ticket(ticket, chunking))) for ticket in page]
-        vectors = _embed_missing(store, embedder, planned)
-        for ticket, chunks in planned:
-            store.replace_ticket(ticket, chunks, vectors)
+        stats.embedded += _store_page(store, embedder, page, chunking)
+        for ticket in page:
             newest = _later(newest, ticket.updated)
         stats.tickets += len(page)
-        stats.embedded += len(vectors)
         if progress:
             progress(stats)
     store.mark_synced(source, newest)
     return stats
+
+
+def index_ticket(
+    store: Store, embedder: Embedder, ticket: Ticket, source: str, chunking: ChunkingConfig
+) -> int:
+    """Store one ticket like `sync` does, without moving the source's sync state."""
+    _bind(store, embedder)
+    if ticket.source != source:
+        ticket = replace(ticket, source=source)
+    return _store_page(store, embedder, [ticket], chunking)
+
+
+def _store_page(
+    store: Store, embedder: Embedder, page: list[Ticket], chunking: ChunkingConfig
+) -> int:
+    planned = [(ticket, _unique(chunk_ticket(ticket, chunking))) for ticket in page]
+    vectors = _embed_missing(store, embedder, planned)
+    for ticket, chunks in planned:
+        store.replace_ticket(ticket, chunks, vectors)
+    return len(vectors)
 
 
 def _bind(store: Store, embedder: Embedder) -> None:

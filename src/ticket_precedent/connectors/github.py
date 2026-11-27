@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 from collections import defaultdict
 from collections.abc import Iterator, Sequence
 from datetime import UTC, datetime
@@ -12,6 +13,8 @@ from .http import get_response
 
 API_URL = "https://api.github.com"
 PAGE_SIZE = 100
+KEY = re.compile(r"^([\w.-]+/[\w.-]+)#(\d+)$")
+MISSING_STATUSES = {404, 410}
 
 
 class GitHubConnector:
@@ -42,6 +45,29 @@ class GitHubConnector:
         for repo in self.repos:
             yield from self._repo_tickets(repo, since)
 
+    def fetch_ticket(self, key: str) -> Ticket | None:
+        """Without waiting for a rate-limit reset: an agent is waiting for the answer."""
+        match = KEY.fullmatch(key)
+        if match is None:
+            return None
+        repo = next((r for r in self.repos if r.lower() == match.group(1).lower()), None)
+        if repo is None:
+            return None
+        number = int(match.group(2))
+        try:
+            response = get_response(
+                self._client, f"/repos/{repo}/issues/{number}", attempts=1, rate_limit_wait=0
+            )
+        except httpx.HTTPStatusError as error:
+            if error.response.status_code in MISSING_STATUSES:
+                return None
+            raise
+        issue = response.json()
+        if "pull_request" in issue:
+            return None
+        comments = self._issue_comments(repo, number, wait=0) if issue.get("comments") else []
+        return issue_to_ticket(issue, self.source, repo, comments)
+
     def _repo_tickets(self, repo: str, since: datetime | None) -> Iterator[Ticket]:
         # A stored ticket's comments are replaced, so a `since`-filtered stream would drop old ones.
         known = self._comments_by_issue(repo) if since is None else {}
@@ -70,15 +96,18 @@ class GitHubConnector:
                 grouped[int(number)].append(_comment(item))
         return grouped
 
-    def _issue_comments(self, repo: str, number: int) -> list[Comment]:
+    def _issue_comments(self, repo: str, number: int, wait: float | None = None) -> list[Comment]:
         path = f"/repos/{repo}/issues/{number}/comments"
-        return [_comment(item) for item in self._paginate(path, {"per_page": PAGE_SIZE})]
+        return [_comment(item) for item in self._paginate(path, {"per_page": PAGE_SIZE}, wait)]
 
-    def _paginate(self, path: str, params: dict[str, Any]) -> Iterator[dict[str, Any]]:
+    def _paginate(
+        self, path: str, params: dict[str, Any], wait: float | None = None
+    ) -> Iterator[dict[str, Any]]:
         url: str | None = path
         query: dict[str, Any] | None = params
+        rate_limit_wait = self.rate_limit_wait if wait is None else wait
         while url:
-            response = get_response(self._client, url, query, rate_limit_wait=self.rate_limit_wait)
+            response = get_response(self._client, url, query, rate_limit_wait=rate_limit_wait)
             yield from response.json()
             url = response.links.get("next", {}).get("url")
             query = None

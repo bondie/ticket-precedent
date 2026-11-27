@@ -25,7 +25,7 @@ class MantisConnector:
     ) -> None:
         self.source = source
         self.base_url = url.rstrip("/")
-        self.project_ids = list(project_ids)
+        self.project_ids = [int(project_id) for project_id in project_ids]
         self.page_size = page_size
         self.include_private_notes = include_private_notes
         self._client = httpx.Client(
@@ -35,6 +35,20 @@ class MantisConnector:
     def iter_tickets(self, since: datetime | None = None) -> Iterator[Ticket]:
         for project_id in self.project_ids:
             yield from self._project_tickets(project_id, since)
+
+    def fetch_ticket(self, key: str) -> Ticket | None:
+        if not key.isascii() or not key.isdigit():
+            return None
+        try:
+            data = get_json(self._client, f"/api/rest/issues/{int(key)}", attempts=1)
+        except httpx.HTTPStatusError as error:
+            if error.response.status_code == 404:
+                return None
+            raise
+        issue = next(iter(data.get("issues") or []), None)
+        if issue is None or (issue.get("project") or {}).get("id") not in self.project_ids:
+            return None
+        return issue_to_ticket(issue, self.source, self.base_url, self.include_private_notes)
 
     def _project_tickets(self, project_id: int, since: datetime | None) -> Iterator[Ticket]:
         page = 1

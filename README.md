@@ -169,24 +169,24 @@ Describe the problem in your own words and let the agent pick the tool:
 |---|---|
 | *Find precedents for helpdesk 18342.* | `precedents_for("18342")` |
 | *Have we seen "invoice PDF missing although ERP exported it" before?* | `similar_tickets(text)` |
-| *Open SHOP-412 and tell me how it was fixed.* | `get_ticket("acme-jira", "SHOP-412")` |
+| *Open SHOP-412 and tell me how it was fixed.* | `get_ticket("SHOP-412")` |
 | *How long will SHOP-431 take?* | `effort_reference(key="SHOP-431")` |
 | *How long did similar fixes take since we changed the process in January?* | `effort_reference(text, since="2026-01-01")` |
 
 | Tool | What it does |
 |---|---|
-| `precedents_for(key, source?, only_source?, limit?)` | Precedents for a ticket that is already indexed |
-| `similar_tickets(text, source?, project?, limit?)` | Precedents for any text: a symptom, an error message, a ticket that is not indexed yet |
-| `effort_reference(key? \| text?, source?, since?, limit?)` | Similar finished tickets with logged hours, plus their median and P25–P75 |
-| `get_ticket(source, key)` | Full indexed description, comments and links of one ticket |
+| `precedents_for(key, source?, only_source?, platform?, limit?)` | Precedents for a ticket, [fetched first](#tickets-that-are-not-indexed-yet) when it is not indexed yet |
+| `similar_tickets(text \| query, source?, project?, platform?, limit?)` | Precedents for any text: a symptom, an error message; `query` is an alias of `text` |
+| `effort_reference(key? \| text?, source?, since?, platform?, limit?)` | Similar finished tickets with logged hours, plus their median and P25–P75 |
+| `get_ticket(key, source?)` | Full description, comments and links of one ticket |
 | `list_sources()` | Indexed sources, counts and last sync time |
 
 `precedents_for` queries with the ticket's title and description, exactly like the
 [benchmark](#results). It returns only tickets created before that ticket and leaves out the
 ticket itself. It also leaves out tickets named in the ticket's title: a JIRA issue titled
 *"[R:18342] Wrong prices"* was opened from helpdesk thread 18342, so that thread is the same
-problem, not a precedent. The key alone is enough. `source` is needed only when two sources
-share a key.
+problem, not a precedent. The key alone is enough, for `get_ticket` too. `source` is
+needed only when two sources share a key.
 
 `effort_reference` is the retrieval half of
 [reference class forecasting](https://en.wikipedia.org/wiki/Reference_class_forecasting): an
@@ -196,16 +196,17 @@ estimate starts from how long similar work actually took. See
 Every result carries the key, title, URL, status, resolution, issue type, creation date,
 time spent and a snippet of the best-matching text. `matched_in` says whether that text is
 the description, a comment or only the title. `score` is the fusion score: it orders the results and is not a
-probability. All tools are read-only and read only the local index.
+probability. All tools are read-only. They search the local index; only a ticket that is
+not indexed yet is [fetched from its tracker](#tickets-that-are-not-indexed-yet).
 
 ### Use the command line
 
 | Command | What it does |
 |---|---|
-| `tp precedents KEY [--only-source S] [--platform P] [--limit N] [--json]` | Earlier tickets that look like an indexed ticket |
+| `tp precedents KEY [--only-source S] [--platform P] [--limit N] [--json]` | Earlier tickets that look like a given ticket |
 | `tp search TEXT [--source S] [--project P] [--platform P] [--mode hybrid\|vector\|bm25] [--json]` | Search by free text |
 | `tp effort KEY [--since YYYY-MM-DD] [--platform P] [--limit N] [--json]` | Logged hours of similar tickets finished before KEY was created |
-| `tp show SOURCE KEY` | Print one indexed ticket as JSON |
+| `tp show KEY [--source S]` | Print one ticket as JSON (`tp show SOURCE KEY` also works) |
 | `tp sync [--source S] [--full]` | Fetch new and updated tickets; `--full` re-reads everything |
 | `tp stats` | Indexed sources and sync times |
 | `tp serve` | MCP server on stdio (MCP clients start it for you) |
@@ -224,6 +225,9 @@ effort on each. Give every source a `platform` and the searches stay within one:
 - `similar_tickets` and `effort_reference` with text use the `platform` argument, or
   `default_platform` from the configuration when it is omitted.
 - `platform: "all"` searches every source; `list_sources` shows the platform of each.
+- Platform names match regardless of case, and the MCP server lists the configured
+  platforms, their sources and the default in its instructions, so the model knows the
+  valid names before its first call.
 
 Sources without a platform, and configurations without `default_platform`, search
 everything as before.
@@ -235,9 +239,40 @@ everything as before.
   no scheduler is needed. A file lock keeps concurrent syncs (CLI, several open sessions) from
   colliding.
 - **On demand.** `tp sync`, or a cron job.
+- **When asked for.** See [below](#tickets-that-are-not-indexed-yet).
 - **After changing chunking settings**, for example raising `min_comment_chars` to drop short
   "deployed, please check" comments, run `tp sync --full`. Unchanged chunks keep their
   embeddings, so this costs mostly API calls.
+
+### Tickets that are not indexed yet
+
+A ticket created after the last sync, or one from a project no sync has brought in, is
+fetched when a tool needs it: `precedents_for`, `effort_reference` with a key and
+`get_ticket`, and on the command line `tp precedents`, `tp effort` and `tp show`. The
+ticket is indexed exactly as a sync would index it, comments and changelog included, and
+the answer keeps the same rules: only tickets created before it, without the tickets its
+title names. The sync state is left alone, so the next sync still fetches everything
+updated since the previous one.
+
+- **Which sources are asked.** The `source` argument when given, otherwise every source,
+  one after another until one has the ticket. Sources whose indexed tickets already
+  include the key's JIRA project, or whose `jql` names it, are asked first. A source
+  answers only for tickets within its own scope: a JIRA source searches its `jql` plus
+  `key = "…"`, a MantisBT source only its `project_ids`, a GitHub source only its `repo`
+  list (pull requests excluded). A key of the wrong shape for a source (a helpdesk number
+  for JIRA, `owner/repo#n` for MantisBT) costs no request.
+- **What it costs.** One request per source asked, plus the requests for a long comment
+  thread or changelog. A key that no source has is remembered for 10 minutes per server
+  session, so asking again costs nothing; a failed request is not remembered, so the next
+  call tries again. The lookup request is not retried and does not wait for a
+  rate-limit reset, because an agent is waiting for the answer.
+- **Credentials.** The MCP server needs the same tracker credentials in its environment as
+  [auto-sync](#keep-the-index-fresh). A source whose `${VARIABLES}` are not set, or whose
+  request fails, is skipped, and the error names each source asked and why it was skipped
+  (an HTTP status or an error class, never a URL or a secret).
+- **Ollama.** Fetching needs the embedding model too. When Ollama is down, the error says
+  that the ticket was found but could not be embedded; read it from the tracker and use
+  `similar_tickets`, which falls back to keywords.
 
 ### What has to be running
 
@@ -396,7 +431,7 @@ most similar tickets, never with a model's guess. It is meant as the input of an
 agent, which adjusts the range and cites the tickets.
 
 - **Only finished work counts.** A ticket joins the reference class once its time was all
-  logged, so a ticket still in progress cannot pull the median down. For an indexed ticket
+  logged, so a ticket still in progress cannot pull the median down. For a ticket given by key
   the cut-off is the moment it was created: the answer is what could have been known when it
   was estimated. That makes the tool usable for backtests without leaking the future.
 - **When was the time final?** The JIRA connectors read each issue's changelog and keep
@@ -408,7 +443,10 @@ agent, which adjusts the range and cites the tickets.
   never returns it: it is there to compare an agent's estimate with the human one.
 - **Process changes.** `since` keeps only tickets created after a date. When a team changes
   how it works, for example by implementing with AI agents, older tickets overstate the
-  effort and a recent reference class is the better guide.
+  effort and a recent reference class is the better guide. `effort_since` in the
+  configuration sets that date once, for every platform (`effort_since: 2026-01-01`) or per
+  platform (`effort_since: {shop: 2026-01-01}`), and applies whenever `since` is not
+  passed. The response carries the `since` that was used, and an explicit one always wins.
 - **Quartiles, not a mean.** Logged time is skewed: a few tickets take ten times the usual.
   The median and the P25–P75 range ignore the outliers that a mean would chase.
 

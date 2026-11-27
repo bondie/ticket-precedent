@@ -2,8 +2,9 @@ from __future__ import annotations
 
 import os
 import re
-from collections.abc import Callable
+from collections.abc import Callable, Mapping
 from dataclasses import dataclass, field, fields
+from datetime import date
 from pathlib import Path
 from typing import Any
 
@@ -67,6 +68,8 @@ class Config:
     search: SearchConfig = field(default_factory=SearchConfig)
     auto_sync_hours: float | None = None
     default_platform: str | None = None
+    effort_since: str | Mapping[str, str] | None = None
+    """`since` of effort_reference when not passed: one date, or a date per platform."""
 
     def source(self, name: str) -> SourceConfig:
         for source in self.sources:
@@ -88,17 +91,36 @@ class Config:
         An explicit `platform` wins, then the platform of the ticket being looked up, then
         `default_platform`. Tickets of different products are not mixed unless asked for.
         """
-        if platform == ALL_PLATFORMS:
+        if platform is not None and platform.lower() == ALL_PLATFORMS:
             return None, None
         from_ticket = self.platform_of(ticket_source) if ticket_source else None
         chosen = platform or from_ticket or self.default_platform
         if chosen is None:
             return None, None
-        sources = frozenset(item.name for item in self.sources if item.platform == chosen)
-        if not sources:
-            known = sorted({item.platform for item in self.sources if item.platform})
-            raise ConfigError(f"Unknown platform {chosen!r}; configured: {known}")
-        return chosen, sources
+        canonical = self.platform_named(chosen)
+        sources = frozenset(
+            item.name
+            for item in self.sources
+            if item.platform and item.platform.lower() == canonical.lower()
+        )
+        return canonical, sources
+
+    def platforms(self) -> list[str]:
+        return sorted({item.platform for item in self.sources if item.platform})
+
+    def platform_named(self, name: str) -> str:
+        """The configured spelling of a platform; names match regardless of case."""
+        for known in self.platforms():
+            if known.lower() == name.lower():
+                return known
+        raise ConfigError(f"Unknown platform {name!r}; configured: {self.platforms()}")
+
+    def effort_since_for(self, platform: str | None) -> str | None:
+        if self.effort_since is None or isinstance(self.effort_since, str):
+            return self.effort_since
+        if platform is None:
+            return None
+        return self.effort_since.get(platform.lower())
 
 
 def config_dir() -> Path:
@@ -124,15 +146,17 @@ def load_config(path: Path | None = None) -> Config:
         env.update(read_dotenv(Path(env_file).expanduser()))
     env.update(read_dotenv(path.parent / ".env"))
     env.update(os.environ)
-    sources = document.pop("sources", None) or []
+    sources = [_source(item, env) for item in document.pop("sources", None) or []]
     raw = _expand(document, env)
+    platforms = {item.platform.lower() for item in sources if item.platform}
     return Config(
         index_path=Path(raw.get("index_path") or data_dir() / "index.db").expanduser(),
         embedding=_build(EmbeddingConfig, raw.get("embedding") or {}, "embedding"),
-        sources=[_source(item, env) for item in sources],
+        sources=sources,
         search=_build(SearchConfig, raw.get("search") or {}, "search"),
         auto_sync_hours=raw.get("auto_sync_hours"),
         default_platform=raw.get("default_platform"),
+        effort_since=_effort_since(raw.get("effort_since"), platforms),
     )
 
 
@@ -192,7 +216,7 @@ def _source(raw: dict[str, Any], env: dict[str, str]) -> SourceConfig:
     platform = options.pop("platform", None)
     if not name or not kind:
         raise ConfigError(f"Every source needs `name` and `type`: {raw}")
-    if platform == ALL_PLATFORMS:
+    if isinstance(platform, str) and platform.lower() == ALL_PLATFORMS:
         raise ConfigError(f"Source {name!r}: platform {ALL_PLATFORMS!r} is reserved")
     chunking = dict(options.pop("chunking", None) or {})
     if "skip_comment_authors" in chunking:
@@ -205,6 +229,29 @@ def _source(raw: dict[str, Any], env: dict[str, str]) -> SourceConfig:
         env=env,
         platform=platform,
     )
+
+
+def _effort_since(value: Any, platforms: set[str]) -> str | dict[str, str] | None:
+    if value is None:
+        return None
+    if not isinstance(value, dict):
+        return _date(value, "effort_since")
+    unknown = {str(name) for name in value if str(name).lower() not in platforms}
+    if unknown:
+        raise ConfigError(
+            f"effort_since: unknown platforms {sorted(unknown)}; configured: {sorted(platforms)}"
+        )
+    return {str(name).lower(): _date(when, f"effort_since.{name}") for name, when in value.items()}
+
+
+def _date(value: Any, where: str) -> str:
+    """YAML reads an unquoted 2026-01-01 as a date, a quoted one as a string."""
+    if isinstance(value, date):
+        return value.isoformat()
+    try:
+        return date.fromisoformat(str(value)).isoformat()
+    except ValueError:
+        raise ConfigError(f"{where}: {value!r} is not a date (YYYY-MM-DD)") from None
 
 
 def _build(cls: type, values: dict[str, Any], where: str) -> Any:

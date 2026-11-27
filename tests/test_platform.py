@@ -164,3 +164,76 @@ def test_cli_platform_options(config_file: Path, capsys: pytest.CaptureFixture[s
 
     assert cli.main(["--config", str(config_file), "stats"]) == 0
     assert "legacy-jira [legacy]:" in capsys.readouterr().out
+
+
+def test_platform_names_match_regardless_of_case(config_file: Path):
+    loaded = load_config(config_file)
+    assert loaded.scope("SHOP") == ("shop", frozenset({"shop-jira"}))
+    assert loaded.scope("ALL") == (None, None)
+
+    mcp = server.create_server(loaded)
+    response = call(mcp, "similar_tickets", text="invoice ERP missing", platform="Legacy")
+    assert response["platform"] == "legacy"
+    assert result_keys(response) == {"L-1", "L-2"}
+
+    error = call(mcp, "similar_tickets", text="x", platform="webshop")["error"]
+    assert error == "Unknown platform 'webshop'; configured: ['legacy', 'shop']"
+
+
+def test_server_instructions_name_the_platforms(config_file: Path):
+    with_since = config_file.read_text() + "effort_since: {Legacy: 2024-02-01}\n"
+    config_file.write_text(with_since)
+    text = server.instructions(load_config(config_file))
+
+    assert "- legacy: sources legacy-jira; effort_reference counts tickets since 2024-02-01" in text
+    assert "- shop: sources shop-jira\n" in text
+    assert "Default platform for text: shop." in text
+
+    no_platforms = replace(load_config(config_file), sources=[])
+    assert server.instructions(no_platforms) == server.INSTRUCTIONS
+
+
+def test_effort_since_defaults_per_platform_and_yields_to_an_explicit_since(
+    config_file: Path, capsys: pytest.CaptureFixture[str]
+):
+    config_file.write_text(config_file.read_text() + "effort_since:\n  LEGACY: 2024-02-01\n")
+    mcp = server.create_server(load_config(config_file))
+
+    response = call(mcp, "effort_reference", key="L-2")
+    assert response["since"] == "2024-02-01"
+    assert response["reference_class"]["tickets"] == 0
+
+    response = call(mcp, "effort_reference", key="L-2", since="2024-01-01")
+    assert response["since"] == "2024-01-01"
+    assert response["reference_class"]["median_hours"] == 9.0
+
+    response = call(mcp, "effort_reference", text=INVOICE)
+    assert response["platform"] == "shop"
+    assert response["since"] is None
+    assert response["reference_class"]["median_hours"] == 2.0
+
+    response = call(mcp, "effort_reference", text=INVOICE, platform="legacy")
+    assert response["since"] == "2024-02-01"
+
+    capsys.readouterr()
+    assert cli.main(["--config", str(config_file), "effort", "L-2"]) == 0
+    assert "0 tickets created since 2024-02-01, finished before 2024-06-01" in (
+        capsys.readouterr().err
+    )
+    assert cli.main(["--config", str(config_file), "effort", "L-2", "--since", "2024-01-01"]) == 0
+    assert "created since 2024-01-01, finished before 2024-06-01, median 9.0 h" in (
+        capsys.readouterr().err
+    )
+
+
+def test_one_effort_since_for_every_platform(config_file: Path):
+    config_file.write_text(config_file.read_text() + "effort_since: '2024-01-05'\n")
+    mcp = server.create_server(load_config(config_file))
+
+    response = call(mcp, "effort_reference", text=INVOICE)
+    assert response["since"] == "2024-01-05"
+    assert response["reference_class"]["tickets"] == 0
+
+    response = call(mcp, "effort_reference", text=INVOICE, platform="all")
+    assert response["since"] == "2024-01-05"
+    assert response["reference_class"]["median_hours"] == 9.0

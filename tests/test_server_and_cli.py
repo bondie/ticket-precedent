@@ -165,3 +165,46 @@ def test_cli_sync_refuses_to_run_while_another_sync_holds_the_lock(
         assert acquired
         assert cli.main(["--config", str(config_file), "sync"]) == 1
     assert "another process is syncing" in capsys.readouterr().err
+
+
+def test_similar_tickets_takes_query_as_an_alias_of_text(config_file: Path):
+    cli.main(["--config", str(config_file), "sync"])
+    mcp = server.create_server(load_config(config_file))
+
+    response = call(mcp, "similar_tickets", query="payment gateway timeout")
+    assert response["results"][0]["key"] == "D-2"
+
+    for arguments in ({}, {"text": "a", "query": "b"}):
+        error = call(mcp, "similar_tickets", **arguments)["error"]
+        assert "either `text` or its alias `query`" in error
+
+
+def test_get_ticket_needs_only_the_key(config_file: Path):
+    cli.main(["--config", str(config_file), "sync"])
+    mcp = server.create_server(load_config(config_file))
+
+    assert call(mcp, "get_ticket", key="D-2")["source"] == "demo"
+    assert call(mcp, "get_ticket", key="D-2", source="demo")["title"].startswith("Checkout")
+    assert "not configured (demo)" in call(mcp, "get_ticket", key="D-2", source="other")["error"]
+
+
+def test_cli_show_takes_the_key_alone_or_after_the_source(
+    config_file: Path, capsys: pytest.CaptureFixture[str]
+):
+    cli.main(["--config", str(config_file), "sync"])
+    capsys.readouterr()
+
+    assert cli.main(["--config", str(config_file), "show", "D-1"]) == 0
+    assert json.loads(capsys.readouterr().out)["key"] == "D-1"
+
+    assert cli.main(["--config", str(config_file), "show", "D-1", "--source", "demo"]) == 0
+    assert json.loads(capsys.readouterr().out)["source"] == "demo"
+
+    assert cli.main(["--config", str(config_file), "show", "demo", "D-1"]) == 0
+    assert json.loads(capsys.readouterr().out)["key"] == "D-1"
+
+    assert cli.main(["--config", str(config_file), "show", "demo", "D-1", "--source", "x"]) == 1
+    assert "not both" in capsys.readouterr().err
+
+    assert cli.main(["--config", str(config_file), "show", "D-9"]) == 1
+    assert "'D-9' is not indexed and none of the sources" in capsys.readouterr().err

@@ -7,6 +7,8 @@ from pathlib import Path
 
 import pytest
 
+from ticket_precedent import ondemand
+from ticket_precedent.config import SourceConfig
 from ticket_precedent.embeddings import normalize
 from ticket_precedent.models import Comment, Link, Ticket
 from ticket_precedent.store import Store
@@ -67,6 +69,23 @@ def make_ticket(
         comments=[Comment("dev", when, body) for body in comments],
         links=[Link(kind, other) for kind, other in links],
     )
+
+
+class OfflineSource:
+    """A connector that never fetches single tickets."""
+
+    def iter_tickets(self, since: datetime | None = None) -> Iterator[Ticket]:
+        return iter(())
+
+
+@pytest.fixture(autouse=True)
+def no_tracker_requests(monkeypatch: pytest.MonkeyPatch) -> None:
+    """On-demand fetching must never reach a real tracker from a test."""
+
+    def offline(_source: SourceConfig) -> OfflineSource:
+        return OfflineSource()
+
+    monkeypatch.setattr(ondemand, "build_connector", offline)
 
 
 @pytest.fixture

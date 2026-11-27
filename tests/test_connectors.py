@@ -2,6 +2,7 @@ from datetime import UTC, datetime
 from typing import Any
 
 import httpx
+import pytest
 
 from ticket_precedent.connectors.jira import JiraConnector, issue_to_ticket
 from ticket_precedent.connectors.jira_cloud import JiraCloudConnector
@@ -336,3 +337,123 @@ def test_jira_cloud_fetches_a_changelog_the_search_cut_short():
     assert pages == [0, 2]
     assert ticket.initial_estimate_seconds == 2700
     assert ticket.last_logged == datetime(2024, 5, 2, 10, tzinfo=UTC)
+
+
+def jira_connector(handler, cls: type[JiraConnector] = JiraConnector) -> JiraConnector:
+    connector = cls("jira", "https://jira.example", "project in (ACME, WEB)")
+    connector._client = httpx.Client(
+        base_url="https://jira.example", transport=httpx.MockTransport(handler)
+    )
+    return connector
+
+
+@pytest.mark.parametrize(
+    ("cls", "path"),
+    [(JiraConnector, "/rest/api/2/search"), (JiraCloudConnector, "/rest/api/2/search/jql")],
+)
+def test_jira_fetches_one_ticket_within_the_query(cls, path):
+    requests = []
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        requests.append(request)
+        if request.url.path.endswith("/comment"):
+            body = [{"author": {"displayName": f"U{i}"}, "body": f"c{i}"} for i in range(3)]
+            return httpx.Response(200, json={"comments": body, "total": 3})
+        return httpx.Response(200, json={"issues": [jira_issue("ACME-9", comments_total=3)]})
+
+    ticket = jira_connector(handler, cls).fetch_ticket("ACME-9")
+
+    assert ticket is not None
+    assert ticket.key == "ACME-9"
+    assert ticket.source == "jira"
+    assert [c.author for c in ticket.comments] == ["U0", "U1", "U2"]
+    search = requests[0]
+    assert search.url.path == path
+    assert search.url.params["jql"] == (
+        '(project in (ACME, WEB)) AND key = "ACME-9" ORDER BY updated ASC'
+    )
+    assert search.url.params["maxResults"] == "1"
+    assert search.url.params["expand"] == "changelog"
+    assert "timeoriginalestimate" in search.url.params["fields"]
+
+
+def test_jira_fetch_outside_the_query_or_unknown_key_is_none():
+    responses = [
+        httpx.Response(200, json={"issues": [], "total": 0}),
+        httpx.Response(400, json={"errorMessages": ["An issue with key 'ZED-1' does not exist"]}),
+    ]
+    connector = jira_connector(lambda _request: responses.pop(0))
+
+    assert connector.fetch_ticket("OTHER-1") is None
+    assert connector.fetch_ticket("ZED-1") is None
+    assert responses == []
+
+
+def test_jira_fetch_skips_keys_of_another_shape_without_a_request():
+    def handler(request: httpx.Request) -> httpx.Response:
+        raise AssertionError(f"unexpected request {request.url}")
+
+    connector = jira_connector(handler)
+    for key in ("18342", "acme-9", "A-1", "acme/widget#3", 'ACME-1" OR key = "X-1'):
+        assert connector.fetch_ticket(key) is None
+
+
+def test_jira_fetch_raises_on_server_errors():
+    connector = jira_connector(lambda _request: httpx.Response(500))
+    with pytest.raises(httpx.HTTPStatusError):
+        connector.fetch_ticket("ACME-1")
+
+
+def mantis_connector(handler) -> MantisConnector:
+    connector = MantisConnector("hd", "https://hd.example", "token", project_ids=[3])
+    connector._client = httpx.Client(
+        base_url="https://hd.example", transport=httpx.MockTransport(handler)
+    )
+    return connector
+
+
+def test_mantis_fetches_one_issue_of_a_configured_project():
+    requests = []
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        requests.append(request)
+        issue = mantis_issue(42, "2024-03-03T10:00:00+01:00")
+        project = 3 if request.url.path.endswith("/42") else 7
+        issue["project"] = {"id": project, "name": "Shop"}
+        return httpx.Response(200, json={"issues": [issue]})
+
+    connector = mantis_connector(handler)
+    ticket = connector.fetch_ticket("42")
+
+    assert ticket is not None
+    assert ticket.key == "42"
+    assert ticket.time_spent_seconds == 5400
+    assert requests[0].url.path == "/api/rest/issues/42"
+    assert connector.fetch_ticket("43") is None
+
+
+def test_mantis_fetch_of_a_missing_issue_or_another_shape_is_none():
+    requests = []
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        requests.append(request)
+        return httpx.Response(404, json={"message": "Issue #9 not found"})
+
+    connector = mantis_connector(handler)
+    assert connector.fetch_ticket("9") is None
+    assert connector.fetch_ticket("ACME-9") is None
+    assert connector.fetch_ticket("acme/widget#9") is None
+    assert len(requests) == 1
+
+
+def test_mantis_fetch_keeps_private_notes_out_when_configured():
+    def handler(_request: httpx.Request) -> httpx.Response:
+        issue = {**mantis_issue(42, "2024-03-03T10:00:00+01:00"), "project": {"id": 3}}
+        return httpx.Response(200, json={"issues": [issue]})
+
+    connector = mantis_connector(handler)
+    connector.include_private_notes = False
+    ticket = connector.fetch_ticket("42")
+
+    assert ticket is not None
+    assert [c.body for c in ticket.comments] == ["Díky, funguje."]
