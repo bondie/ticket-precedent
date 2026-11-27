@@ -24,6 +24,7 @@ from .config import (
     data_dir,
     load_config,
 )
+from .connectors.http import RateLimitError
 from .connectors.jira import JiraConnector
 from .demo import APACHE_BOTS, APACHE_JIRA, ZOOKEEPER, DemoError, download, write_config
 from .effort import reference_for_ticket
@@ -57,6 +58,7 @@ def main(argv: list[str] | None = None) -> int:
         DemoError,
         EmbeddingError,
         IndexMismatchError,
+        RateLimitError,
         TicketNotFoundError,
     ) as error:
         print(f"error: {error}", file=sys.stderr)

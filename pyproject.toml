@@ -1,13 +1,13 @@
 [project]
 name = "ticket-precedent"
 version = "0.2.0"
-description = "Have we solved this before? Local hybrid search (BM25 + embeddings) over JIRA and Mantis tickets, served to AI agents over MCP."
+description = "Have we solved this before? Local hybrid search (BM25 + embeddings) over JIRA, Mantis and GitHub tickets, served to AI agents over MCP."
 readme = "README.md"
 license = "MIT"
 license-files = ["LICENSE"]
 authors = [{ name = "Vladislav Barot", email = "vladislav.barot@gmail.com" }]
 requires-python = ">=3.11"
-keywords = ["rag", "mcp", "jira", "mantis", "semantic-search", "embeddings", "sqlite-vec"]
+keywords = ["rag", "mcp", "jira", "mantis", "github", "semantic-search", "embeddings", "sqlite-vec"]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Environment :: Console",

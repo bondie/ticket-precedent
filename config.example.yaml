@@ -43,3 +43,19 @@ sources:
     chunking:
       max_comment_chunks: 30
       min_comment_chars: 80      # default 40; helpdesk threads have a lot of "deployed, please check"
+
+  # - name: acme-cloud
+  #   type: jira-cloud           # JIRA Cloud (*.atlassian.net), REST API v2 /search/jql
+  #   url: https://acme.atlassian.net
+  #   jql: project = SHOP
+  #   email: ${JIRA_CLOUD_EMAIL} # basic auth with an API token; omit both for a public site
+  #   api_token: ${JIRA_CLOUD_API_TOKEN}
+  #   page_size: 50              # at most 100
+  #   changelog: true            # effort data; false makes syncs faster
+
+  # - name: acme-github
+  #   type: github               # GitHub Issues; pull requests are skipped
+  #   repo: [acme/widget, acme/widget-docs]   # one "owner/name" or a list
+  #   token: ${GITHUB_TOKEN}     # optional: 60 requests/hour without, 5,000 with
+  #   url: https://github.example.com/api/v3  # GitHub Enterprise Server only
+  #   rate_limit_wait: 3600      # seconds to wait for a rate-limit reset before failing

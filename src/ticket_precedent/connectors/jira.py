@@ -52,13 +52,7 @@ class JiraConnector:
         )
 
     def iter_tickets(self, since: datetime | None = None) -> Iterator[Ticket]:
-        jql = f"({self.jql})"
-        if since is not None:
-            jql += f' AND updated >= "{since.strftime("%Y/%m/%d %H:%M")}"'
-        jql += " ORDER BY updated ASC"
-        params: dict[str, Any] = {"jql": jql, "maxResults": self.page_size, "fields": FIELDS}
-        if self.changelog:
-            params["expand"] = "changelog"
+        params = self._search_params(since)
         start_at = 0
         while True:
             data = get_json(self._client, "/rest/api/2/search", {**params, "startAt": start_at})
@@ -68,6 +62,16 @@ class JiraConnector:
             start_at += len(issues)
             if not issues or start_at >= data.get("total", 0):
                 return
+
+    def _search_params(self, since: datetime | None) -> dict[str, Any]:
+        jql = f"({self.jql})"
+        if since is not None:
+            jql += f' AND updated >= "{since.strftime("%Y/%m/%d %H:%M")}"'
+        jql += " ORDER BY updated ASC"
+        params: dict[str, Any] = {"jql": jql, "maxResults": self.page_size, "fields": FIELDS}
+        if self.changelog:
+            params["expand"] = "changelog"
+        return params
 
     def _ticket(self, issue: dict[str, Any]) -> Ticket:
         ticket = issue_to_ticket(issue, self.source, self.base_url)

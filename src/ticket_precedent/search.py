@@ -15,7 +15,7 @@ from .text import clean, tokens
 
 MODES = ("bm25", "vector", "hybrid")
 QUERY_CHARS = 2000
-KEY_MENTION = re.compile(r"\b[A-Z][A-Z0-9_]+-\d+\b|\b\d{4,}\b")
+KEY_MENTION = re.compile(r"\b[\w.-]+/[\w.-]+#\d+\b|\b[A-Z][A-Z0-9_]+-\d+\b|\b\d{4,}\b")
 TICKET_CONDITIONS = """
     (:source IS NULL OR t.source = :source)
     AND (:sources IS NULL OR t.source IN (SELECT value FROM json_each(:sources)))

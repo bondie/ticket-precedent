@@ -183,3 +183,27 @@ def test_title_only_match_shows_a_preview_instead_of_an_empty_snippet(store, emb
     (result,) = describe(store, [Hit(body["ticket_id"], body["id"], 1.0)])
     assert result["matched_in"] == "title"
     assert result["snippet"].startswith("Gateway returned PAID twice")
+
+
+def test_precedents_skip_github_issues_named_in_the_title(store, embedder):
+    issues = [
+        make_ticket(
+            "acme/widget#7", "Wrong prices on orders", PRICES, created="2024-05-01", source="gh"
+        ),
+        make_ticket(
+            "acme/widget#9",
+            "Prices from the retail list",
+            PRICES,
+            created="2023-01-01",
+            source="gh",
+        ),
+    ]
+    jira = [make_ticket("P-8", "Port acme/widget#7: wrong prices", PRICES, created="2024-06-01")]
+    sync(store, embedder, ListConnector(issues), "gh", ChunkingConfig())
+    sync(store, embedder, ListConnector(jira), "demo", ChunkingConfig())
+
+    found = precedents(store, embedder, "P-8")
+
+    assert "acme/widget#9" in found
+    assert "acme/widget#7" not in found
+    assert resolve_ticket(store, "acme/widget#7")["source"] == "gh"
