@@ -380,6 +380,86 @@ uv run --with sentence-transformers python scripts/eval_rerank.py \
     --candidate chunk --max-length 512 --top 50 --grid --out results/rerank-zookeeper-chunk-512.json
 ```
 
+### An LLM judge on the top 5: helps where the reranker did not
+
+The reranker scores whether a passage answers a query. The question here is different: does
+an earlier report describe the same fault? So a local LLM was asked exactly that.
+`gemma4:12b` through Ollama reads the new report and the five best hybrid candidates and
+scores each one: 3 for the same fault, 2 for probably the same, 1 for a related topic but a
+different fault, 0 for unrelated. The top 5 is then reordered by score, with the hybrid
+order breaking ties, so the judge cannot lose a ticket that hybrid search found and changes
+nothing when it is unsure. Design choices:
+
+- **No leaks.** Candidates are shown by title and description only, because their
+  comments can name the duplicate outright. Ticket keys (and, on the private trackers, thread
+  numbers) are masked.
+- **Reproducible.** Temperature 0 and a fixed seed. Every answer is cached on disk, so a run
+  can be reproduced without the model.
+- **One prompt.** It was written once and not tuned; it was looked at on the first 12
+  ZooKeeper queries only. Derby and the private trackers were each run once, unchanged.
+
+| Run | Queries | MRR@10 hybrid | MRR@10 judge | Δ (95% CI, paired) | Better / worse |
+|---|---:|---:|---:|---:|---:|
+| ZooKeeper duplicates | 105 | 0.719 | 0.790 | +0.071 (+0.032 to +0.112) | 16 / 2 |
+| Derby duplicates (held out) | 153 | 0.647 | 0.691 | +0.043 (+0.004 to +0.084) | 20 / 11 |
+| Private trackers, earlier issue | 98 | 0.805 | 0.855 | +0.051 (+0.018 to +0.090) | 8 / 1 |
+| Private trackers, thread to issue | 150 | 0.931 | 0.932 | +0.001 (−0.017 to +0.019) | 5 / 3 |
+
+The private trackers are those of six Czech e-commerce projects; see
+[On your own trackers](#on-your-own-trackers) for the two tasks. Only aggregate numbers are
+published.
+
+- **On precedents it helps, in English and in Czech.** Hit@1 rises from 0.648 to 0.752 on
+  ZooKeeper and from 0.745 to 0.827 on the private trackers. The judge captures 58–59% of
+  what a perfect reordering of the top 5 could gain there, and 39% on Derby. The English
+  prompt works on Czech tickets unchanged.
+- **Where search is already near its ceiling, it adds nothing.** For "which issue was opened
+  from this helpdesk thread", hybrid search has the right issue first 90% of the time. The
+  prompt asks about earlier reports of the same fault, which is not quite that question.
+- **It is slow.** On an Apple M1 Pro it takes 15–18 s per query (about 1,200–1,600 prompt
+  tokens and 80 output tokens), against 0.1–0.2 s for the search. That makes it an optional
+  step an agent asks for, not part of every search.
+- **Caveats.** Apache tickets may be in the model's training data. Masking the keys
+  reduces that risk without ruling it out, so the private trackers are the cleaner test.
+  Reordering five candidates can never raise Hit@5.
+
+```bash
+uv run python scripts/eval_judge.py \
+    ~/.local/share/ticket-precedent/eval/apache-zookeeper-comments-bge-m3.db \
+    --model gemma4:12b --out results/judge-zookeeper-gemma4-12b.json
+```
+
+### On your own trackers
+
+There is no labelled dataset for a private tracker, but many teams leave labels without
+meaning to. When an issue is opened from a helpdesk thread, its title names the thread
+(`[R:18342] Wrong prices`). `scripts/eval_linked.py` turns those links into two tasks:
+
+- **Thread to issue.** The customer's words in the thread are the query; the answer is
+  the issue opened from it. This is the triage question: is there already an issue for this?
+- **Earlier issue.** An issue with the thread reference removed is the query; the answers
+  are earlier issues from the same thread, or issues linked to it as duplicates. As in
+  `precedents_for`, only tickets created before the query are searched, and the thread itself
+  is left out.
+
+On the six private projects:
+
+| Task | Queries | MRR@10 BM25 | MRR@10 vector | MRR@10 hybrid | Hit@1 hybrid | Hit@10 hybrid |
+|---|---:|---:|---:|---:|---:|---:|
+| Thread to issue, all | 1,401 | 0.959 | 0.968 | 0.972 | 0.961 | 0.991 |
+| Thread to issue, not copied | 414 | 0.866 | 0.899 | 0.912 | 0.879 | 0.969 |
+| Earlier issue | 98 | 0.774 | 0.804 | 0.805 | 0.745 | 0.908 |
+
+In 70% of the threads, at least half of the customer's text was copied into the issue, which
+makes those queries easy. The second row leaves them out. On these paraphrases, embeddings
+add 0.046 MRR over keywords alone. The script writes per-query ranks outside the repository,
+because they name private tickets:
+
+```bash
+uv run python scripts/eval_linked.py --platform shop
+uv run python scripts/eval_judge.py --task earlier-issue --platform shop
+```
+
 Reproduce a run, or the fusion parameter grid, with:
 
 ```bash
@@ -488,8 +568,14 @@ CI runs lint, type checks, tests on Python 3.11–3.13 and a gitleaks secret sca
 ## Roadmap
 
 - Collapse clones and sub-tasks that share a title into one result
-- A reranker trained on duplicate pairs, or an LLM judging the top 5; a general-purpose
-  cross-encoder made results worse (see [Reranking](#reranking-tried-not-adopted))
+- An optional `judge` step for `precedents_for`: the
+  [LLM judge](#an-llm-judge-on-the-top-5-helps-where-the-reranker-did-not) helps on
+  precedents, but takes 15–18 s
+- A small reranker distilled from the judge's "same fault" verdicts, to get its gain in a
+  fraction of a second; a general-purpose cross-encoder made results worse (see
+  [Reranking](#reranking-tried-not-adopted))
+- Learned fusion (learning to rank) trained on helpdesk-to-issue links, instead of the
+  hand-tuned `rrf_k` and `lexical_weight`
 - Embedding model comparison (`qwen3-embedding`, `multilingual-e5`, `snowflake-arctic-embed2`)
 - GitLab connector
 - Periodic re-sync while a server session stays open (today auto-sync runs only at start-up)

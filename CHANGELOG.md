@@ -4,7 +4,18 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
-## [0.3.0] - Unreleased
+## [Unreleased]
+
+### Added
+
+- `scripts/eval_judge.py`: a local LLM (`gemma4:12b` through Ollama) judges whether each of
+  the top 5 candidates reports the same fault, and the run measures the reordering. It raises
+  MRR@10 by 0.04–0.07 on Apache duplicates and on private Czech trackers, with cached and
+  reproducible answers.
+- `scripts/eval_linked.py`: a benchmark on your own index, built from issues whose titles
+  name the helpdesk thread they came from, with two tasks (thread to issue, earlier issue).
+
+## [0.3.0] - 2026-11-27
 
 ### Added
 

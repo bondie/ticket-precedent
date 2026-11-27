@@ -1,0 +1,1408 @@
+{
+  "source": "apache-zookeeper",
+  "model": "gemma4:12b",
+  "prompt_version": 1,
+  "top": 5,
+  "judge_ms_p50": 14935.178125044331,
+  "prompt_tokens_p50": 1172,
+  "output_tokens_p50": 78,
+  "summaries": [
+    {
+      "mode": "hybrid",
+      "queries": 105,
+      "hit_at_1": 0.6476190476190476,
+      "hit_at_5": 0.8380952380952381,
+      "hit_at_10": 0.8571428571428571,
+      "mrr_at_10": 0.7194708994708995,
+      "mrr_ci_low": 0.6377777777777778,
+      "mrr_ci_high": 0.7971428571428572
+    },
+    {
+      "mode": "judge top 5",
+      "queries": 105,
+      "hit_at_1": 0.7523809523809524,
+      "hit_at_5": 0.8380952380952381,
+      "hit_at_10": 0.8571428571428571,
+      "mrr_at_10": 0.7902645502645502,
+      "mrr_ci_low": 0.711005291005291,
+      "mrr_ci_high": 0.861904761904762
+    },
+    {
+      "mode": "oracle top 5",
+      "queries": 105,
+      "hit_at_1": 0.8380952380952381,
+      "hit_at_5": 0.8380952380952381,
+      "hit_at_10": 0.8571428571428571,
+      "mrr_at_10": 0.8407407407407407,
+      "mrr_ci_low": 0.7661375661375661,
+      "mrr_ci_high": 0.9063492063492063
+    }
+  ],
+  "queries": [
+    {
+      "key": "ZOOKEEPER-149",
+      "scores": [
+        0,
+        0,
+        1,
+        0,
+        1
+      ],
+      "hybrid": null,
+      "judge top 5": null,
+      "oracle top 5": null
+    },
+    {
+      "key": "ZOOKEEPER-652",
+      "scores": [
+        2,
+        0,
+        0,
+        1,
+        0
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "ZOOKEEPER-752",
+      "scores": [
+        3,
+        1,
+        1,
+        0,
+        1
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "ZOOKEEPER-813",
+      "scores": [
+        3,
+        1,
+        1,
+        0,
+        0
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "ZOOKEEPER-1003",
+      "scores": [
+        1,
+        0,
+        0,
+        0,
+        3
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "ZOOKEEPER-1078",
+      "scores": [
+        3,
+        2,
+        1,
+        0,
+        1
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "ZOOKEEPER-1186",
+      "scores": [
+        3,
+        0,
+        0,
+        0,
+        0
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "ZOOKEEPER-1242",
+      "scores": [
+        3,
+        1,
+        1,
+        0,
+        1
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "ZOOKEEPER-1349",
+      "scores": [
+        1,
+        1,
+        1,
+        1,
+        0
+      ],
+      "hybrid": 4,
+      "judge top 5": 4,
+      "oracle top 5": 1
+    },
+    {
+      "key": "ZOOKEEPER-1461",
+      "scores": [
+        3,
+        1,
+        0,
+        1,
+        0
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "ZOOKEEPER-1472",
+      "scores": [
+        0,
+        0,
+        1,
+        3,
+        0
+      ],
+      "hybrid": 4,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "ZOOKEEPER-1565",
+      "scores": [
+        3,
+        2,
+        0,
+        0,
+        0
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "ZOOKEEPER-1570",
+      "scores": [
+        3,
+        3,
+        2,
+        1,
+        0
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "ZOOKEEPER-1571",
+      "scores": [
+        3,
+        3,
+        3,
+        3,
+        0
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "ZOOKEEPER-1616",
+      "scores": [
+        3,
+        1,
+        3,
+        0,
+        0
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "ZOOKEEPER-1682",
+      "scores": [
+        1,
+        1,
+        1,
+        0,
+        0
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "ZOOKEEPER-1694",
+      "scores": [
+        3,
+        3,
+        1,
+        0,
+        2
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "ZOOKEEPER-1711",
+      "scores": [
+        2,
+        3,
+        0,
+        0,
+        0
+      ],
+      "hybrid": 2,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "ZOOKEEPER-1763",
+      "scores": [
+        2,
+        3,
+        1,
+        1,
+        0
+      ],
+      "hybrid": 2,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "ZOOKEEPER-1813",
+      "scores": [
+        2,
+        1,
+        1,
+        1,
+        0
+      ],
+      "hybrid": null,
+      "judge top 5": null,
+      "oracle top 5": null
+    },
+    {
+      "key": "ZOOKEEPER-1845",
+      "scores": [
+        3,
+        1,
+        1,
+        0,
+        0
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "ZOOKEEPER-1846",
+      "scores": [
+        1,
+        3,
+        0,
+        0,
+        0
+      ],
+      "hybrid": 6,
+      "judge top 5": 6,
+      "oracle top 5": 6
+    },
+    {
+      "key": "ZOOKEEPER-1996",
+      "scores": [
+        3,
+        0,
+        0,
+        0,
+        0
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "ZOOKEEPER-2004",
+      "scores": [
+        1,
+        3,
+        1,
+        0,
+        0
+      ],
+      "hybrid": 2,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "ZOOKEEPER-2009",
+      "scores": [
+        1,
+        3,
+        1,
+        1,
+        0
+      ],
+      "hybrid": 2,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "ZOOKEEPER-2042",
+      "scores": [
+        3,
+        2,
+        0,
+        0,
+        0
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "ZOOKEEPER-2046",
+      "scores": [
+        3,
+        1,
+        0,
+        0,
+        0
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "ZOOKEEPER-2078",
+      "scores": [
+        3,
+        2,
+        0,
+        0,
+        1
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "ZOOKEEPER-2085",
+      "scores": [
+        3,
+        1,
+        0,
+        0,
+        0
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "ZOOKEEPER-2151",
+      "scores": [
+        0,
+        0,
+        0,
+        1,
+        1
+      ],
+      "hybrid": null,
+      "judge top 5": null,
+      "oracle top 5": null
+    },
+    {
+      "key": "ZOOKEEPER-2242",
+      "scores": [
+        3,
+        1,
+        3,
+        1,
+        1
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "ZOOKEEPER-2278",
+      "scores": [
+        1,
+        1,
+        1,
+        0,
+        1
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "ZOOKEEPER-2287",
+      "scores": [
+        3,
+        1,
+        0,
+        1,
+        0
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "ZOOKEEPER-2292",
+      "scores": [
+        0,
+        1,
+        0,
+        1,
+        0
+      ],
+      "hybrid": null,
+      "judge top 5": null,
+      "oracle top 5": null
+    },
+    {
+      "key": "ZOOKEEPER-2318",
+      "scores": [
+        2,
+        0,
+        1,
+        0,
+        1
+      ],
+      "hybrid": null,
+      "judge top 5": null,
+      "oracle top 5": null
+    },
+    {
+      "key": "ZOOKEEPER-2331",
+      "scores": [
+        3,
+        0,
+        1,
+        2,
+        1
+      ],
+      "hybrid": 4,
+      "judge top 5": 2,
+      "oracle top 5": 1
+    },
+    {
+      "key": "ZOOKEEPER-2337",
+      "scores": [
+        3,
+        0,
+        0,
+        1,
+        1
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "ZOOKEEPER-2341",
+      "scores": [
+        3,
+        1,
+        0,
+        0,
+        1
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "ZOOKEEPER-2351",
+      "scores": [
+        3,
+        0,
+        0,
+        3,
+        1
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "ZOOKEEPER-2367",
+      "scores": [
+        2,
+        1,
+        0,
+        2,
+        3
+      ],
+      "hybrid": 1,
+      "judge top 5": 2,
+      "oracle top 5": 1
+    },
+    {
+      "key": "ZOOKEEPER-2376",
+      "scores": [
+        3,
+        2,
+        0,
+        1,
+        1
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "ZOOKEEPER-2381",
+      "scores": [
+        0,
+        0,
+        3,
+        1,
+        0
+      ],
+      "hybrid": null,
+      "judge top 5": null,
+      "oracle top 5": null
+    },
+    {
+      "key": "ZOOKEEPER-2390",
+      "scores": [
+        3,
+        3,
+        0,
+        0,
+        0
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "ZOOKEEPER-2446",
+      "scores": [
+        3,
+        3,
+        3,
+        0,
+        0
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "ZOOKEEPER-2451",
+      "scores": [
+        1,
+        2,
+        2,
+        0,
+        0
+      ],
+      "hybrid": 2,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "ZOOKEEPER-2483",
+      "scores": [
+        1,
+        0,
+        3,
+        0,
+        0
+      ],
+      "hybrid": null,
+      "judge top 5": null,
+      "oracle top 5": null
+    },
+    {
+      "key": "ZOOKEEPER-2496",
+      "scores": [
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "hybrid": null,
+      "judge top 5": null,
+      "oracle top 5": null
+    },
+    {
+      "key": "ZOOKEEPER-2509",
+      "scores": [
+        3,
+        1,
+        0,
+        0,
+        1
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "ZOOKEEPER-2527",
+      "scores": [
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "hybrid": null,
+      "judge top 5": null,
+      "oracle top 5": null
+    },
+    {
+      "key": "ZOOKEEPER-2530",
+      "scores": [
+        3,
+        0,
+        1,
+        0,
+        0
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "ZOOKEEPER-2537",
+      "scores": [
+        2,
+        1,
+        1,
+        0,
+        2
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "ZOOKEEPER-2587",
+      "scores": [
+        3,
+        1,
+        0,
+        0,
+        0
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "ZOOKEEPER-2618",
+      "scores": [
+        3,
+        0,
+        3,
+        0,
+        0
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "ZOOKEEPER-2660",
+      "scores": [
+        3,
+        1,
+        1,
+        1,
+        1
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "ZOOKEEPER-2698",
+      "scores": [
+        3,
+        1,
+        1,
+        1,
+        3
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "ZOOKEEPER-2705",
+      "scores": [
+        1,
+        2,
+        1,
+        3,
+        0
+      ],
+      "hybrid": null,
+      "judge top 5": null,
+      "oracle top 5": null
+    },
+    {
+      "key": "ZOOKEEPER-2881",
+      "scores": [
+        3,
+        0,
+        0,
+        1,
+        0
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "ZOOKEEPER-3149",
+      "scores": [
+        3,
+        2,
+        3,
+        3,
+        3
+      ],
+      "hybrid": 2,
+      "judge top 5": 5,
+      "oracle top 5": 1
+    },
+    {
+      "key": "ZOOKEEPER-3214",
+      "scores": [
+        3,
+        0,
+        1,
+        0,
+        0
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "ZOOKEEPER-3280",
+      "scores": [
+        2,
+        0,
+        2,
+        1,
+        3
+      ],
+      "hybrid": 4,
+      "judge top 5": 4,
+      "oracle top 5": 1
+    },
+    {
+      "key": "ZOOKEEPER-3290",
+      "scores": [
+        3,
+        2,
+        3,
+        3,
+        1
+      ],
+      "hybrid": 3,
+      "judge top 5": 2,
+      "oracle top 5": 1
+    },
+    {
+      "key": "ZOOKEEPER-3458",
+      "scores": [
+        0,
+        0,
+        0,
+        3,
+        1
+      ],
+      "hybrid": null,
+      "judge top 5": null,
+      "oracle top 5": null
+    },
+    {
+      "key": "ZOOKEEPER-3493",
+      "scores": [
+        3,
+        3,
+        1,
+        1,
+        1
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "ZOOKEEPER-3645",
+      "scores": [
+        2,
+        1,
+        1,
+        0,
+        3
+      ],
+      "hybrid": 5,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "ZOOKEEPER-3725",
+      "scores": [
+        1,
+        1,
+        1,
+        2,
+        1
+      ],
+      "hybrid": 4,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "ZOOKEEPER-3752",
+      "scores": [
+        2,
+        1,
+        0,
+        3,
+        1
+      ],
+      "hybrid": 4,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "ZOOKEEPER-3753",
+      "scores": [
+        1,
+        1,
+        2,
+        1,
+        2
+      ],
+      "hybrid": 5,
+      "judge top 5": 2,
+      "oracle top 5": 1
+    },
+    {
+      "key": "ZOOKEEPER-3776",
+      "scores": [
+        3,
+        1,
+        1,
+        1,
+        0
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "ZOOKEEPER-3778",
+      "scores": [
+        3,
+        1,
+        1,
+        1,
+        1
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "ZOOKEEPER-3830",
+      "scores": [
+        3,
+        0,
+        1,
+        0,
+        0
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "ZOOKEEPER-3842",
+      "scores": [
+        3,
+        1,
+        1,
+        0,
+        0
+      ],
+      "hybrid": 2,
+      "judge top 5": 2,
+      "oracle top 5": 1
+    },
+    {
+      "key": "ZOOKEEPER-3990",
+      "scores": [
+        3,
+        0,
+        1,
+        1,
+        1
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "ZOOKEEPER-4244",
+      "scores": [
+        3,
+        0,
+        1,
+        1,
+        0
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "ZOOKEEPER-4245",
+      "scores": [
+        3,
+        3,
+        0,
+        1,
+        0
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "ZOOKEEPER-4254",
+      "scores": [
+        3,
+        1,
+        1,
+        1,
+        0
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "ZOOKEEPER-4255",
+      "scores": [
+        3,
+        0,
+        1,
+        0,
+        0
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "ZOOKEEPER-4256",
+      "scores": [
+        3,
+        3,
+        1,
+        0,
+        1
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "ZOOKEEPER-4271",
+      "scores": [
+        0,
+        3,
+        3,
+        1,
+        1
+      ],
+      "hybrid": 2,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "ZOOKEEPER-4274",
+      "scores": [
+        3,
+        0,
+        0,
+        0,
+        0
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "ZOOKEEPER-4304",
+      "scores": [
+        3,
+        1,
+        1,
+        1,
+        1
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "ZOOKEEPER-4305",
+      "scores": [
+        3,
+        3,
+        1,
+        0,
+        0
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "ZOOKEEPER-4347",
+      "scores": [
+        3,
+        0,
+        1,
+        0,
+        0
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "ZOOKEEPER-4383",
+      "scores": [
+        3,
+        1,
+        1,
+        2,
+        1
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "ZOOKEEPER-4440",
+      "scores": [
+        3,
+        3,
+        2,
+        1,
+        0
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "ZOOKEEPER-4450",
+      "scores": [
+        3,
+        3,
+        0,
+        1,
+        1
+      ],
+      "hybrid": null,
+      "judge top 5": null,
+      "oracle top 5": null
+    },
+    {
+      "key": "ZOOKEEPER-4451",
+      "scores": [
+        3,
+        3,
+        3,
+        1,
+        1
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "ZOOKEEPER-4525",
+      "scores": [
+        1,
+        0,
+        2,
+        1,
+        0
+      ],
+      "hybrid": 9,
+      "judge top 5": 9,
+      "oracle top 5": 9
+    },
+    {
+      "key": "ZOOKEEPER-4555",
+      "scores": [
+        1,
+        0,
+        3,
+        0,
+        0
+      ],
+      "hybrid": 3,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "ZOOKEEPER-4626",
+      "scores": [
+        3,
+        1,
+        1,
+        1,
+        1
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "ZOOKEEPER-4631",
+      "scores": [
+        3,
+        0,
+        1,
+        0,
+        1
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "ZOOKEEPER-4667",
+      "scores": [
+        0,
+        1,
+        1,
+        0,
+        1
+      ],
+      "hybrid": null,
+      "judge top 5": null,
+      "oracle top 5": null
+    },
+    {
+      "key": "ZOOKEEPER-4680",
+      "scores": [
+        0,
+        1,
+        0,
+        1,
+        1
+      ],
+      "hybrid": null,
+      "judge top 5": null,
+      "oracle top 5": null
+    },
+    {
+      "key": "ZOOKEEPER-4692",
+      "scores": [
+        0,
+        0,
+        0,
+        2,
+        1
+      ],
+      "hybrid": null,
+      "judge top 5": null,
+      "oracle top 5": null
+    },
+    {
+      "key": "ZOOKEEPER-4701",
+      "scores": [
+        1,
+        3,
+        0,
+        0,
+        0
+      ],
+      "hybrid": 2,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "ZOOKEEPER-4731",
+      "scores": [
+        3,
+        2,
+        1,
+        1,
+        1
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "ZOOKEEPER-4797",
+      "scores": [
+        3,
+        1,
+        3,
+        0,
+        0
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "ZOOKEEPER-4813",
+      "scores": [
+        3,
+        1,
+        1,
+        1,
+        2
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "ZOOKEEPER-4887",
+      "scores": [
+        3,
+        3,
+        1,
+        0,
+        0
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "ZOOKEEPER-4894",
+      "scores": [
+        3,
+        1,
+        0,
+        0,
+        0
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "ZOOKEEPER-4911",
+      "scores": [
+        3,
+        1,
+        1,
+        1,
+        1
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "ZOOKEEPER-4927",
+      "scores": [
+        3,
+        0,
+        1,
+        1,
+        3
+      ],
+      "hybrid": 5,
+      "judge top 5": 2,
+      "oracle top 5": 1
+    },
+    {
+      "key": "ZOOKEEPER-4948",
+      "scores": [
+        3,
+        3,
+        1,
+        1,
+        1
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "ZOOKEEPER-5006",
+      "scores": [
+        3,
+        0,
+        0,
+        0,
+        0
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "ZOOKEEPER-5007",
+      "scores": [
+        3,
+        1,
+        1,
+        0,
+        0
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "ZOOKEEPER-5078",
+      "scores": [
+        3,
+        1,
+        0,
+        0,
+        1
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    }
+  ]
+}
