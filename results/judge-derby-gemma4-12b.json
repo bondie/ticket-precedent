@@ -1,0 +1,2032 @@
+{
+  "source": "apache-derby",
+  "model": "gemma4:12b",
+  "prompt_version": 1,
+  "top": 5,
+  "judge_ms_p50": 17776.708166929893,
+  "prompt_tokens_p50": 1511,
+  "output_tokens_p50": 78,
+  "summaries": [
+    {
+      "mode": "hybrid",
+      "queries": 153,
+      "hit_at_1": 0.5620915032679739,
+      "hit_at_5": 0.7516339869281046,
+      "hit_at_10": 0.7973856209150327,
+      "mrr_at_10": 0.6473467164643635,
+      "mrr_ci_low": 0.5768285091814503,
+      "mrr_ci_high": 0.7143946467475879
+    },
+    {
+      "mode": "judge top 5",
+      "queries": 153,
+      "hit_at_1": 0.6339869281045751,
+      "hit_at_5": 0.7516339869281046,
+      "hit_at_10": 0.7973856209150327,
+      "mrr_at_10": 0.6905929038281979,
+      "mrr_ci_low": 0.6179971988795518,
+      "mrr_ci_high": 0.7531123560535326
+    },
+    {
+      "mode": "oracle top 5",
+      "queries": 153,
+      "hit_at_1": 0.7516339869281046,
+      "hit_at_5": 0.7516339869281046,
+      "hit_at_10": 0.7973856209150327,
+      "mrr_at_10": 0.7581310301898537,
+      "mrr_ci_low": 0.6872082166199813,
+      "mrr_ci_high": 0.8229458450046686
+    }
+  ],
+  "queries": [
+    {
+      "key": "DERBY-29",
+      "scores": [
+        3,
+        0,
+        1,
+        0,
+        0
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-93",
+      "scores": [
+        3,
+        1,
+        1,
+        0,
+        0
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-329",
+      "scores": [
+        3,
+        1,
+        1,
+        0,
+        0
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-346",
+      "scores": [
+        1,
+        3,
+        0,
+        0,
+        0
+      ],
+      "hybrid": 2,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-1226",
+      "scores": [
+        0,
+        1,
+        1,
+        0,
+        3
+      ],
+      "hybrid": null,
+      "judge top 5": null,
+      "oracle top 5": null
+    },
+    {
+      "key": "DERBY-1237",
+      "scores": [
+        2,
+        0,
+        1,
+        0,
+        1
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-1754",
+      "scores": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "hybrid": 3,
+      "judge top 5": 3,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-1771",
+      "scores": [
+        1,
+        1,
+        3,
+        0,
+        1
+      ],
+      "hybrid": 3,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-1778",
+      "scores": [
+        3,
+        0,
+        1,
+        0,
+        1
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-1902",
+      "scores": [
+        2,
+        3,
+        0,
+        0,
+        0
+      ],
+      "hybrid": 1,
+      "judge top 5": 2,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-1978",
+      "scores": [
+        2,
+        1,
+        1,
+        0,
+        0
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-2015",
+      "scores": [
+        1,
+        3,
+        0,
+        1,
+        0
+      ],
+      "hybrid": 2,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-2127",
+      "scores": [
+        1,
+        0,
+        2,
+        0,
+        0
+      ],
+      "hybrid": 1,
+      "judge top 5": 2,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-2232",
+      "scores": [
+        3,
+        0,
+        1,
+        0,
+        0
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-2401",
+      "scores": [
+        3,
+        2,
+        0,
+        1,
+        3
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-2445",
+      "scores": [
+        3,
+        0,
+        1,
+        0,
+        0
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-2563",
+      "scores": [
+        2,
+        0,
+        2,
+        0,
+        0
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-2589",
+      "scores": [
+        0,
+        1,
+        1,
+        1,
+        0
+      ],
+      "hybrid": null,
+      "judge top 5": null,
+      "oracle top 5": null
+    },
+    {
+      "key": "DERBY-2665",
+      "scores": [
+        1,
+        1,
+        1,
+        0,
+        0
+      ],
+      "hybrid": 7,
+      "judge top 5": 7,
+      "oracle top 5": 7
+    },
+    {
+      "key": "DERBY-2677",
+      "scores": [
+        1,
+        2,
+        1,
+        1,
+        0
+      ],
+      "hybrid": 2,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-2756",
+      "scores": [
+        3,
+        0,
+        0,
+        1,
+        1
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-2808",
+      "scores": [
+        2,
+        1,
+        1,
+        0,
+        0
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-2866",
+      "scores": [
+        3,
+        1,
+        0,
+        3,
+        1
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-2899",
+      "scores": [
+        3,
+        1,
+        1,
+        1,
+        1
+      ],
+      "hybrid": 4,
+      "judge top 5": 4,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-2965",
+      "scores": [
+        3,
+        0,
+        1,
+        1,
+        0
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-3015",
+      "scores": [
+        3,
+        1,
+        0,
+        1,
+        0
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-3052",
+      "scores": [
+        0,
+        0,
+        0,
+        1,
+        0
+      ],
+      "hybrid": null,
+      "judge top 5": null,
+      "oracle top 5": null
+    },
+    {
+      "key": "DERBY-3053",
+      "scores": [
+        2,
+        1,
+        0,
+        2,
+        0
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-3059",
+      "scores": [
+        3,
+        1,
+        0,
+        0,
+        0
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-3065",
+      "scores": [
+        3,
+        0,
+        1,
+        0,
+        1
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-3066",
+      "scores": [
+        0,
+        1,
+        3,
+        0,
+        1
+      ],
+      "hybrid": 3,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-3067",
+      "scores": [
+        1,
+        1,
+        1,
+        0,
+        0
+      ],
+      "hybrid": 2,
+      "judge top 5": 2,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-3114",
+      "scores": [
+        3,
+        3,
+        3,
+        3,
+        1
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-3120",
+      "scores": [
+        3,
+        0,
+        0,
+        0,
+        0
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-3143",
+      "scores": [
+        2,
+        1,
+        1,
+        1,
+        0
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-3177",
+      "scores": [
+        1,
+        1,
+        1,
+        0,
+        0
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-3239",
+      "scores": [
+        3,
+        2,
+        0,
+        3,
+        1
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-3277",
+      "scores": [
+        1,
+        0,
+        3,
+        0,
+        0
+      ],
+      "hybrid": 3,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-3283",
+      "scores": [
+        3,
+        1,
+        1,
+        1,
+        0
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-3284",
+      "scores": [
+        3,
+        0,
+        1,
+        0,
+        0
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-3292",
+      "scores": [
+        3,
+        1,
+        1,
+        1,
+        1
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-3332",
+      "scores": [
+        3,
+        3,
+        1,
+        0,
+        0
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-3344",
+      "scores": [
+        2,
+        2,
+        0,
+        0,
+        1
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-3381",
+      "scores": [
+        3,
+        0,
+        2,
+        0,
+        0
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-3407",
+      "scores": [
+        3,
+        0,
+        0,
+        0,
+        0
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-3411",
+      "scores": [
+        2,
+        1,
+        0,
+        1,
+        2
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-3436",
+      "scores": [
+        3,
+        3,
+        1,
+        1,
+        0
+      ],
+      "hybrid": 2,
+      "judge top 5": 2,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-3464",
+      "scores": [
+        1,
+        0,
+        2,
+        0,
+        3
+      ],
+      "hybrid": 5,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-3485",
+      "scores": [
+        3,
+        1,
+        1,
+        0,
+        0
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-3530",
+      "scores": [
+        1,
+        0,
+        0,
+        1,
+        2
+      ],
+      "hybrid": 1,
+      "judge top 5": 2,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-3591",
+      "scores": [
+        1,
+        2,
+        0,
+        0,
+        1
+      ],
+      "hybrid": null,
+      "judge top 5": null,
+      "oracle top 5": null
+    },
+    {
+      "key": "DERBY-3606",
+      "scores": [
+        3,
+        0,
+        1,
+        0,
+        0
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-3675",
+      "scores": [
+        0,
+        1,
+        1,
+        1,
+        1
+      ],
+      "hybrid": 8,
+      "judge top 5": 8,
+      "oracle top 5": 8
+    },
+    {
+      "key": "DERBY-3744",
+      "scores": [
+        3,
+        3,
+        0,
+        0,
+        0
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-3749",
+      "scores": [
+        2,
+        1,
+        1,
+        0,
+        1
+      ],
+      "hybrid": null,
+      "judge top 5": null,
+      "oracle top 5": null
+    },
+    {
+      "key": "DERBY-3835",
+      "scores": [
+        3,
+        1,
+        1,
+        1,
+        1
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-3860",
+      "scores": [
+        3,
+        3,
+        1,
+        0,
+        0
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-3916",
+      "scores": [
+        3,
+        1,
+        2,
+        0,
+        0
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-3951",
+      "scores": [
+        1,
+        0,
+        0,
+        1,
+        2
+      ],
+      "hybrid": null,
+      "judge top 5": null,
+      "oracle top 5": null
+    },
+    {
+      "key": "DERBY-3961",
+      "scores": [
+        1,
+        1,
+        1,
+        1,
+        0
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-3968",
+      "scores": [
+        3,
+        0,
+        1,
+        0,
+        0
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-3987",
+      "scores": [
+        3,
+        0,
+        1,
+        0,
+        2
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-4043",
+      "scores": [
+        1,
+        1,
+        0,
+        0,
+        1
+      ],
+      "hybrid": null,
+      "judge top 5": null,
+      "oracle top 5": null
+    },
+    {
+      "key": "DERBY-4056",
+      "scores": [
+        0,
+        3,
+        0,
+        0,
+        0
+      ],
+      "hybrid": 2,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-4075",
+      "scores": [
+        1,
+        2,
+        0,
+        2,
+        0
+      ],
+      "hybrid": null,
+      "judge top 5": null,
+      "oracle top 5": null
+    },
+    {
+      "key": "DERBY-4178",
+      "scores": [
+        3,
+        1,
+        0,
+        1,
+        0
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-4180",
+      "scores": [
+        1,
+        2,
+        1,
+        0,
+        0
+      ],
+      "hybrid": null,
+      "judge top 5": null,
+      "oracle top 5": null
+    },
+    {
+      "key": "DERBY-4231",
+      "scores": [
+        1,
+        3,
+        1,
+        0,
+        0
+      ],
+      "hybrid": 2,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-4247",
+      "scores": [
+        1,
+        0,
+        1,
+        1,
+        0
+      ],
+      "hybrid": null,
+      "judge top 5": null,
+      "oracle top 5": null
+    },
+    {
+      "key": "DERBY-4254",
+      "scores": [
+        1,
+        3,
+        0,
+        0,
+        0
+      ],
+      "hybrid": 2,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-4265",
+      "scores": [
+        2,
+        2,
+        2,
+        2,
+        0
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-4298",
+      "scores": [
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "hybrid": 6,
+      "judge top 5": 6,
+      "oracle top 5": 6
+    },
+    {
+      "key": "DERBY-4333",
+      "scores": [
+        1,
+        1,
+        1,
+        0,
+        2
+      ],
+      "hybrid": null,
+      "judge top 5": null,
+      "oracle top 5": null
+    },
+    {
+      "key": "DERBY-4337",
+      "scores": [
+        1,
+        2,
+        1,
+        1,
+        0
+      ],
+      "hybrid": null,
+      "judge top 5": null,
+      "oracle top 5": null
+    },
+    {
+      "key": "DERBY-4362",
+      "scores": [
+        1,
+        3,
+        0,
+        0,
+        0
+      ],
+      "hybrid": 1,
+      "judge top 5": 2,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-4385",
+      "scores": [
+        2,
+        0,
+        0,
+        0,
+        0
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-4433",
+      "scores": [
+        2,
+        0,
+        1,
+        0,
+        0
+      ],
+      "hybrid": null,
+      "judge top 5": null,
+      "oracle top 5": null
+    },
+    {
+      "key": "DERBY-4440",
+      "scores": [
+        1,
+        1,
+        1,
+        1,
+        3
+      ],
+      "hybrid": null,
+      "judge top 5": null,
+      "oracle top 5": null
+    },
+    {
+      "key": "DERBY-4453",
+      "scores": [
+        3,
+        1,
+        1,
+        1,
+        0
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-4456",
+      "scores": [
+        0,
+        0,
+        0,
+        1,
+        2
+      ],
+      "hybrid": null,
+      "judge top 5": null,
+      "oracle top 5": null
+    },
+    {
+      "key": "DERBY-4464",
+      "scores": [
+        3,
+        0,
+        0,
+        0,
+        0
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-4498",
+      "scores": [
+        3,
+        1,
+        1,
+        0,
+        0
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-4526",
+      "scores": [
+        1,
+        1,
+        1,
+        1,
+        0
+      ],
+      "hybrid": null,
+      "judge top 5": null,
+      "oracle top 5": null
+    },
+    {
+      "key": "DERBY-4541",
+      "scores": [
+        1,
+        3,
+        0,
+        1,
+        1
+      ],
+      "hybrid": 2,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-4581",
+      "scores": [
+        0,
+        1,
+        1,
+        1,
+        0
+      ],
+      "hybrid": 1,
+      "judge top 5": 4,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-4643",
+      "scores": [
+        1,
+        1,
+        0,
+        0,
+        2
+      ],
+      "hybrid": 5,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-4644",
+      "scores": [
+        0,
+        1,
+        0,
+        1,
+        0
+      ],
+      "hybrid": null,
+      "judge top 5": null,
+      "oracle top 5": null
+    },
+    {
+      "key": "DERBY-4683",
+      "scores": [
+        2,
+        0,
+        1,
+        1,
+        0
+      ],
+      "hybrid": 2,
+      "judge top 5": 4,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-4749",
+      "scores": [
+        1,
+        2,
+        1,
+        0,
+        1
+      ],
+      "hybrid": null,
+      "judge top 5": null,
+      "oracle top 5": null
+    },
+    {
+      "key": "DERBY-4780",
+      "scores": [
+        1,
+        1,
+        1,
+        0,
+        3
+      ],
+      "hybrid": null,
+      "judge top 5": null,
+      "oracle top 5": null
+    },
+    {
+      "key": "DERBY-4813",
+      "scores": [
+        2,
+        2,
+        0,
+        0,
+        3
+      ],
+      "hybrid": null,
+      "judge top 5": null,
+      "oracle top 5": null
+    },
+    {
+      "key": "DERBY-4817",
+      "scores": [
+        3,
+        1,
+        1,
+        1,
+        0
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-4844",
+      "scores": [
+        3,
+        0,
+        1,
+        0,
+        1
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-4887",
+      "scores": [
+        1,
+        2,
+        3,
+        0,
+        1
+      ],
+      "hybrid": 3,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-4914",
+      "scores": [
+        2,
+        2,
+        2,
+        0,
+        2
+      ],
+      "hybrid": 2,
+      "judge top 5": 2,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-4954",
+      "scores": [
+        1,
+        1,
+        2,
+        1,
+        2
+      ],
+      "hybrid": null,
+      "judge top 5": null,
+      "oracle top 5": null
+    },
+    {
+      "key": "DERBY-4969",
+      "scores": [
+        2,
+        0,
+        0,
+        0,
+        1
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-4976",
+      "scores": [
+        0,
+        3,
+        0,
+        0,
+        0
+      ],
+      "hybrid": 2,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-5031",
+      "scores": [
+        3,
+        1,
+        1,
+        1,
+        1
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-5048",
+      "scores": [
+        3,
+        0,
+        1,
+        0,
+        0
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-5059",
+      "scores": [
+        2,
+        2,
+        1,
+        1,
+        1
+      ],
+      "hybrid": 8,
+      "judge top 5": 8,
+      "oracle top 5": 8
+    },
+    {
+      "key": "DERBY-5072",
+      "scores": [
+        1,
+        0,
+        0,
+        0,
+        2
+      ],
+      "hybrid": null,
+      "judge top 5": null,
+      "oracle top 5": null
+    },
+    {
+      "key": "DERBY-5073",
+      "scores": [
+        0,
+        1,
+        2,
+        0,
+        0
+      ],
+      "hybrid": 8,
+      "judge top 5": 8,
+      "oracle top 5": 8
+    },
+    {
+      "key": "DERBY-5169",
+      "scores": [
+        3,
+        0,
+        0,
+        1,
+        0
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-5178",
+      "scores": [
+        0,
+        0,
+        0,
+        0,
+        1
+      ],
+      "hybrid": 1,
+      "judge top 5": 2,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-5188",
+      "scores": [
+        1,
+        0,
+        1,
+        0,
+        1
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-5194",
+      "scores": [
+        1,
+        2,
+        1,
+        2,
+        2
+      ],
+      "hybrid": 2,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-5199",
+      "scores": [
+        3,
+        1,
+        1,
+        1,
+        0
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-5237",
+      "scores": [
+        1,
+        1,
+        0,
+        0,
+        3
+      ],
+      "hybrid": 5,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-5285",
+      "scores": [
+        3,
+        0,
+        0,
+        0,
+        0
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-5298",
+      "scores": [
+        3,
+        1,
+        3,
+        0,
+        0
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-5351",
+      "scores": [
+        3,
+        0,
+        1,
+        0,
+        1
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-5366",
+      "scores": [
+        3,
+        2,
+        1,
+        1,
+        2
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-5435",
+      "scores": [
+        1,
+        2,
+        1,
+        1,
+        3
+      ],
+      "hybrid": 7,
+      "judge top 5": 7,
+      "oracle top 5": 7
+    },
+    {
+      "key": "DERBY-5518",
+      "scores": [
+        2,
+        2,
+        2,
+        2,
+        3
+      ],
+      "hybrid": 1,
+      "judge top 5": 2,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-5520",
+      "scores": [
+        3,
+        2,
+        2,
+        0,
+        2
+      ],
+      "hybrid": 2,
+      "judge top 5": 2,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-5537",
+      "scores": [
+        3,
+        1,
+        1,
+        0,
+        0
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-5588",
+      "scores": [
+        0,
+        0,
+        0,
+        1,
+        0
+      ],
+      "hybrid": 1,
+      "judge top 5": 2,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-5618",
+      "scores": [
+        3,
+        0,
+        1,
+        0,
+        0
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-5621",
+      "scores": [
+        3,
+        1,
+        1,
+        1,
+        1
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-5669",
+      "scores": [
+        2,
+        1,
+        2,
+        1,
+        1
+      ],
+      "hybrid": null,
+      "judge top 5": null,
+      "oracle top 5": null
+    },
+    {
+      "key": "DERBY-5672",
+      "scores": [
+        0,
+        3,
+        0,
+        0,
+        1
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-5703",
+      "scores": [
+        2,
+        1,
+        2,
+        1,
+        0
+      ],
+      "hybrid": null,
+      "judge top 5": null,
+      "oracle top 5": null
+    },
+    {
+      "key": "DERBY-5735",
+      "scores": [
+        0,
+        0,
+        1,
+        1,
+        0
+      ],
+      "hybrid": null,
+      "judge top 5": null,
+      "oracle top 5": null
+    },
+    {
+      "key": "DERBY-5773",
+      "scores": [
+        3,
+        0,
+        0,
+        0,
+        1
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-5800",
+      "scores": [
+        2,
+        1,
+        0,
+        0,
+        0
+      ],
+      "hybrid": 2,
+      "judge top 5": 2,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-5867",
+      "scores": [
+        3,
+        3,
+        1,
+        1,
+        1
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-5953",
+      "scores": [
+        3,
+        1,
+        1,
+        1,
+        0
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-5981",
+      "scores": [
+        2,
+        3,
+        1,
+        1,
+        0
+      ],
+      "hybrid": null,
+      "judge top 5": null,
+      "oracle top 5": null
+    },
+    {
+      "key": "DERBY-5997",
+      "scores": [
+        3,
+        0,
+        1,
+        1,
+        1
+      ],
+      "hybrid": null,
+      "judge top 5": null,
+      "oracle top 5": null
+    },
+    {
+      "key": "DERBY-6031",
+      "scores": [
+        3,
+        1,
+        0,
+        0,
+        0
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-6142",
+      "scores": [
+        3,
+        1,
+        1,
+        0,
+        0
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-6170",
+      "scores": [
+        3,
+        0,
+        0,
+        0,
+        0
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-6191",
+      "scores": [
+        3,
+        0,
+        1,
+        1,
+        1
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-6249",
+      "scores": [
+        3,
+        0,
+        2,
+        0,
+        0
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-6344",
+      "scores": [
+        0,
+        0,
+        3,
+        0,
+        1
+      ],
+      "hybrid": 3,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-6360",
+      "scores": [
+        1,
+        3,
+        0,
+        0,
+        0
+      ],
+      "hybrid": 2,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-6364",
+      "scores": [
+        3,
+        0,
+        0,
+        0,
+        1
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-6365",
+      "scores": [
+        3,
+        3,
+        0,
+        0,
+        0
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-6366",
+      "scores": [
+        3,
+        3,
+        3,
+        0,
+        0
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-6381",
+      "scores": [
+        3,
+        0,
+        2,
+        0,
+        1
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-6406",
+      "scores": [
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "hybrid": null,
+      "judge top 5": null,
+      "oracle top 5": null
+    },
+    {
+      "key": "DERBY-6409",
+      "scores": [
+        1,
+        0,
+        2,
+        0,
+        3
+      ],
+      "hybrid": 2,
+      "judge top 5": 4,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-6435",
+      "scores": [
+        1,
+        1,
+        2,
+        0,
+        2
+      ],
+      "hybrid": 1,
+      "judge top 5": 3,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-6450",
+      "scores": [
+        0,
+        0,
+        0,
+        1,
+        2
+      ],
+      "hybrid": null,
+      "judge top 5": null,
+      "oracle top 5": null
+    },
+    {
+      "key": "DERBY-6556",
+      "scores": [
+        1,
+        3,
+        0,
+        1,
+        0
+      ],
+      "hybrid": 2,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-6681",
+      "scores": [
+        1,
+        1,
+        3,
+        1,
+        1
+      ],
+      "hybrid": null,
+      "judge top 5": null,
+      "oracle top 5": null
+    },
+    {
+      "key": "DERBY-6695",
+      "scores": [
+        2,
+        3,
+        0,
+        0,
+        0
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-6740",
+      "scores": [
+        2,
+        1,
+        0,
+        1,
+        0
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-6817",
+      "scores": [
+        1,
+        0,
+        1,
+        1,
+        3
+      ],
+      "hybrid": 5,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-6994",
+      "scores": [
+        0,
+        1,
+        1,
+        1,
+        1
+      ],
+      "hybrid": 6,
+      "judge top 5": 6,
+      "oracle top 5": 6
+    },
+    {
+      "key": "DERBY-7106",
+      "scores": [
+        3,
+        0,
+        1,
+        1,
+        1
+      ],
+      "hybrid": 1,
+      "judge top 5": 1,
+      "oracle top 5": 1
+    },
+    {
+      "key": "DERBY-7132",
+      "scores": [
+        1,
+        0,
+        0,
+        1,
+        0
+      ],
+      "hybrid": null,
+      "judge top 5": null,
+      "oracle top 5": null
+    }
+  ]
+}
