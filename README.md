@@ -20,7 +20,7 @@ agent gets the earlier tickets that look like it. The command line gives the sam
 (illustrative output):
 
 ```text
-$ uv run tp precedents 18342
+$ tp precedents 18342
 precedents for [acme-helpdesk] 18342 Invoice missing in the shop
 1. [acme-jira] SHOP-412 ERP comparator drops payload as unchanged
    Done Fixed · 3.5 h · https://jira.example.com/browse/SHOP-412
@@ -29,6 +29,23 @@ precedents for [acme-helpdesk] 18342 Invoice missing in the shop
    closed fixed · https://helpdesk.example.com/view.php?id=17105
    The ERP export finished but the shop kept the old document list. Resetting the …
 ```
+
+## Try it in five minutes
+
+All you need is [uv](https://docs.astral.sh/uv/). The demo downloads a ready-made index of
+the 4,922 public [Apache ZooKeeper](https://issues.apache.org/jira/projects/ZOOKEEPER)
+tickets with their comments (122 MB, the same index as in the [benchmark](#results)) and
+runs a first search:
+
+```bash
+uvx ticket-precedent demo
+```
+
+It prints the commands to try next and the line that gives the index to Claude Code. Search
+works right away with keywords only; for the semantic half, install
+[Ollama](https://ollama.com) and `ollama pull bge-m3` as in step 1 below. The demo
+configuration is an ordinary one: `tp sync` fetches the ZooKeeper tickets updated since the
+index was built, anonymously from Apache JIRA.
 
 ## Getting started
 
@@ -46,27 +63,30 @@ On Linux the [official installer](https://ollama.com/download) sets up a systemd
 **2. Install ticket-precedent.**
 
 ```bash
-git clone https://github.com/bondie/ticket-precedent && cd ticket-precedent
-uv sync
+uv tool install ticket-precedent     # puts `tp` on your PATH
 ```
 
-**3. Describe your trackers.** The configuration lives outside the repository:
+To work on the code instead, clone the repository, run `uv sync` and prefix every command
+with `uv run`.
+
+**3. Describe your trackers.** The configuration lives in your home directory:
 
 ```bash
 mkdir -p ~/.config/ticket-precedent
-cp config.example.yaml ~/.config/ticket-precedent/config.yaml
+curl -o ~/.config/ticket-precedent/config.yaml \
+  https://raw.githubusercontent.com/bondie/ticket-precedent/main/config.example.yaml
 ```
 
 Edit the `sources` list, with one entry per JIRA query or MantisBT project set. Keep the
 secrets out of the file: `${VARIABLES}` are resolved from the environment, from a `.env` next
 to the config, or from the files listed in `env_files`. See
-[`config.example.yaml`](config.example.yaml) for every option.
+[`config.example.yaml`](https://github.com/bondie/ticket-precedent/blob/main/config.example.yaml) for every option.
 
 **4. Build the index.**
 
 ```bash
-uv run tp sync
-uv run tp stats            # tickets and chunks per source, last sync time
+tp sync
+tp stats            # tickets and chunks per source, last sync time
 ```
 
 The first sync fetches everything and embeds about 15 chunks per second on an Apple M1 Pro.
@@ -74,10 +94,10 @@ A project with 3,600 tickets and their comments (17,000 chunks) takes about 20 m
 Later syncs fetch only tickets updated since the previous one and embed only changed text.
 The index is a single file in `~/.local/share/ticket-precedent/`.
 
-**5. Connect it to Claude Code.** Run this in the repository directory:
+**5. Connect it to Claude Code.**
 
 ```bash
-claude mcp add ticket-precedent -s user -- uv --directory "$PWD" run tp serve
+claude mcp add ticket-precedent -s user -- tp serve
 ```
 
 `-s user` makes the tools available in every project. New Claude Code sessions pick them
@@ -88,8 +108,8 @@ Desktop, Cursor, …) start the same stdio server:
 {
   "mcpServers": {
     "ticket-precedent": {
-      "command": "uv",
-      "args": ["--directory", "/path/to/ticket-precedent", "run", "tp", "serve"]
+      "command": "tp",
+      "args": ["serve"]
     }
   }
 }
@@ -145,10 +165,10 @@ probability. All tools are read-only and read only the local index.
 | `tp sync [--source S] [--full]` | Fetch new and updated tickets; `--full` re-reads everything |
 | `tp stats` | Indexed sources and sync times |
 | `tp serve` | MCP server on stdio (MCP clients start it for you) |
+| `tp demo [--force]` | Download a ready-made index of public Apache tickets and try it |
 | `tp eval PROJECT` | Benchmark on a public Apache JIRA project |
 
-Run them as `uv run tp …` from the repository directory. `tp --config PATH …` uses another
-configuration file.
+`tp --config PATH …` or `TICKET_PRECEDENT_CONFIG=PATH` uses another configuration file.
 
 ### Keep products apart
 
@@ -289,7 +309,7 @@ uv run tp eval DERBY --out results/derby-comments-bge-m3.json
 uv run python scripts/tune_fusion.py ~/.local/share/ticket-precedent/eval/apache-derby-comments-bge-m3.db
 ```
 
-The per-query ranks for every run are in [`results/`](results/).
+The per-query ranks for every run are in [`results/`](https://github.com/bondie/ticket-precedent/tree/main/results).
 
 ## How it works
 
@@ -393,4 +413,4 @@ CI runs lint, type checks, tests on Python 3.11–3.13 and a gitleaks secret sca
 
 ## License
 
-[MIT](LICENSE)
+[MIT](https://github.com/bondie/ticket-precedent/blob/main/LICENSE)

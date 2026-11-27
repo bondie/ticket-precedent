@@ -99,11 +99,11 @@ class Config:
 
 
 def config_dir() -> Path:
-    return Path(os.environ.get("XDG_CONFIG_HOME", "~/.config")).expanduser() / APP
+    return Path(os.environ.get("XDG_CONFIG_HOME") or "~/.config").expanduser() / APP
 
 
 def data_dir() -> Path:
-    return Path(os.environ.get("XDG_DATA_HOME", "~/.local/share")).expanduser() / APP
+    return Path(os.environ.get("XDG_DATA_HOME") or "~/.local/share").expanduser() / APP
 
 
 def default_config_path() -> Path:

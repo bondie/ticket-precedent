@@ -1,6 +1,8 @@
+from pathlib import Path
+
 import pytest
 
-from ticket_precedent.config import ConfigError, load_config
+from ticket_precedent.config import ConfigError, config_dir, data_dir, load_config
 
 
 def test_expands_variables_from_env_file_and_environment(tmp_path, monkeypatch):
@@ -79,3 +81,11 @@ def test_without_config_file_defaults_apply(tmp_path):
     config = load_config(tmp_path / "missing.yaml")
     assert config.sources == []
     assert config.embedding.model == "bge-m3"
+
+
+def test_empty_xdg_variables_count_as_unset(monkeypatch: pytest.MonkeyPatch):
+    monkeypatch.setenv("XDG_CONFIG_HOME", "")
+    monkeypatch.setenv("XDG_DATA_HOME", "")
+
+    assert config_dir() == Path("~/.config/ticket-precedent").expanduser()
+    assert data_dir() == Path("~/.local/share/ticket-precedent").expanduser()
