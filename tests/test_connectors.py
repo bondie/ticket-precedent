@@ -4,6 +4,7 @@ from typing import Any
 import httpx
 
 from ticket_precedent.connectors.jira import JiraConnector, issue_to_ticket
+from ticket_precedent.connectors.jira_cloud import JiraCloudConnector
 from ticket_precedent.connectors.mantis import MantisConnector
 from ticket_precedent.connectors.mantis import issue_to_ticket as mantis_ticket
 from ticket_precedent.models import Link, Ticket
@@ -267,3 +268,71 @@ def test_changelog_is_requested_unless_disabled():
         list(connector.iter_tickets())
 
     assert requested == ["changelog", None]
+
+
+def cloud_connector(handler, **options: Any) -> JiraCloudConnector:
+    connector = JiraCloudConnector(
+        "cloud", "https://acme.atlassian.net", "project = ACME", **options
+    )
+    connector._client = httpx.Client(
+        base_url="https://acme.atlassian.net",
+        auth=connector._client.auth,
+        transport=httpx.MockTransport(handler),
+    )
+    return connector
+
+
+def test_jira_cloud_pages_by_token_with_basic_auth():
+    requests = []
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        requests.append(request)
+        if request.url.path.endswith("/comment"):
+            body = [{"author": {"displayName": f"U{i}"}, "body": f"c{i}"} for i in range(3)]
+            return httpx.Response(200, json={"comments": body, "total": 3})
+        if "nextPageToken" not in request.url.params:
+            issues = [jira_issue("ACME-1", comments_total=3)]
+            return httpx.Response(200, json={"issues": issues, "nextPageToken": "t2"})
+        return httpx.Response(200, json={"issues": [jira_issue("ACME-2")], "isLast": True})
+
+    connector = cloud_connector(handler, email="dev@example.com", api_token="secret")
+    since = datetime(2024, 5, 1, 12, 0, tzinfo=UTC)
+    tickets = list(connector.iter_tickets(since))
+
+    assert [t.key for t in tickets] == ["ACME-1", "ACME-2"]
+    assert tickets[0].url == "https://acme.atlassian.net/browse/ACME-1"
+    assert [c.author for c in tickets[0].comments] == ["U0", "U1", "U2"]
+    searches = [r for r in requests if r.url.path == "/rest/api/2/search/jql"]
+    assert len(searches) == 2
+    assert searches[1].url.params["nextPageToken"] == "t2"
+    jql = searches[0].url.params["jql"]
+    assert jql == '(project = ACME) AND updated >= "2024/05/01 12:00" ORDER BY updated ASC'
+    assert searches[0].url.params["expand"] == "changelog"
+    assert all(r.headers["Authorization"].startswith("Basic ") for r in requests)
+
+
+def test_jira_cloud_fetches_a_changelog_the_search_cut_short():
+    inline = [history("2024-05-01T10:00:00", "timeoriginalestimate", None, "1800")]
+    full = [
+        *inline,
+        history("2024-05-01T12:00:00", "timeoriginalestimate", "1800", "2700"),
+        history("2024-05-02T10:00:00", "timespent", None, "3600"),
+    ]
+    issue = estimated_issue(inline, estimate=2700, total=3)
+    pages = []
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        if request.url.path.endswith("/changelog"):
+            start = int(request.url.params["startAt"])
+            pages.append(start)
+            values = full[start : start + 2]
+            return httpx.Response(
+                200, json={"values": values, "total": 3, "isLast": start + 2 >= 3}
+            )
+        return httpx.Response(200, json={"issues": [issue], "isLast": True})
+
+    [ticket] = cloud_connector(handler).iter_tickets()
+
+    assert pages == [0, 2]
+    assert ticket.initial_estimate_seconds == 2700
+    assert ticket.last_logged == datetime(2024, 5, 2, 10, tzinfo=UTC)

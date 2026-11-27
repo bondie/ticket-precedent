@@ -2,7 +2,16 @@ from pathlib import Path
 
 import pytest
 
-from ticket_precedent.config import ConfigError, config_dir, data_dir, load_config
+from ticket_precedent.config import (
+    ConfigError,
+    SourceConfig,
+    build_connector,
+    config_dir,
+    data_dir,
+    load_config,
+)
+from ticket_precedent.connectors.github import GitHubConnector
+from ticket_precedent.connectors.jira_cloud import JiraCloudConnector
 
 
 def test_expands_variables_from_env_file_and_environment(tmp_path, monkeypatch):
@@ -89,3 +98,26 @@ def test_empty_xdg_variables_count_as_unset(monkeypatch: pytest.MonkeyPatch):
 
     assert config_dir() == Path("~/.config/ticket-precedent").expanduser()
     assert data_dir() == Path("~/.local/share/ticket-precedent").expanduser()
+
+
+def test_builds_cloud_and_github_connectors():
+    cloud = build_connector(
+        SourceConfig(
+            "cloud",
+            "jira-cloud",
+            {"url": "https://acme.atlassian.net/", "jql": "project = ACME", "page_size": 500},
+        )
+    )
+    assert isinstance(cloud, JiraCloudConnector)
+    assert cloud.base_url == "https://acme.atlassian.net"
+    assert cloud.page_size == 100
+
+    github = build_connector(SourceConfig("gh", "github", {"repo": ["acme/widget", "acme/gear"]}))
+    assert isinstance(github, GitHubConnector)
+    assert github.repos == ["acme/widget", "acme/gear"]
+    assert github.base_url == "https://api.github.com"
+
+
+def test_unknown_source_type_lists_every_type():
+    with pytest.raises(ConfigError, match="jira, jira-cloud, mantis, github"):
+        build_connector(SourceConfig("x", "gitlab", {}))

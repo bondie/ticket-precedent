@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import os
 import re
+from collections.abc import Callable
 from dataclasses import dataclass, field, fields
 from pathlib import Path
 from typing import Any
@@ -10,7 +11,9 @@ import yaml
 
 from .chunking import ChunkingConfig
 from .connectors import Connector
+from .connectors.github import GitHubConnector
 from .connectors.jira import JiraConnector
+from .connectors.jira_cloud import JiraCloudConnector
 from .connectors.mantis import MantisConnector
 from .embeddings import OllamaEmbedder
 from .search import Searcher
@@ -146,12 +149,20 @@ def read_dotenv(path: Path) -> dict[str, str]:
     return values
 
 
+CONNECTORS: dict[str, Callable[..., Connector]] = {
+    "jira": JiraConnector,
+    "jira-cloud": JiraCloudConnector,
+    "mantis": MantisConnector,
+    "github": GitHubConnector,
+}
+
+
 def build_connector(source: SourceConfig) -> Connector:
-    if source.type == "jira":
-        return JiraConnector(source.name, **source.resolved_options())
-    if source.type == "mantis":
-        return MantisConnector(source.name, **source.resolved_options())
-    raise ConfigError(f"Source {source.name!r}: unknown type {source.type!r} (jira, mantis)")
+    connector = CONNECTORS.get(source.type)
+    if connector is None:
+        known = ", ".join(CONNECTORS)
+        raise ConfigError(f"Source {source.name!r}: unknown type {source.type!r} ({known})")
+    return connector(source.name, **source.resolved_options())
 
 
 def build_searcher(config: Config, store: Store) -> Searcher:

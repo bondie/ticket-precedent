@@ -11,9 +11,9 @@ A customer reports *"the invoice never showed up in the shop"*. Eight months ago
 fixed the same thing in a ticket titled *"ERP comparator drops payload as unchanged"*.
 Keyword search cannot connect the two, and pure embeddings fumble exact identifiers such as
 ticket keys, class names and error codes. ticket-precedent indexes tickets **and their
-comments** from JIRA and MantisBT into a single SQLite file and ranks them with BM25 and
-vector search fused by Reciprocal Rank Fusion. Embeddings are computed locally with Ollama,
-so ticket content never leaves your machine.
+comments** from JIRA (Server, Data Center and Cloud), MantisBT and GitHub Issues into a
+single SQLite file and ranks them with BM25 and vector search fused by Reciprocal Rank Fusion.
+Embeddings are computed locally with Ollama, so ticket content never leaves your machine.
 
 In Claude Code (or any MCP client) you ask *"find precedents for helpdesk 18342"*, and the
 agent gets the earlier tickets that look like it. The command line gives the same results
@@ -77,9 +77,11 @@ curl -o ~/.config/ticket-precedent/config.yaml \
   https://raw.githubusercontent.com/bondie/ticket-precedent/main/config.example.yaml
 ```
 
-Edit the `sources` list, with one entry per JIRA query or MantisBT project set. Keep the
-secrets out of the file: `${VARIABLES}` are resolved from the environment, from a `.env` next
-to the config, or from the files listed in `env_files`. See
+Edit the `sources` list, with one entry per JIRA query, MantisBT project set or set of
+GitHub repositories. The `type` of a source is `jira` (Server and Data Center), `jira-cloud`,
+`mantis` or `github`; see [Connectors](#connectors) for the authentication and limits of
+each. Keep the secrets out of the file: `${VARIABLES}` are resolved from the environment,
+from a `.env` next to the config, or from the files listed in `env_files`. See
 [`config.example.yaml`](https://github.com/bondie/ticket-precedent/blob/main/config.example.yaml) for every option.
 
 **4. Build the index.**
@@ -114,6 +116,48 @@ Desktop, Cursor, …) start the same stdio server:
   }
 }
 ```
+
+## Connectors
+
+| `type` | Tracker | Authentication |
+|---|---|---|
+| `jira` | JIRA Server / Data Center, REST API v2 | `username` + `password`, or `token` (personal access token) |
+| `jira-cloud` | JIRA Cloud (`*.atlassian.net`) | `email` + `api_token`, or none for a public site |
+| `mantis` | MantisBT REST API | `token` |
+| `github` | GitHub Issues (github.com or Enterprise Server) | optional `token` |
+
+- **JIRA Server / Data Center** reads `/rest/api/2/search`, 50 issues per request, with the
+  changelog for [effort data](#effort-reference).
+- **JIRA Cloud** removed that endpoint. The connector pages through
+  `/rest/api/2/search/jql` with `nextPageToken`. The v2 endpoint returns descriptions and
+  comments as plain text, while v3 returns them as Atlassian Document Format. Create the API
+  token at [id.atlassian.com](https://id.atlassian.com/manage-profile/security/api-tokens).
+  A page holds at most 100 issues, and in testing it carried at most 20 comments and 40
+  changelog entries per issue; the connector fetches the rest of a longer thread or
+  changelog with one more request for that issue, so effort data is as complete as on Server.
+  JQL dates are read in the time zone of the API user, which the one-day overlap of
+  incremental syncs absorbs. Tested anonymously against a public Cloud site; the `email` +
+  `api_token` path is covered by tests only.
+- **MantisBT** reads `/api/rest/issues` per project, newest first, and stops at the first
+  page older than the last sync.
+- **GitHub Issues** reads `/repos/{owner}/{repo}/issues`, 100 items per request, and skips
+  pull requests (they are listed alongside issues and still cost requests). A full sync
+  reads the repository's comment stream once, so it costs about (issues + pull requests +
+  comments) / 100 requests. An incremental sync costs one request per page of changed issues
+  plus one per changed issue that has comments, because every synced issue must carry its
+  whole thread. Without a `token` GitHub allows 60 requests an hour, which a full sync spends
+  on about 6,000 issues, pull requests and comments; a token (no scopes needed for public
+  repositories) raises that to 5,000. When the limit runs out, the connector waits for
+  the reset if it comes within `rate_limit_wait` seconds (default 3600) and otherwise stops
+  with the reset time. A sync that stops starts again from the previous one, so a first sync
+  of a large repository without a token needs the wait. After adding a repository to an
+  existing source, run `tp sync --source NAME --full` once, because an incremental sync
+  only asks for recently updated issues. Keys look like `acme/widget#123`, the status is
+  `open` or `closed` and the resolution is GitHub's close reason (`completed`,
+  `not_planned`, `duplicate`).
+  Labels are not indexed, and there is no logged time, so GitHub issues do not take part in
+  `effort_reference`. For GitHub Enterprise Server set `url` to its API base, for example
+  `https://github.example.com/api/v3`.
 
 ## Everyday use
 
@@ -317,6 +361,7 @@ The per-query ranks for every run are in [`results/`](https://github.com/bondie/
 flowchart LR
     J[JIRA] --> C[Connectors<br/>incremental by `updated`]
     M[MantisBT] --> C
+    G[GitHub Issues] --> C
     C --> K[Chunker<br/>title-prefixed windows,<br/>bot comments dropped]
     K -->|changed chunks only| E[Ollama embeddings<br/>bge-m3, 1024-d]
     K --> F[(FTS5<br/>BM25)]
@@ -354,7 +399,7 @@ agent, which adjusts the range and cites the tickets.
   logged, so a ticket still in progress cannot pull the median down. For an indexed ticket
   the cut-off is the moment it was created: the answer is what could have been known when it
   was estimated. That makes the tool usable for backtests without leaking the future.
-- **When was the time final?** The JIRA connector reads each issue's changelog and keeps
+- **When was the time final?** The JIRA connectors read each issue's changelog and keep
   the moment time was last logged. When sub-tasks carry part of the time, their worklogs
   are not in the parent's changelog, so the last update stands in for it.
 - **What did people forecast?** The index also keeps the original estimate as it stood when
@@ -408,7 +453,7 @@ CI runs lint, type checks, tests on Python 3.11–3.13 and a gitleaks secret sca
 - A reranker trained on duplicate pairs, or an LLM judging the top 5; a general-purpose
   cross-encoder made results worse (see [Reranking](#reranking-tried-not-adopted))
 - Embedding model comparison (`qwen3-embedding`, `multilingual-e5`, `snowflake-arctic-embed2`)
-- GitLab and GitHub Issues connectors, JIRA Cloud (`/rest/api/3/search/jql`)
+- GitLab connector
 - Periodic re-sync while a server session stays open (today auto-sync runs only at start-up)
 
 ## License
