@@ -1,6 +1,6 @@
 [project]
 name = "ticket-precedent"
-version = "0.1.0"
+version = "0.2.0"
 description = "Have we solved this before? Local hybrid search (BM25 + embeddings) over JIRA and Mantis tickets, served to AI agents over MCP."
 readme = "README.md"
 license = "MIT"
@@ -9,7 +9,15 @@ authors = [{ name = "Vladislav Barot", email = "vladislav.barot@gmail.com" }]
 requires-python = ">=3.11"
 keywords = ["rag", "mcp", "jira", "mantis", "semantic-search", "embeddings", "sqlite-vec"]
 classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Operating System :: MacOS",
+    "Operating System :: POSIX :: Linux",
     "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "Topic :: Software Development :: Bug Tracking",
     "Topic :: Text Processing :: Indexing",
 ]
@@ -20,8 +28,14 @@ dependencies = [
     "sqlite-vec>=0.1.6",
 ]
 
+[project.urls]
+Homepage = "https://github.com/bondie/ticket-precedent"
+Changelog = "https://github.com/bondie/ticket-precedent/blob/main/CHANGELOG.md"
+Issues = "https://github.com/bondie/ticket-precedent/issues"
+
 [project.scripts]
 tp = "ticket_precedent.cli:main"
+ticket-precedent = "ticket_precedent.cli:main"
 
 [dependency-groups]
 dev = [

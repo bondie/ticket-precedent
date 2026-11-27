@@ -8,6 +8,8 @@ from collections.abc import Callable
 from dataclasses import asdict
 from pathlib import Path
 
+import httpx
+
 from .autosync import sync_lock
 from .chunking import ChunkingConfig
 from .config import (
@@ -18,10 +20,12 @@ from .config import (
     build_connector,
     build_embedder,
     build_searcher,
+    config_dir,
     data_dir,
     load_config,
 )
 from .connectors.jira import JiraConnector
+from .demo import APACHE_BOTS, APACHE_JIRA, ZOOKEEPER, DemoError, download, write_config
 from .effort import reference_for_ticket
 from .embeddings import EmbeddingError
 from .evaluation.dataset import duplicate_queries
@@ -42,25 +46,19 @@ from .search import (
 )
 from .store import IndexMismatchError, Store
 
-APACHE_JIRA = "https://issues.apache.org/jira"
-APACHE_BOTS = frozenset(
-    {
-        "ASF GitHub Bot",
-        "ASF subversion and git services",
-        "Hudson",
-        "Hadoop QA",
-        "Jenkins",
-        "GitBox",
-    }
-)
-
 
 def main(argv: list[str] | None = None) -> int:
     args = _parser().parse_args(argv)
     handler: Callable[[argparse.Namespace], int] = args.handler
     try:
         return handler(args)
-    except (ConfigError, EmbeddingError, IndexMismatchError, TicketNotFoundError) as error:
+    except (
+        ConfigError,
+        DemoError,
+        EmbeddingError,
+        IndexMismatchError,
+        TicketNotFoundError,
+    ) as error:
         print(f"error: {error}", file=sys.stderr)
         return 1
 
@@ -113,6 +111,10 @@ def _parser() -> argparse.ArgumentParser:
 
     cmd = commands.add_parser("serve", help="run the MCP server on stdio")
     cmd.set_defaults(handler=_serve)
+
+    cmd = commands.add_parser("demo", help="try it on a ready-made index of public tickets")
+    cmd.add_argument("--force", action="store_true", help="download the index again")
+    cmd.set_defaults(handler=_demo)
 
     cmd = commands.add_parser("eval", help="benchmark on a public Apache JIRA project")
     cmd.add_argument("project", help="Apache JIRA project key, e.g. KAFKA")
@@ -295,6 +297,61 @@ def _eval(args: argparse.Namespace) -> int:
             + "\n"
         )
     return 0
+
+
+MB = 1_000_000
+DEMO_QUERY = "session expires but ephemeral nodes stay around"
+DEMO_PRECEDENTS = "ZOOKEEPER-2376"
+
+
+def _demo(args: argparse.Namespace) -> int:
+    index = ZOOKEEPER
+    index_path = data_dir() / "demo" / f"{index.source}-bge-m3.db"
+    config_path = config_dir() / "demo.yaml"
+    if args.force or not index_path.exists():
+        print(
+            f"Downloading a ready-made index of {index.tickets:,} public {index.name} "
+            f"tickets with their comments ({index.size_mb} MB)",
+            file=sys.stderr,
+        )
+        with httpx.Client(timeout=60) as client:
+            download(client, index, index_path, _download_progress)
+        print(file=sys.stderr)
+    write_config(index, index_path, config_path)
+
+    config = load_config(config_path)
+    store = Store(config.index_path)
+    outcome = search_or_degrade(build_searcher(config, store), DEMO_QUERY, "hybrid", 3, Filters())
+    print(f'$ tp search "{DEMO_QUERY}"')
+    _print_outcome(store, outcome, as_json=False)
+    if outcome.warning:
+        print(
+            "\nFor semantic search start Ollama and pull the model: "
+            "https://ollama.com, then `ollama pull bge-m3`.",
+            file=sys.stderr,
+        )
+    print(
+        f"""
+The demo configuration is {config_path}. Point tp at it and try:
+
+  export TICKET_PRECEDENT_CONFIG={config_path}
+  tp search "zookeeper won't boot after a crash, log file has zero bytes"
+  tp precedents {DEMO_PRECEDENTS}
+  tp sync                      # fetch tickets updated since the index was built
+
+Give it to Claude Code (or any MCP client) and ask for precedents in your own words:
+
+  claude mcp add ticket-precedent-demo -s user -- uvx ticket-precedent --config {config_path} serve
+
+Installed with uvx? Use `uvx ticket-precedent` wherever `tp` is written.
+For your own trackers copy config.example.yaml: https://github.com/bondie/ticket-precedent#getting-started"""
+    )
+    return 0
+
+
+def _download_progress(received: int, total: int | None) -> None:
+    size = f"{received // MB} / {total // MB} MB" if total else f"{received // MB} MB"
+    print(f"\r{size}", end="", file=sys.stderr, flush=True)
 
 
 def _progress(name: str) -> Callable[[SyncStats], None]:
