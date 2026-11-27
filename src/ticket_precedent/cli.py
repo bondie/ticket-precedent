@@ -33,6 +33,7 @@ from .evaluation.dataset import duplicate_queries
 from .evaluation.metrics import markdown_table
 from .evaluation.runner import evaluate
 from .ingest import SyncStats, sync
+from .ondemand import OnDemandResolver
 from .search import (
     MODES,
     Filters,
@@ -41,7 +42,6 @@ from .search import (
     TicketNotFoundError,
     describe,
     find_precedents,
-    resolve_ticket,
     search_or_degrade,
     ticket_details,
 )
@@ -85,7 +85,7 @@ def _parser() -> argparse.ArgumentParser:
     cmd.add_argument("--json", action="store_true")
     cmd.set_defaults(handler=_search)
 
-    cmd = commands.add_parser("precedents", help="earlier tickets that look like an indexed one")
+    cmd = commands.add_parser("precedents", help="earlier tickets that look like a given one")
     cmd.add_argument("key", help="ticket key, e.g. PROJ-42 or a helpdesk number")
     cmd.add_argument("--source", help="source of the ticket when the key is ambiguous")
     cmd.add_argument("--only-source", help="only return tickets from this source")
@@ -103,9 +103,10 @@ def _parser() -> argparse.ArgumentParser:
     cmd.add_argument("--json", action="store_true")
     cmd.set_defaults(handler=_effort)
 
-    cmd = commands.add_parser("show", help="print one indexed ticket")
-    cmd.add_argument("source")
-    cmd.add_argument("key")
+    cmd = commands.add_parser("show", help="print one ticket")
+    cmd.add_argument("key", help="ticket key; `tp show SOURCE KEY` also works")
+    cmd.add_argument("legacy_key", nargs="?", help=argparse.SUPPRESS)
+    cmd.add_argument("--source", help="source of the ticket when the key is ambiguous")
     cmd.set_defaults(handler=_show)
 
     cmd = commands.add_parser("stats", help="indexed sources")
@@ -179,10 +180,10 @@ def _search(args: argparse.Namespace) -> int:
 def _precedents(args: argparse.Namespace) -> int:
     config = load_config(args.config)
     store = Store(config.index_path)
-    ticket = resolve_ticket(store, args.key, args.source)
+    searcher = build_searcher(config, store)
+    ticket = OnDemandResolver(config, store, searcher.embedder).resolve(args.key, args.source)
     print(f"precedents for [{ticket['source']}] {ticket['key']} {ticket['title']}", file=sys.stderr)
     _, sources = (None, None) if args.only_source else config.scope(args.platform, ticket["source"])
-    searcher = build_searcher(config, store)
     outcome = find_precedents(searcher, ticket, args.limit, args.only_source, sources)
     return _print_outcome(store, outcome, as_json=args.json)
 
@@ -190,14 +191,16 @@ def _precedents(args: argparse.Namespace) -> int:
 def _effort(args: argparse.Namespace) -> int:
     config = load_config(args.config)
     store = Store(config.index_path)
-    ticket = resolve_ticket(store, args.key, args.source)
-    _, sources = config.scope(args.platform, ticket["source"])
     searcher = build_searcher(config, store)
-    found = reference_for_ticket(searcher, ticket, args.limit, args.since, sources=sources)
+    ticket = OnDemandResolver(config, store, searcher.embedder).resolve(args.key, args.source)
+    chosen, sources = config.scope(args.platform, ticket["source"])
+    since = args.since or config.effort_since_for(chosen)
+    found = reference_for_ticket(searcher, ticket, args.limit, since, sources=sources)
     summary = found.summary()
+    created = f" created since {since}," if since else ""
     print(
-        f"[{ticket['source']}] {ticket['key']} {ticket['title']}: {summary['tickets']} tickets "
-        f"finished before {found.as_of[:10]}, median {summary['median_hours']} h, "
+        f"[{ticket['source']}] {ticket['key']} {ticket['title']}: {summary['tickets']} tickets"
+        f"{created} finished before {found.as_of[:10]}, median {summary['median_hours']} h, "
         f"P25-P75 {summary['p25_hours']}-{summary['p75_hours']} h",
         file=sys.stderr,
     )
@@ -220,11 +223,16 @@ def _print_outcome(store: Store, outcome: Outcome, as_json: bool) -> int:
 
 
 def _show(args: argparse.Namespace) -> int:
+    source, key = args.source, args.key
+    if args.legacy_key is not None:
+        if source is not None:
+            raise ConfigError("Pass the source either as --source or before the key, not both")
+        source, key = args.key, args.legacy_key
     config = load_config(args.config)
-    details = ticket_details(Store(config.index_path), args.source, args.key)
-    if details is None:
-        print(f"{args.source} {args.key}: not indexed", file=sys.stderr)
-        return 1
+    store = Store(config.index_path)
+    embedder = build_embedder(config.embedding)
+    ticket = OnDemandResolver(config, store, embedder).resolve(key, source)
+    details = ticket_details(store, ticket["source"], ticket["key"])
     print(json.dumps(details, ensure_ascii=False, indent=2))
     return 0
 

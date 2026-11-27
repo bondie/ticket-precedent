@@ -4,7 +4,37 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
-## [0.2.0] - Unreleased
+## [0.3.0] - Unreleased
+
+### Added
+
+- On-demand indexing: `precedents_for`, `effort_reference` with a key and `get_ticket` (and
+  `tp precedents`, `tp effort` and `tp show`) fetch a ticket that is not indexed yet from
+  the configured sources, index it and answer as for any indexed ticket, still with only
+  earlier tickets and without the tickets its title names. Sources that already hold the
+  key's JIRA project, or name it in their JQL, are asked first; a key that no source has
+  is remembered for 10 minutes, and the error names the sources that were asked.
+- `effort_since` in the configuration: the default `since` of `effort_reference`, one date
+  for every platform or a date per platform. An explicit `since` still wins, and the
+  response (and the `tp effort` summary) says which date was used.
+- The MCP server tells the model the configured platforms, their sources and the default
+  platform when it starts, so it passes valid platform names.
+- `similar_tickets` accepts `query` as an alias of `text`.
+
+### Changed
+
+- `get_ticket(key, source?)`: the key is enough, `source` is needed only when two sources
+  share the key. `tp show KEY [--source S]` likewise; `tp show SOURCE KEY` still works.
+- Platform names match regardless of case (`SHOP` finds `shop`).
+- `precedents_for`, `effort_reference` and `get_ticket` are marked as reaching outside the
+  index (`open_world_hint`), because they may fetch a ticket from its tracker.
+
+### Fixed
+
+- Parallel MCP tool calls no longer share one SQLite connection across worker threads,
+  which could fail with `sqlite3.InterfaceError`; every thread now has its own connection.
+
+## [0.2.0] - 2026-11-27
 
 ### Added
 

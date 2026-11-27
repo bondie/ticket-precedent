@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 from collections.abc import Iterator, Sequence
 from datetime import datetime
 from typing import Any, NamedTuple
@@ -14,6 +15,7 @@ FIELDS = (
     "issuelinks,timespent,aggregatetimespent,project,issuetype,timeoriginalestimate"
 )
 TRACKED_CHANGES = frozenset({"timeoriginalestimate", "timespent"})
+KEY = re.compile(r"^[A-Z][A-Z0-9_]+-\d+$")
 
 
 class Change(NamedTuple):
@@ -25,6 +27,8 @@ class Change(NamedTuple):
 
 class JiraConnector:
     """JIRA Server / Data Center REST API v2."""
+
+    search_path = "/rest/api/2/search"
 
     def __init__(
         self,
@@ -55,7 +59,7 @@ class JiraConnector:
         params = self._search_params(since)
         start_at = 0
         while True:
-            data = get_json(self._client, "/rest/api/2/search", {**params, "startAt": start_at})
+            data = get_json(self._client, self.search_path, {**params, "startAt": start_at})
             issues = data.get("issues", [])
             for issue in issues:
                 yield self._ticket(issue)
@@ -63,10 +67,29 @@ class JiraConnector:
             if not issues or start_at >= data.get("total", 0):
                 return
 
-    def _search_params(self, since: datetime | None) -> dict[str, Any]:
+    def fetch_ticket(self, key: str) -> Ticket | None:
+        if not KEY.fullmatch(key):
+            return None
+        params = {**self._search_params(None, f'key = "{key}"'), "maxResults": 1}
+        try:
+            data = get_json(self._client, self.search_path, params, attempts=1)
+        except httpx.HTTPStatusError as error:
+            if error.response.status_code == 400:
+                return None
+            raise
+        issues = data.get("issues", [])
+        if not issues:
+            return None
+        return self._ticket(issues[0])
+
+    def _search_params(
+        self, since: datetime | None, condition: str | None = None
+    ) -> dict[str, Any]:
         jql = f"({self.jql})"
         if since is not None:
             jql += f' AND updated >= "{since.strftime("%Y/%m/%d %H:%M")}"'
+        if condition is not None:
+            jql += f" AND {condition}"
         jql += " ORDER BY updated ASC"
         params: dict[str, Any] = {"jql": jql, "maxResults": self.page_size, "fields": FIELDS}
         if self.changelog:

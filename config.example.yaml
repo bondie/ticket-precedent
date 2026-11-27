@@ -8,7 +8,8 @@ env_files:
   - ~/secrets/trackers.env
 
 # When set, the MCP server syncs sources older than this many hours in a background thread
-# on start-up, so no scheduler is needed. It needs the tracker credentials in its environment.
+# on start-up, so no scheduler is needed. It needs the tracker credentials in its environment,
+# as does fetching a ticket that is not indexed yet when an agent asks for it.
 auto_sync_hours: 12
 
 embedding:
@@ -22,6 +23,12 @@ search:
 # Sources of different products can carry a `platform`; searches then stay within one.
 # A ticket key keeps to its own platform, free text to this default unless told otherwise.
 # default_platform: shop
+
+# The `since` of effort_reference when none is passed, e.g. after a process change made
+# older tickets a poor guide: one date for every platform, or a date per platform.
+# effort_since: 2026-01-01
+# effort_since:
+#   shop: 2026-01-01
 
 sources:
   - name: acme-jira

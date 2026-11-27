@@ -14,6 +14,8 @@ MAX_PAGE_SIZE = 100
 class JiraCloudConnector(JiraConnector):
     """JIRA Cloud REST API v2 with token-paged `/search/jql`; bodies stay plain text, not ADF."""
 
+    search_path = "/rest/api/2/search/jql"
+
     def __init__(
         self,
         source: str,
@@ -39,7 +41,7 @@ class JiraCloudConnector(JiraConnector):
     def iter_tickets(self, since: datetime | None = None) -> Iterator[Ticket]:
         params = self._search_params(since)
         while True:
-            data = get_json(self._client, "/rest/api/2/search/jql", params)
+            data = get_json(self._client, self.search_path, params)
             for issue in data.get("issues", []):
                 yield self._ticket(issue)
             token = data.get("nextPageToken")

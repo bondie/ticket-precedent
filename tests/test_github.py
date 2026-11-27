@@ -1,4 +1,4 @@
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 from types import SimpleNamespace
 from typing import Any
 
@@ -191,3 +191,54 @@ def test_secondary_rate_limit_retries_after_the_given_delay(slept):
 
     assert list(connector.iter_tickets()) == []
     assert slept == [7.0]
+
+
+def test_fetches_one_issue_with_its_whole_thread():
+    requests = []
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        requests.append(request)
+        if request.url.path.endswith("/comments"):
+            if "page" not in request.url.params:
+                return page(
+                    [gh_comment(7, "a")], f"{API}/repos/acme/widget/issues/7/comments?page=2"
+                )
+            return page([gh_comment(7, "b")])
+        return httpx.Response(200, json=gh_issue(7, comments=2))
+
+    connector = connector_with(handler, repo=["acme/other", "Acme/Widget"])
+    ticket = connector.fetch_ticket("acme/widget#7")
+
+    assert ticket is not None
+    assert ticket.key == "Acme/Widget#7"
+    assert [c.body for c in ticket.comments] == ["a", "b"]
+    assert requests[0].url.path == "/repos/Acme/Widget/issues/7"
+
+
+def test_fetch_skips_pull_requests_missing_issues_and_other_repositories():
+    def handler(request: httpx.Request) -> httpx.Response:
+        if request.url.path.endswith("/5"):
+            return httpx.Response(200, json=gh_issue(5, pull_request={"url": "x"}))
+        return httpx.Response(404, json={"message": "Not Found"})
+
+    connector = connector_with(handler)
+    assert connector.fetch_ticket("acme/widget#5") is None
+    assert connector.fetch_ticket("acme/widget#6") is None
+
+
+def test_fetch_skips_keys_of_another_shape_or_repository_without_a_request():
+    def handler(request: httpx.Request) -> httpx.Response:
+        raise AssertionError(f"unexpected request {request.url}")
+
+    connector = connector_with(handler)
+    for key in ("acme/gadget#1", "ACME-1", "18342", "acme/widget", "widget#1"):
+        assert connector.fetch_ticket(key) is None
+
+
+def test_fetch_does_not_wait_for_a_rate_limit_reset(slept):
+    reset = datetime.now(UTC).replace(microsecond=0) + timedelta(minutes=5)
+    connector = connector_with(lambda _request: exhausted(reset), rate_limit_wait=3600)
+
+    with pytest.raises(RateLimitError):
+        connector.fetch_ticket("acme/widget#1")
+    assert slept == []

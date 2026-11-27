@@ -3,6 +3,7 @@ from __future__ import annotations
 import hashlib
 import json
 import sqlite3
+import threading
 from collections.abc import Iterable, Mapping, Sequence
 from dataclasses import asdict
 from datetime import UTC, datetime
@@ -84,16 +85,27 @@ class Store:
     def __init__(self, path: Path) -> None:
         path.parent.mkdir(parents=True, exist_ok=True)
         self.path = path
-        self.db = sqlite3.connect(path, check_same_thread=False)
-        self.db.row_factory = sqlite3.Row
-        self.db.enable_load_extension(True)
-        sqlite_vec.load(self.db)
-        self.db.enable_load_extension(False)
-        self.db.execute("PRAGMA foreign_keys = ON")
-        self.db.execute("PRAGMA busy_timeout = 30000")
-        self.db.execute("PRAGMA journal_mode = WAL")
+        self._local = threading.local()
         self.db.executescript(SCHEMA)
         self._add_missing_columns()
+
+    @property
+    def db(self) -> sqlite3.Connection:
+        """This thread's connection: MCP tool calls run in worker threads at the same time,
+        and one sqlite3 connection must not be used by two threads at once."""
+        connection: sqlite3.Connection | None = getattr(self._local, "db", None)
+        if connection is not None:
+            return connection
+        connection = sqlite3.connect(self.path, check_same_thread=False)
+        connection.row_factory = sqlite3.Row
+        connection.enable_load_extension(True)
+        sqlite_vec.load(connection)
+        connection.enable_load_extension(False)
+        connection.execute("PRAGMA foreign_keys = ON")
+        connection.execute("PRAGMA busy_timeout = 30000")
+        connection.execute("PRAGMA journal_mode = WAL")
+        self._local.db = connection
+        return connection
 
     def _add_missing_columns(self) -> None:
         existing = {row["name"] for row in self.db.execute("PRAGMA table_info(tickets)")}
@@ -102,7 +114,12 @@ class Store:
                 self.db.execute(f"ALTER TABLE tickets ADD COLUMN {name} {definition}")
 
     def close(self) -> None:
-        self.db.close()
+        """Closes this thread's connection; those of other threads close when they end."""
+        connection: sqlite3.Connection | None = getattr(self._local, "db", None)
+        if connection is None:
+            return
+        connection.close()
+        self._local.db = None
 
     def meta(self, key: str) -> str | None:
         row = self.db.execute("SELECT value FROM meta WHERE key = ?", (key,)).fetchone()
@@ -298,6 +315,12 @@ class Store:
         return self.db.execute(
             "SELECT * FROM tickets WHERE source = ? ORDER BY created", (source,)
         ).fetchall()
+
+    def projects_by_source(self) -> dict[str, set[str]]:
+        projects: dict[str, set[str]] = {}
+        for row in self.db.execute("SELECT DISTINCT source, project FROM tickets"):
+            projects.setdefault(row["source"], set()).add(row["project"])
+        return projects
 
     def document_frequencies(self, terms: Sequence[str]) -> dict[str, int]:
         if not terms:

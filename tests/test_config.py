@@ -121,3 +121,47 @@ def test_builds_cloud_and_github_connectors():
 def test_unknown_source_type_lists_every_type():
     with pytest.raises(ConfigError, match="jira, jira-cloud, mantis, github"):
         build_connector(SourceConfig("x", "gitlab", {}))
+
+
+def platform_config(tmp_path: Path, extra: str) -> Path:
+    path = tmp_path / "config.yaml"
+    path.write_text(
+        "sources:\n"
+        "  - {name: a, type: jira, url: https://jira.example, jql: x, platform: Shop}\n"
+        "  - {name: b, type: jira, url: https://jira.example, jql: y, platform: legacy}\n" + extra
+    )
+    return path
+
+
+def test_effort_since_reads_one_date_or_a_date_per_platform(tmp_path):
+    loaded = load_config(platform_config(tmp_path, "effort_since: 2026-01-01\n"))
+    assert loaded.effort_since == "2026-01-01"
+    assert loaded.effort_since_for("legacy") == "2026-01-01"
+    assert loaded.effort_since_for(None) == "2026-01-01"
+
+    loaded = load_config(platform_config(tmp_path, "effort_since: {SHOP: '2026-01-01'}\n"))
+    assert loaded.effort_since_for("Shop") == "2026-01-01"
+    assert loaded.effort_since_for("legacy") is None
+    assert loaded.effort_since_for(None) is None
+
+    assert load_config(platform_config(tmp_path, "")).effort_since_for("Shop") is None
+
+
+@pytest.mark.parametrize(
+    ("value", "message"),
+    [
+        ("next week", "effort_since: 'next week' is not a date"),
+        ("{shop: '2026-13-01'}", "effort_since.shop: '2026-13-01' is not a date"),
+        ("{erp: 2026-01-01}", r"effort_since: unknown platforms \['erp'\]"),
+    ],
+)
+def test_effort_since_rejects_bad_values(tmp_path, value, message):
+    with pytest.raises(ConfigError, match=message):
+        load_config(platform_config(tmp_path, f"effort_since: {value}\n"))
+
+
+def test_platform_all_is_reserved_in_any_case(tmp_path):
+    path = tmp_path / "config.yaml"
+    path.write_text("sources:\n  - {name: a, type: jira, url: u, jql: x, platform: ALL}\n")
+    with pytest.raises(ConfigError, match="reserved"):
+        load_config(path)

@@ -214,6 +214,14 @@ class TicketNotFoundError(LookupError):
     pass
 
 
+class LookupArgumentError(TicketNotFoundError):
+    """Fixed by changing the arguments, not by reading the ticket from its tracker."""
+
+
+class AmbiguousTicketError(LookupArgumentError):
+    pass
+
+
 def resolve_ticket(store: Store, key: str, source: str | None = None) -> sqlite3.Row:
     """Find an indexed ticket by key, in `source` or in the only source that has the key."""
     if source is not None:
@@ -225,9 +233,13 @@ def resolve_ticket(store: Store, key: str, source: str | None = None) -> sqlite3
     if not rows:
         raise TicketNotFoundError(f"Ticket {key!r} is not indexed")
     if len(rows) > 1:
-        sources = ", ".join(row["source"] for row in rows)
-        raise TicketNotFoundError(f"Ticket {key!r} exists in {sources}; pass the source")
+        raise ambiguous(key, rows)
     return rows[0]
+
+
+def ambiguous(key: str, rows: Sequence[sqlite3.Row]) -> AmbiguousTicketError:
+    sources = ", ".join(row["source"] for row in rows)
+    return AmbiguousTicketError(f"Ticket {key!r} exists in {sources}; pass the source")
 
 
 def ticket_query(title: str, description: str | None, max_chars: int = QUERY_CHARS) -> str:
