@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 import re
 import sqlite3
-from collections.abc import Iterable, Sequence
+from collections.abc import Iterable, Mapping, Sequence
 from dataclasses import dataclass, field
 from typing import Any
 
@@ -284,7 +284,14 @@ def _best_per_ticket(hits: Iterable[Hit], exclude: frozenset[int]) -> list[Hit]:
     return list(seen.values())
 
 
-def describe(store: Store, hits: Sequence[Hit], snippet_chars: int = 300) -> list[dict[str, Any]]:
+def describe(
+    store: Store,
+    hits: Sequence[Hit],
+    snippet_chars: int = 300,
+    judge_scores: Mapping[int, int] | None = None,
+) -> list[dict[str, Any]]:
+    """`judge_scores` (by ticket id) adds `judge_score` to the hits the judge read."""
+    judge_scores = judge_scores or {}
     tickets = store.tickets_by_id(hit.ticket_id for hit in hits)
     chunks = store.chunks_by_id(hit.chunk_id for hit in hits)
     results = []
@@ -313,6 +320,8 @@ def describe(store: Store, hits: Sequence[Hit], snippet_chars: int = 300) -> lis
                 "snippet": _truncate(snippet, snippet_chars),
             }
         )
+        if hit.ticket_id in judge_scores:
+            results[-1]["judge_score"] = judge_scores[hit.ticket_id]
     return results
 
 

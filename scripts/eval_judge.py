@@ -14,13 +14,11 @@ interrupted run resumes and a finished one is reproduced without calling the mod
 from __future__ import annotations
 
 import argparse
-import hashlib
 import json
 import random
 import re
 import statistics
 import time
-from collections.abc import Sequence
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any
@@ -35,44 +33,18 @@ from ticket_precedent.evaluation.metrics import (
     reciprocal_rank,
     summarize,
 )
+from ticket_precedent.judge import (
+    CANDIDATE_CHARS,
+    PROMPT_VERSION,
+    QUERY_CHARS,
+    chat_request,
+    parse_scores,
+    reorder,
+    request_id,
+    user_prompt,
+)
 from ticket_precedent.search import Filters, Searcher, ticket_query
 from ticket_precedent.store import Store
-
-PROMPT_VERSION = 1
-QUERY_CHARS = 1500
-CANDIDATE_CHARS = 800
-KEY = re.compile(r"\b[A-Z][A-Z0-9]+-\d+\b")
-THREAD = re.compile(r"\[R:\d+\]|\b\d{5,}\b")
-
-SYSTEM = """You triage bug reports in an issue tracker.
-A new report arrives together with earlier reports found by search. For each earlier report,
-decide whether it describes the same underlying fault as the new report, so that the new
-report would be closed as its duplicate. Reports about the same component, feature or topic
-that describe a different fault are not duplicates.
-
-Score every candidate:
-3 = same fault, a duplicate
-2 = probably the same fault
-1 = related topic, different fault
-0 = unrelated"""
-
-SCHEMA = {
-    "type": "object",
-    "properties": {
-        "scores": {
-            "type": "array",
-            "items": {
-                "type": "object",
-                "properties": {
-                    "candidate": {"type": "integer"},
-                    "score": {"type": "integer", "enum": [0, 1, 2, 3]},
-                },
-                "required": ["candidate", "score"],
-            },
-        }
-    },
-    "required": ["scores"],
-}
 
 
 @dataclass(frozen=True)
@@ -84,20 +56,6 @@ class Judged:
     latency_ms: float
     prompt_tokens: int
     output_tokens: int
-
-
-def mask(text: str, threads: bool = False) -> str:
-    masked = KEY.sub("[ticket]", text)
-    return THREAD.sub("[ticket]", masked) if threads else masked
-
-
-def user_prompt(query: str, candidates: Sequence[str], threads: bool = False) -> str:
-    parts = [f"NEW REPORT\n{mask(query, threads)}", "EARLIER REPORTS"]
-    parts += [
-        f"[{number}]\n{mask(text, threads)}" for number, text in enumerate(candidates, start=1)
-    ]
-    parts.append(f"Return a score for each of the {len(candidates)} earlier reports.")
-    return "\n\n".join(parts)
 
 
 class Judge:
@@ -113,18 +71,8 @@ class Judge:
                 self.cache[entry["id"]] = entry
 
     def scores(self, prompt: str, count: int) -> tuple[list[int], dict[str, Any]]:
-        request = {
-            "model": self.model,
-            "messages": [
-                {"role": "system", "content": SYSTEM},
-                {"role": "user", "content": prompt},
-            ],
-            "format": SCHEMA,
-            "stream": False,
-            "think": False,
-            "options": {"temperature": 0, "seed": 0, "num_ctx": 8192},
-        }
-        entry_id = hashlib.sha256(json.dumps(request, sort_keys=True).encode()).hexdigest()
+        request = chat_request(self.model, prompt)
+        entry_id = request_id(request)
         entry = self.cache.get(entry_id) or self._call(entry_id, request)
         return parse_scores(entry["content"], count), entry
 
@@ -144,20 +92,6 @@ class Judge:
             out.write(json.dumps(entry) + "\n")
         self.cache[entry_id] = entry
         return entry
-
-
-def parse_scores(content: str, count: int) -> list[int]:
-    """Scores by candidate position; a missing or malformed score counts as 0."""
-    scores = [0] * count
-    try:
-        items = json.loads(content).get("scores", [])
-    except (json.JSONDecodeError, AttributeError):
-        return scores
-    for item in items:
-        number, score = item.get("candidate"), item.get("score")
-        if isinstance(number, int) and isinstance(score, int) and 1 <= number <= count:
-            scores[number - 1] = max(0, min(3, score))
-    return scores
 
 
 @dataclass(frozen=True)
@@ -260,10 +194,7 @@ def judge_all(args: argparse.Namespace) -> tuple[str, list[Judged]]:
 
 
 def reordered(query: Judged) -> list[int]:
-    """Judge scores first, hybrid order breaks ties; positions after the pool stay put."""
-    pool = len(query.scores)
-    head = sorted(range(pool), key=lambda i: (-query.scores[i], i))
-    return [query.candidates[i] for i in head] + query.candidates[pool:]
+    return reorder(query.candidates, query.scores)
 
 
 def oracle(query: Judged) -> list[int]:

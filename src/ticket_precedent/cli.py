@@ -19,6 +19,7 @@ from .config import (
     SourceConfig,
     build_connector,
     build_embedder,
+    build_judge,
     build_searcher,
     config_dir,
     data_dir,
@@ -33,6 +34,7 @@ from .evaluation.dataset import duplicate_queries
 from .evaluation.metrics import markdown_table
 from .evaluation.runner import evaluate
 from .ingest import SyncStats, sync
+from .judge import judge_outcome
 from .ondemand import OnDemandResolver
 from .search import (
     MODES,
@@ -44,6 +46,7 @@ from .search import (
     find_precedents,
     search_or_degrade,
     ticket_details,
+    ticket_query,
 )
 from .store import IndexMismatchError, Store
 
@@ -82,6 +85,7 @@ def _parser() -> argparse.ArgumentParser:
     cmd.add_argument("--platform", help='only this platform, "all" for every source')
     cmd.add_argument("--limit", type=int, default=5)
     cmd.add_argument("--mode", choices=MODES, default="hybrid")
+    _judge_argument(cmd)
     cmd.add_argument("--json", action="store_true")
     cmd.set_defaults(handler=_search)
 
@@ -91,6 +95,7 @@ def _parser() -> argparse.ArgumentParser:
     cmd.add_argument("--only-source", help="only return tickets from this source")
     cmd.add_argument("--platform", help="platform of the results (default: the ticket's own)")
     cmd.add_argument("--limit", type=int, default=5)
+    _judge_argument(cmd)
     cmd.add_argument("--json", action="store_true")
     cmd.set_defaults(handler=_precedents)
 
@@ -134,6 +139,14 @@ def _parser() -> argparse.ArgumentParser:
     return parser
 
 
+def _judge_argument(cmd: argparse.ArgumentParser) -> None:
+    cmd.add_argument(
+        "--judge",
+        action=argparse.BooleanOptionalAction,
+        help="let a local LLM reorder the top hits by same fault (default: judge.enabled)",
+    )
+
+
 def _sync(args: argparse.Namespace) -> int:
     config = load_config(args.config)
     sources = [config.source(args.source)] if args.source else config.sources
@@ -173,7 +186,11 @@ def _search(args: argparse.Namespace) -> int:
     searcher = build_searcher(config, store)
     _, sources = (None, None) if args.source else config.scope(args.platform)
     filters = Filters(args.source, args.project, sources=sources)
-    outcome = search_or_degrade(searcher, args.text, args.mode, args.limit, filters)
+    judged = config.judge.enabled if args.judge is None else args.judge
+    limit = max(args.limit, config.judge.top) if judged else args.limit
+    outcome = search_or_degrade(searcher, args.text, args.mode, limit, filters)
+    if judged:
+        return _print_judged(config, store, args.text, outcome, args)
     return _print_outcome(store, outcome, as_json=args.json)
 
 
@@ -184,7 +201,12 @@ def _precedents(args: argparse.Namespace) -> int:
     ticket = OnDemandResolver(config, store, searcher.embedder).resolve(args.key, args.source)
     print(f"precedents for [{ticket['source']}] {ticket['key']} {ticket['title']}", file=sys.stderr)
     _, sources = (None, None) if args.only_source else config.scope(args.platform, ticket["source"])
-    outcome = find_precedents(searcher, ticket, args.limit, args.only_source, sources)
+    judged = config.judge.enabled if args.judge is None else args.judge
+    limit = max(args.limit, config.judge.top) if judged else args.limit
+    outcome = find_precedents(searcher, ticket, limit, args.only_source, sources)
+    if judged:
+        text = ticket_query(ticket["title"], ticket["description"])
+        return _print_judged(config, store, text, outcome, args)
     return _print_outcome(store, outcome, as_json=args.json)
 
 
@@ -207,17 +229,31 @@ def _effort(args: argparse.Namespace) -> int:
     return _print_outcome(store, Outcome(found.hits, found.warning), as_json=args.json)
 
 
-def _print_outcome(store: Store, outcome: Outcome, as_json: bool) -> int:
+def _print_judged(
+    config: Config, store: Store, text: str, outcome: Outcome, args: argparse.Namespace
+) -> int:
+    judge = build_judge(config)
+    print(f"judge: {judge.model} reads the top {judge.top}", file=sys.stderr)
+    judged = judge_outcome(judge, store, text, outcome)
+    return _print_outcome(
+        store, Outcome(judged.hits[: args.limit], judged.warning), args.json, judged.scores
+    )
+
+
+def _print_outcome(
+    store: Store, outcome: Outcome, as_json: bool, judge_scores: dict[int, int] | None = None
+) -> int:
     if outcome.warning:
         print(f"warning: {outcome.warning}", file=sys.stderr)
-    results = describe(store, outcome.hits)
+    results = describe(store, outcome.hits, judge_scores=judge_scores)
     if as_json:
         print(json.dumps(results, ensure_ascii=False, indent=2))
         return 0
     for position, result in enumerate(results, start=1):
         spent = f" · {result['time_spent_hours']} h" if result["time_spent_hours"] else ""
+        verdict = f" · judge {result['judge_score']}/3" if "judge_score" in result else ""
         print(f"{position}. [{result['source']}] {result['key']} {result['title']}")
-        print(f"   {result['status']} {result['resolution']}{spent} · {result['url']}")
+        print(f"   {result['status']} {result['resolution']}{spent}{verdict} · {result['url']}")
         print(f"   {result['snippet'][:160]}".replace("\n", " "))
     return 0
 

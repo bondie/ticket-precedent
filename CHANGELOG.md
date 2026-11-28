@@ -6,8 +6,17 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-11-28
+
 ### Added
 
+- An optional LLM judge: `precedents_for` and `similar_tickets` take `judge: true`, and
+  `tp precedents` and `tp search` take `--judge`. A local model through Ollama
+  (`gemma4:12b` by default) scores the top 5 results 0–3 for "reports the same fault" and
+  moves the best-scored ones first, with search order breaking ties. Judged results carry
+  `judge_score`. It adds 15–30 s per call, so it is off unless asked for or enabled with
+  `judge.enabled` in the configuration (`model`, `url`, `top` and `timeout` there too).
+  When Ollama or the model is unavailable, the search order is kept with a `warning`.
 - `scripts/eval_judge.py`: a local LLM (`gemma4:12b` through Ollama) judges whether each of
   the top 5 candidates reports the same fault, and the run measures the reordering. It raises
   MRR@10 by 0.04–0.07 on Apache duplicates and on private Czech trackers, with cached and

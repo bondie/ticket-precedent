@@ -1,6 +1,6 @@
 [project]
 name = "ticket-precedent"
-version = "0.3.0"
+version = "0.4.0"
 description = "Have we solved this before? Local hybrid search (BM25 + embeddings) over JIRA, Mantis and GitHub tickets, served to AI agents over MCP."
 readme = "README.md"
 license = "MIT"

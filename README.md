@@ -175,8 +175,8 @@ Describe the problem in your own words and let the agent pick the tool:
 
 | Tool | What it does |
 |---|---|
-| `precedents_for(key, source?, only_source?, platform?, limit?)` | Precedents for a ticket, [fetched first](#tickets-that-are-not-indexed-yet) when it is not indexed yet |
-| `similar_tickets(text \| query, source?, project?, platform?, limit?)` | Precedents for any text: a symptom, an error message; `query` is an alias of `text` |
+| `precedents_for(key, source?, only_source?, platform?, limit?, judge?)` | Precedents for a ticket, [fetched first](#tickets-that-are-not-indexed-yet) when it is not indexed yet |
+| `similar_tickets(text \| query, source?, project?, platform?, limit?, judge?)` | Precedents for any text: a symptom, an error message; `query` is an alias of `text` |
 | `effort_reference(key? \| text?, source?, since?, platform?, limit?)` | Similar finished tickets with logged hours, plus their median and P25–P75 |
 | `get_ticket(key, source?)` | Full description, comments and links of one ticket |
 | `list_sources()` | Indexed sources, counts and last sync time |
@@ -203,8 +203,8 @@ not indexed yet is [fetched from its tracker](#tickets-that-are-not-indexed-yet)
 
 | Command | What it does |
 |---|---|
-| `tp precedents KEY [--only-source S] [--platform P] [--limit N] [--json]` | Earlier tickets that look like a given ticket |
-| `tp search TEXT [--source S] [--project P] [--platform P] [--mode hybrid\|vector\|bm25] [--json]` | Search by free text |
+| `tp precedents KEY [--only-source S] [--platform P] [--limit N] [--judge] [--json]` | Earlier tickets that look like a given ticket |
+| `tp search TEXT [--source S] [--project P] [--platform P] [--mode hybrid\|vector\|bm25] [--judge] [--json]` | Search by free text |
 | `tp effort KEY [--since YYYY-MM-DD] [--platform P] [--limit N] [--json]` | Logged hours of similar tickets finished before KEY was created |
 | `tp show KEY [--source S]` | Print one ticket as JSON (`tp show SOURCE KEY` also works) |
 | `tp sync [--source S] [--full]` | Fetch new and updated tickets; `--full` re-reads everything |
@@ -231,6 +231,38 @@ effort on each. Give every source a `platform` and the searches stay within one:
 
 Sources without a platform, and configurations without `default_platform`, search
 everything as before.
+
+### Let a local LLM judge the top results
+
+`precedents_for` and `similar_tickets` take `judge: true` (`--judge` on the command line).
+A local LLM then reads the new ticket and the five best results, scores each 0–3 for
+whether it reports the same fault, and moves the best-scored ones first. Search order breaks
+ties, so a result is never dropped. On precedents this raised MRR@10 by 0.04–0.07 and
+the share of queries with the right ticket first by 7–10 percentage points, in English and
+in Czech; see the [benchmark](#an-llm-judge-on-the-top-5-helps-where-the-reranker-did-not).
+
+- **What comes back.** Each judged result carries `judge_score`, and the response carries
+  `judge` with the model and the number of results it read.
+- **What it costs.** 15–30 s per call on an Apple M1 Pro, against 0.1–0.2 s for the
+  search, so it is off by default. With `judge.enabled: true` it becomes the default (the
+  MCP server then tells the model so) and `judge: false` asks for a quick look.
+- **What it needs.** The model in Ollama: `ollama pull gemma4:12b` (8 GB). When Ollama or
+  the model is missing, or the answer takes longer than `timeout`, the results keep the
+  search order and a `warning` says why.
+- **What it reads.** Title and description of each result, as in the benchmark, with
+  ticket keys masked; temperature 0, so the same question gets the same answer.
+
+```yaml
+judge:
+  enabled: false        # true: judge unless a call passes judge: false
+  model: gemma4:12b     # any Ollama chat model with structured outputs
+  # url: http://localhost:11434   # default: the embedding URL
+  top: 5                # results the judge reads
+  timeout: 120          # seconds
+```
+
+Another model is a matter of `model`, but the measured gain holds for `gemma4:12b` and
+this prompt; `scripts/eval_judge.py` measures any other on your own tickets.
 
 ### Keep the index fresh
 
@@ -281,7 +313,8 @@ updated since the previous one.
 - **Ollama** embeds the query. An idle Ollama server uses about 70 MB of RAM. The model is
   loaded on the first query (a few seconds) and unloaded after five idle minutes. If Ollama
   is not reachable, search degrades to BM25 and says so in a `warning` field instead of
-  failing.
+  failing. The [judge](#let-a-local-llm-judge-the-top-results), when used, runs in the
+  same Ollama.
 
 ## Results
 
@@ -417,8 +450,9 @@ published.
   from this helpdesk thread", hybrid search has the right issue first 90% of the time. The
   prompt asks about earlier reports of the same fault, which is not quite that question.
 - **It is slow.** On an Apple M1 Pro it takes 15–18 s per query (about 1,200–1,600 prompt
-  tokens and 80 output tokens), against 0.1–0.2 s for the search. That makes it an optional
-  step an agent asks for, not part of every search.
+  tokens and 80 output tokens), against 0.1–0.2 s for the search. That makes it an
+  [optional step](#let-a-local-llm-judge-the-top-results) an agent asks for, not part of
+  every search.
 - **Caveats.** Apache tickets may be in the model's training data. Masking the keys
   reduces that risk without ruling it out, so the private trackers are the cleaner test.
   Reordering five candidates can never raise Hit@5.
@@ -568,9 +602,6 @@ CI runs lint, type checks, tests on Python 3.11–3.13 and a gitleaks secret sca
 ## Roadmap
 
 - Collapse clones and sub-tasks that share a title into one result
-- An optional `judge` step for `precedents_for`: the
-  [LLM judge](#an-llm-judge-on-the-top-5-helps-where-the-reranker-did-not) helps on
-  precedents, but takes 15–18 s
 - A small reranker distilled from the judge's "same fault" verdicts, to get its gain in a
   fraction of a second; a general-purpose cross-encoder made results worse (see
   [Reranking](#reranking-tried-not-adopted))
