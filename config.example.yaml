@@ -20,6 +20,15 @@ search:
   rrf_k: 10                      # Reciprocal Rank Fusion constant
   lexical_weight: 0.25           # weight of the BM25 ranking relative to the vector ranking
 
+# A local LLM that reorders the top results of precedents_for and similar_tickets by
+# whether they report the same fault. It adds 15-30 s per call, so tools use it only when
+# asked (judge: true, tp --judge) unless enabled here. Needs `ollama pull gemma4:12b`.
+# judge:
+#   enabled: false
+#   model: gemma4:12b
+#   top: 5
+#   timeout: 120
+
 # Sources of different products can carry a `platform`; searches then stay within one.
 # A ticket key keeps to its own platform, free text to this default unless told otherwise.
 # default_platform: shop

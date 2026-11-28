@@ -7,8 +7,9 @@ from mcp.types import ToolAnnotations
 
 from . import __version__
 from .autosync import start_background_sync
-from .config import Config, ConfigError, build_searcher
+from .config import Config, ConfigError, build_judge, build_searcher
 from .effort import ReferenceClass, reference_class, reference_for_ticket
+from .judge import judge_outcome
 from .ondemand import OnDemandResolver
 from .search import (
     Filters,
@@ -19,6 +20,7 @@ from .search import (
     find_precedents,
     search_or_degrade,
     ticket_details,
+    ticket_query,
 )
 from .store import Store
 
@@ -43,10 +45,17 @@ MAX_LIMIT = 20
 
 def instructions(config: Config) -> str:
     """The base instructions plus the configured platforms, so the model knows their names."""
+    lines = []
+    if config.judge.enabled:
+        lines.append(
+            f"precedents_for and similar_tickets let a local LLM reorder the top "
+            f"{config.judge.top} by whether they report the same fault, which adds 15-30 s; "
+            "pass judge=false for a quick look."
+        )
     platforms = config.platforms()
     if not platforms:
-        return INSTRUCTIONS
-    lines = ["Configured platforms (pass one of these names as `platform`):"]
+        return INSTRUCTIONS + "".join(line + "\n" for line in lines)
+    lines.append("Configured platforms (pass one of these names as `platform`):")
     for name in platforms:
         sources = ", ".join(item.name for item in config.sources if item.platform == name)
         since = config.effort_since_for(name)
@@ -61,6 +70,7 @@ def create_server(config: Config) -> MCPServer:
     store = Store(config.index_path)
     searcher = build_searcher(config, store)
     resolver = OnDemandResolver(config, store, searcher.embedder)
+    llm_judge = build_judge(config)
     server: MCPServer = MCPServer(
         "ticket-precedent", instructions=instructions(config), version=__version__
     )
@@ -69,6 +79,25 @@ def create_server(config: Config) -> MCPServer:
         response: dict[str, Any] = {**extra, "results": describe(store, outcome.hits)}
         if outcome.warning:
             response["warning"] = outcome.warning
+        return response
+
+    def judging(wanted: bool | None) -> bool:
+        return config.judge.enabled if wanted is None else wanted
+
+    def candidates(limit: int, judged: bool) -> int:
+        return max(limit, llm_judge.top) if judged else limit
+
+    def respond_judged(text: str, outcome: Outcome, limit: int, **extra: Any) -> dict[str, Any]:
+        judged = judge_outcome(llm_judge, store, text, outcome)
+        hits = judged.hits[:limit]
+        response: dict[str, Any] = {
+            **extra,
+            "results": describe(store, hits, judge_scores=judged.scores),
+        }
+        if judged.scores:
+            response["judge"] = {"model": llm_judge.model, "judged": len(judged.scores)}
+        if judged.warning:
+            response["warning"] = judged.warning
         return response
 
     def in_platform(chosen: str | None) -> dict[str, Any]:
@@ -87,6 +116,7 @@ def create_server(config: Config) -> MCPServer:
         platform: str | None = None,
         limit: int = 5,
         query: str | None = None,
+        judge: bool | None = None,
     ) -> dict[str, Any]:
         """Find past tickets similar to `text` (a symptom, error message or ticket body).
 
@@ -94,7 +124,9 @@ def create_server(config: Config) -> MCPServer:
         `source` (see list_sources) or `project`. When sources have a platform, results stay
         in `platform` (the configured default when omitted; "all" searches every source).
         Returns `results` with key, title, url, status, resolution, time spent and the best
-        matching snippet, plus a `warning` when only keyword search was available.
+        matching snippet, plus a `warning` when only keyword search was available. `judge`
+        lets a local LLM reorder the top results by whether they report the same fault and
+        adds its 0-3 `judge_score` (slower; the configured default when omitted).
         """
         if (text is None) == (query is None):
             return {"error": "Pass the search text as either `text` or its alias `query`."}
@@ -104,7 +136,11 @@ def create_server(config: Config) -> MCPServer:
         except ConfigError as error:
             return {"error": str(error)}
         filters = Filters(source, project, sources=sources)
-        outcome = search_or_degrade(searcher, text or query or "", "hybrid", limit, filters)
+        text = text or query or ""
+        judged = judging(judge)
+        outcome = search_or_degrade(searcher, text, "hybrid", candidates(limit, judged), filters)
+        if judged:
+            return respond_judged(text, outcome, limit, **in_platform(chosen))
         return respond(outcome, **in_platform(chosen))
 
     @server.tool(annotations=FETCHES)
@@ -114,6 +150,7 @@ def create_server(config: Config) -> MCPServer:
         only_source: str | None = None,
         platform: str | None = None,
         limit: int = 5,
+        judge: bool | None = None,
     ) -> dict[str, Any]:
         """Earlier tickets resembling a ticket, e.g. helpdesk thread 18342 or PROJ-42.
 
@@ -123,6 +160,8 @@ def create_server(config: Config) -> MCPServer:
         without the ticket itself and tickets its title names. Pass `source` only when the key
         exists in several sources; `only_source` restricts the results to one source. Results
         stay in the ticket's own platform unless `platform` names another one or "all".
+        `judge` lets a local LLM reorder the top results by whether they report the same
+        fault and adds its 0-3 `judge_score` (slower; the configured default when omitted).
         """
         try:
             ticket = resolver.resolve(key, source)
@@ -135,8 +174,12 @@ def create_server(config: Config) -> MCPServer:
         except ConfigError as error:
             return {"error": str(error)}
         limit = max(1, min(limit, MAX_LIMIT))
-        outcome = find_precedents(searcher, ticket, limit, only_source, sources)
+        judged = judging(judge)
+        outcome = find_precedents(searcher, ticket, candidates(limit, judged), only_source, sources)
         query = {name: ticket[name] for name in ("source", "key", "title", "created")}
+        if judged:
+            text = ticket_query(ticket["title"], ticket["description"])
+            return respond_judged(text, outcome, limit, ticket=query, **in_platform(chosen))
         return respond(outcome, ticket=query, **in_platform(chosen))
 
     @server.tool(annotations=FETCHES)

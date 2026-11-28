@@ -17,6 +17,7 @@ from .connectors.jira import JiraConnector
 from .connectors.jira_cloud import JiraCloudConnector
 from .connectors.mantis import MantisConnector
 from .embeddings import OllamaEmbedder
+from .judge import OllamaJudge
 from .search import Searcher
 from .store import Store
 
@@ -46,6 +47,18 @@ class SearchConfig:
 
 
 @dataclass(frozen=True)
+class JudgeConfig:
+    """A local LLM that reorders the best hits by "same fault"; off unless enabled or asked."""
+
+    enabled: bool = False
+    model: str = "gemma4:12b"
+    url: str | None = None
+    """Ollama URL; the embedding URL when omitted."""
+    top: int = 5
+    timeout: float = 120.0
+
+
+@dataclass(frozen=True)
 class SourceConfig:
     name: str
     type: str
@@ -66,6 +79,7 @@ class Config:
     embedding: EmbeddingConfig
     sources: list[SourceConfig]
     search: SearchConfig = field(default_factory=SearchConfig)
+    judge: JudgeConfig = field(default_factory=JudgeConfig)
     auto_sync_hours: float | None = None
     default_platform: str | None = None
     effort_since: str | Mapping[str, str] | None = None
@@ -149,11 +163,15 @@ def load_config(path: Path | None = None) -> Config:
     sources = [_source(item, env) for item in document.pop("sources", None) or []]
     raw = _expand(document, env)
     platforms = {item.platform.lower() for item in sources if item.platform}
+    judge = _build(JudgeConfig, raw.get("judge") or {}, "judge")
+    if judge.top < 2:
+        raise ConfigError(f"judge.top: {judge.top} leaves nothing to reorder; use 2 or more")
     return Config(
         index_path=Path(raw.get("index_path") or data_dir() / "index.db").expanduser(),
         embedding=_build(EmbeddingConfig, raw.get("embedding") or {}, "embedding"),
         sources=sources,
         search=_build(SearchConfig, raw.get("search") or {}, "search"),
+        judge=judge,
         auto_sync_hours=raw.get("auto_sync_hours"),
         default_platform=raw.get("default_platform"),
         effort_since=_effort_since(raw.get("effort_since"), platforms),
@@ -196,6 +214,15 @@ def build_searcher(config: Config, store: Store) -> Searcher:
         candidate_chunks=config.search.candidate_chunks,
         rrf_k=config.search.rrf_k,
         lexical_weight=config.search.lexical_weight,
+    )
+
+
+def build_judge(config: Config) -> OllamaJudge:
+    return OllamaJudge(
+        model=config.judge.model,
+        url=config.judge.url or config.embedding.url,
+        top=config.judge.top,
+        timeout=config.judge.timeout,
     )
 
 
